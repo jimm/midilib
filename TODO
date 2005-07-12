@@ -1,0 +1,25 @@
+== Bugs
+
+* None known.
+
+== Features
+
+* Method to translate event's time_from_start to number of milliseconds from
+  start.
+
+* Swing quantizing. (Implied by list email from Carl Youngblood
+  <carl.youngblood@gmail.com>)
+
+* Implement key signature in SeqReader.
+
+* Format 0 files.
+
+* Format 2 files(?).
+
+== Documentation
+
+* Write better docs.
+
+== Tests
+
+* More needed?

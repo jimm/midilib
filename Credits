@@ -1,0 +1,12 @@
+midilib is developed by Jim Menard, jimm@io.com. Additional bug fixes and
+suggestions have come from:
+
+Mike Hall <m3ha11@rcn.com>
+
+    Found errors in example scripts' $LOAD_PATH and a bug in sequence reading
+    block callback arguments. Found a bug in meta events that caused
+    "Object#type is deprecated" error messages.
+
+Emanuel Borsboom <emanuel.borsboom@gmail.com>
+
+    Found and fixed an error in PitchBend data encoding.
