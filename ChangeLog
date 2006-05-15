@@ -1,3 +1,7 @@
+2006-05-15  Jim Menard  <jimm@localhost.localdomain>
+
+	* test/test.mid: created (copied examples/from_scratch.mid).
+
 2005-03-21  Jim Menard  <jimm@io.com>
 
 	* Version 0.8.4 released.
