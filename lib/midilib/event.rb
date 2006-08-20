@@ -192,7 +192,7 @@ end
 
 class PolyPressure < NoteEvent
     def initialize(channel = 0, note = 64, value = 0, delta_time = 0)
-	super(POLY_PRESSSURE, channel, note, value, delta_time)
+	super(POLY_PRESSURE, channel, note, value, delta_time)
     end
 
     def pressure

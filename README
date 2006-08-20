@@ -12,6 +12,10 @@ version of midilib may be downloaded. midilib is also available as a RubyGem.
 
 === Recent Changes
 
+==== Changes for 0.8.7:
+
+* Fixed the misspelled POLY_PRESSURE cosntant, thanks to Mario Pehle.
+
 ==== Changes for 0.8.6:
 
 * Added missing test/test.mid.

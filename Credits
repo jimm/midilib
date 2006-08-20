@@ -1,6 +1,11 @@
 midilib is developed by Jim Menard, jimm@io.com. Additional bug fixes and
 suggestions have come from:
 
+Mario Pehle <rubyforge.org@errorinitus.de>
+
+    Noticed that the PolyPressure class used the misspelled constant
+    POLY_PRESSSURE.
+
 Mike Hall <m3ha11@rcn.com>
 
     Found errors in example scripts' $LOAD_PATH and a bug in sequence reading
