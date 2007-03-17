@@ -10,72 +10,6 @@ project page is http://rubyforge.org/projects/midilib, where the latest
 version of midilib may be downloaded. midilib is also available as a RubyGem.
 
 
-=== Recent Changes
-
-==== Changes for 0.8.7:
-
-* Fixed the misspelled POLY_PRESSURE constant, thanks to Mario Pehle.
-
-==== Changes for 0.8.6:
-
-* Added missing test/test.mid.
-
-==== Changes for 0.8.5:
-
-* Fixed bugs in MIDI::PitchBend reading and writing, thanks to Emanuel
-  Borsboom.
-
-* Fixed a bug in MIDI::Track#quantize.
-
-* The argument to MIDI::Track#quantize has changed: it is now either a note
-  name ("sixteenth", "32nd", "8th triplet") or a length (1 = quarter, 0.25 =
-  sixteenth). This is a drastic change that will break all previous calls to
-  quantize. However, since that method was broken already, I don't feel it's
-  a burden to anybody to change the arguments.
-
-==== Changes for 0.8.4:
-
-* Realtime status bytes now set @is_realtime to true and return true when
-  realtime? is called.
-
-* All system common events now set @is_system to true and return true when
-  system? is called, not just system exclusive events.
-
-* Added examples/from_scratch.rb, which shows how to create a sequence
-  manually.
-
-* New MIDI::Sequence methods that turn note length names like "32nd", "dotted
-  quarter", and "16th triplet" into delta times. See the docs below and
-  MIDI::Sequence::length_to_delta, MIDI::Sequence::note_to_length, and
-  MIDI::Sequence::note_to_delta.
-
-
-==== Changes for 0.8.3:
-
-* Added MIDI::NoteEvent.note_to_s, which returns note name as a string like
-  "C4" or "F#6".
-
-* Added new boolean attributes to MIDI::Event: @print_decimal_numbers and
-  @print_note_names. These are used by all Event to_s methods. See
-  examples/seq2text.rb for an example.
-
-==== Changes for 0.8.2:
-
-* Changed MIDI::MetaEvent.type to MIDI::MetaEvent.event_type to avoid
-  runtime complaints about Object#type calls.
-* Added 'b' binary flag to file open modes for Windows.
-* Fixed $LOAD_PATH in example files.
-* Fixed read and write block arguments.
-* Fixed other example script bugs.
-
-==== Changes for 0.8.1:
-
-* Fixed track sorting.
-* Fixed track's recalc_delta_from_times method.
-* Fixed event quantization.
-* More tests and documentation.
-
-
 == Dependencies
 
 midilib does not require any other packages. The test suite in the tests
@@ -377,6 +311,76 @@ midilib is Copyright (c) 2003-2005 by Jim Menard.
 The song "No Fences" contained in the MIDI file examples/NoFences.mid is
 Copyright (c) 1992 by Jim Menard (jimm@io.com). It may be freely used for
 non-commercial purposes as long as the author is given credit.
+
+
+=== Recent Changes
+
+==== Changes for 1.0.0:
+
+* Fixed the bug in Track#recalc_delta_from_times found by Christopher Rose.
+
+==== Changes for 0.8.7:
+
+* Fixed the misspelled POLY_PRESSURE constant, thanks to Mario Pehle.
+
+==== Changes for 0.8.6:
+
+* Added missing test/test.mid.
+
+==== Changes for 0.8.5:
+
+* Fixed bugs in MIDI::PitchBend reading and writing, thanks to Emanuel
+  Borsboom.
+
+* Fixed a bug in MIDI::Track#quantize.
+
+* The argument to MIDI::Track#quantize has changed: it is now either a note
+  name ("sixteenth", "32nd", "8th triplet") or a length (1 = quarter, 0.25 =
+  sixteenth). This is a drastic change that will break all previous calls to
+  quantize. However, since that method was broken already, I don't feel it's
+  a burden to anybody to change the arguments.
+
+==== Changes for 0.8.4:
+
+* Realtime status bytes now set @is_realtime to true and return true when
+  realtime? is called.
+
+* All system common events now set @is_system to true and return true when
+  system? is called, not just system exclusive events.
+
+* Added examples/from_scratch.rb, which shows how to create a sequence
+  manually.
+
+* New MIDI::Sequence methods that turn note length names like "32nd", "dotted
+  quarter", and "16th triplet" into delta times. See the docs below and
+  MIDI::Sequence::length_to_delta, MIDI::Sequence::note_to_length, and
+  MIDI::Sequence::note_to_delta.
+
+
+==== Changes for 0.8.3:
+
+* Added MIDI::NoteEvent.note_to_s, which returns note name as a string like
+  "C4" or "F#6".
+
+* Added new boolean attributes to MIDI::Event: @print_decimal_numbers and
+  @print_note_names. These are used by all Event to_s methods. See
+  examples/seq2text.rb for an example.
+
+==== Changes for 0.8.2:
+
+* Changed MIDI::MetaEvent.type to MIDI::MetaEvent.event_type to avoid
+  runtime complaints about Object#type calls.
+* Added 'b' binary flag to file open modes for Windows.
+* Fixed $LOAD_PATH in example files.
+* Fixed read and write block arguments.
+* Fixed other example script bugs.
+
+==== Changes for 0.8.1:
+
+* Fixed track sorting.
+* Fixed track's recalc_delta_from_times method.
+* Fixed event quantization.
+* More tests and documentation.
 
 
 == Warranty

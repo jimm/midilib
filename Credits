@@ -15,3 +15,7 @@ Mike Hall <m3ha11@rcn.com>
 Emanuel Borsboom <emanuel.borsboom@gmail.com>
 
     Found and fixed an error in PitchBend data encoding.
+
+Christopher Rose <cmr@synopsys.com>
+
+    Found bug in Track#recalc_delta_from_times.

@@ -95,9 +95,14 @@ class Track
 
     # The opposite of recalc_times: recalculates delta_time for each event
     # from each event's time_from_start. This is useful, for example, when
-    # merging two event lists.
+    # merging two event lists. As a side-effect, elements from starting_at
+    # are sorted by time_from_start.
     def recalc_delta_from_times(starting_at=0, list=@events)
 	prev_time_from_start = 0
+	# We need to sort the sublist. sublist.sort! does not do what we want.
+	list[starting_at .. -1] = list[starting_at .. -1].sort { | e1, e2 |
+	    e1.time_from_start <=> e2.time_from_start
+	}
 	list[starting_at .. -1].each { | e |
 	    e.delta_time = e.time_from_start - prev_time_from_start
 	    prev_time_from_start = e.time_from_start

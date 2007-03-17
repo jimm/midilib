@@ -88,6 +88,19 @@ class TrackTester < Test::Unit::TestCase
 	@track.each { | event | assert_equal(100, event.delta_time) }
     end
 
+    def test_recalc_delta_from_times_unsorted
+      @track.events[0].time_from_start = 100
+      @track.events[1].time_from_start = 50
+      @track.events[2].time_from_start = 150
+      @track.recalc_delta_from_times
+      prev_start_time = 0
+      @track.each { | event |
+        assert(prev_start_time <= event.time_from_start)
+        assert(event.delta_time > 0)
+        prev_start_time = event.time_from_start
+      }
+    end
+
     def test_sort
 	e = @track.events[0]
 	e.time_from_start = 300

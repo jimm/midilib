@@ -1,3 +1,8 @@
+2007-03-17  Jim Menard  <jimm@io.com>
+
+	* Version 1.0.0 released. I will no longer be maintaining this
+	change log; the Subversion comments should be sufficient.
+	
 2006-08-20  Jim Menard  <jimm@io.com>
 
 	* lib/midilib/event.rb (PolyPressure::initialize): Fixed the
