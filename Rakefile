@@ -1,5 +1,5 @@
 require 'rubygems'
-require_gem 'rake'
+require 'rake'
 require 'rake/rdoctask'
 require 'rake/gempackagetask'
 require 'rake/contrib/rubyforgepublisher'
