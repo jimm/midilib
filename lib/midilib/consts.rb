@@ -20,7 +20,7 @@ module MIDI
     META_CUE = 0x07
     META_TRACK_END = 0x2f
     META_SET_TEMPO = 0x51
-    META_SMPTE = 0x53
+    META_SMPTE = 0x54
     META_TIME_SIG = 0x58
     META_KEY_SIG = 0x59
     META_SEQ_SPECIF = 0x7f
