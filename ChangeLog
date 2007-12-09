@@ -1,3 +1,8 @@
+2007-12-09  Jim Menard  <jim@iamplify.com>
+
+	* lib/midilib/event.rb: added program_change? and
+	print_channel_numbers_from_one to Event.
+
 2007-03-17  Jim Menard  <jimm@io.com>
 
 	* Version 1.0.0 released. I will no longer be maintaining this

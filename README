@@ -99,7 +99,12 @@ the track. The track is responsible for recalculating its events' start times.
 You can call MIDI::Track#recalc_times to do so.
 
 Events have a number of boolean methods that identify their types, like
-channel?, note?, note_on?, note_off?, meta?, system?, and realtime?.
+channel?, note?, note_on?, note_off?, meta?, system?, realtime?, and
+program_change?. Events know how to print themselves. By default, all numbers
+are printed as hexidecimal and channel numbers are printed from 0-15. Setting
+print_decimal_numbers to true will output decimal numbers and setting
+print_channel_numbers_from_one will output channel numbers from 1-16.
+
 
 Subclasses of MIDI::Event implement the various MIDI messages such as note on
 and off, controller values, system exclusive data, and realtime bytes.

@@ -23,6 +23,10 @@ class Event
     # decimal # (true). Delta times are always printed as decimal.
     attr_accessor :print_decimal_numbers
 
+    # Determines if to_s outputs MIDI channel numbers from 1-16 instead
+    # of the default 0-15.
+    attr_accessor :print_channel_numbers_from_one
+
     def initialize(status = 0, delta_time = 0)
 	@status = status
 	@delta_time = delta_time
@@ -33,6 +37,7 @@ class Event
 	@is_meta = false
 	@is_system = false
 	@is_realtime = false
+	@is_program_change = false
 	@time_from_start = 0	# maintained by tracks
     end
     protected :initialize
@@ -76,9 +81,13 @@ class Event
     end
 
     # Returns +true+ if this is a realtime status byte.
-
     def realtime?
 	return @is_realtime
+    end
+
+    # Returns +true+ if this is a program change.
+    def program_change?
+	return @is_program_change        
     end
 
     # Quantize this event's time_from_start by moving it to the nearest
@@ -106,6 +115,13 @@ class Event
 	return @print_decimal_numbers ? val.to_s : ('%02x' % val)
     end
 
+    # Returns +val+ as a decimal or hex string, depending upon the value of
+    # @print_decimal_numbers.
+    def channel_to_s(val)
+	val += 1 if @print_channel_numbers_from_one
+	return @print_decimal_numbers ? val.to_s : ('%02x' % val)
+    end
+
     def to_s
 	"#{@delta_time}: "
     end
@@ -125,7 +141,7 @@ class ChannelEvent < Event
     protected :initialize
 
     def to_s
-	return super << "ch #{number_to_s(@channel)} "
+	return super << "ch #{number_to_s(@print_channel_numbers_from_one ? @channel + 1 : @channel)} "
     end
 
 end
@@ -203,7 +219,7 @@ class PolyPressure < NoteEvent
     end
     def to_s
 	return super <<
-	    "poly press #{number_to_s(@channel)} #{note_to_s} #{number_to_s(@velocity)}"
+	    "poly press #{number_to_s(@print_channel_numbers_from_one ? @channel + 1 : @channel)} #{note_to_s} #{number_to_s(@velocity)}"
     end
 end
 
@@ -236,6 +252,7 @@ class ProgramChange < ChannelEvent
     def initialize(channel = 0, program = 0, delta_time = 0)
 	super(PROGRAM_CHANGE, channel, delta_time)
 	@program = program
+	@is_program_change = true
     end
 
     def data_as_bytes
