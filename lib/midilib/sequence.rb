@@ -1,5 +1,6 @@
 require 'midilib/io/seqreader'
 require 'midilib/io/seqwriter'
+require 'midilib/measure.rb'
 
 module MIDI
 
@@ -27,7 +28,12 @@ class Sequence
       '64th' => 0.0625
     }
 
-    attr_accessor :tracks, :ppqn, :format
+    # Array with all tracks for the sequence
+    attr_accessor :tracks
+    # Pulses (i.e. clocks) Per Quarter Note resolution for the sequence
+    attr_accessor :ppqn
+    # The MIDI file format (0, 1, or 2)
+    attr_accessor :format   
     attr_accessor :numer, :denom, :clocks, :qnotes
     # The class to use for reading MIDI from a stream. The default is
     # MIDI::IO::SeqReader. You can change this at any time.
@@ -43,7 +49,7 @@ class Sequence
 	# Time signature
 	@numer = 4		# Numer + denom = 4/4 time default
 	@denom = 2
-	@clocks = @ppqn
+	@clocks = 24    # Bug fix  Nov 11, 2007 - this is not the same as ppqn!
 	@qnotes = 8
 
 	@reader_class = IO::SeqReader
@@ -124,7 +130,6 @@ class Sequence
 
     # Reads a MIDI stream.
     def read(io, proc = nil)	# :yields: track, num_tracks, index
-	@tracks = Array.new()
 	reader = @reader_class.new(self, block_given?() ? Proc.new() : proc)
 	reader.read_from(io)
     end
@@ -140,5 +145,47 @@ class Sequence
 	@tracks.each { | track | yield track }
     end
 
+    # Returns a Measures object, which is an array container for all measures
+    # in the sequence
+    def get_measures      
+       # Collect time sig events and scan for last event time
+       time_sigs = []
+       max_pos = 0
+       @tracks.each  { |t|
+         t.each { |e| 
+           time_sigs << e if e.timesig?           
+           max_pos = e.time_from_start if e.time_from_start > max_pos
+         }
+       }
+       time_sigs.sort { |x,y| x.time_from_start <=> y.time_from_start }      
+      
+       # Add a "fake" time sig event at the very last position of the sequence,
+       # just to make sure the whole sequence is calculated.
+       t = MIDI::TimeSig.new(4, 2, 24, 8, 0)
+       t.time_from_start = max_pos
+       time_sigs << t     
+     
+       # Default to 4/4
+       measure_length = @ppqn * 4
+       oldnumer, olddenom, oldbeats = 4, 2, 24
+           
+       measures = MIDI::Measures.new(max_pos, @ppqn)      
+       curr_pos = 0
+       curr_meas_no = 1
+       time_sigs.each { |te|         
+          meas_count = (te.time_from_start - curr_pos) / measure_length
+          meas_count += 1 if (te.time_from_start - curr_pos) % measure_length > 0
+          1.upto(meas_count) { |i|                  
+              measures << MIDI::Measure.new(curr_meas_no, 
+                          curr_pos, measure_length, oldnumer, olddenom, oldbeats) 
+              curr_meas_no += 1
+              curr_pos += measure_length
+          }
+          oldnumer, olddenom, oldbeats = te.numerator, te.denominator, te.metronome_ticks
+          measure_length = te.measure_duration(@ppqn)        
+       }      
+       measures
+    end
+    
 end
 end

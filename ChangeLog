@@ -1,3 +1,12 @@
+2007-12-09  Jari Williamsson  <jari.williamsson@mailbox.swipnet.se>
+
+	* lib/midilib/event.rb: Added the Measure class. Fixed bpm
+	calculation bugs. Added TimeSig and KeySig classes.
+
+	* lib/midilib/measure.rb: Added.
+
+	* lib/midilib/sequence.rb: Fixed clock. Added get_measures method.
+
 2007-12-09  Jim Menard  <jim@iamplify.com>
 
 	* lib/midilib/event.rb: added program_change? and

@@ -37,6 +37,8 @@ class Event
 	@is_meta = false
 	@is_system = false
 	@is_realtime = false
+        @is_timesig = false
+        @is_keysig = false        
 	@is_program_change = false
 	@time_from_start = 0	# maintained by tracks
     end
@@ -79,6 +81,16 @@ class Event
     def system?
 	return @is_system
     end
+    
+    # Returns +true+ if this is a time signature event.
+    def timesig?
+       return @is_timesig
+    end
+    
+    # Returns +true+ if this is a key signature event.
+    def keysig?
+        return @is_keysig
+    end
 
     # Returns +true+ if this is a realtime status byte.
     def realtime?
@@ -119,7 +131,7 @@ class Event
     # @print_decimal_numbers.
     def channel_to_s(val)
 	val += 1 if @print_channel_numbers_from_one
-	return @print_decimal_numbers ? val.to_s : ('%02x' % val)
+	return number_to_s(val)
     end
 
     def to_s
@@ -141,7 +153,7 @@ class ChannelEvent < Event
     protected :initialize
 
     def to_s
-	return super << "ch #{number_to_s(@print_channel_numbers_from_one ? @channel + 1 : @channel)} "
+	return super << "ch #{channel_to_s(@channel)} "
     end
 
 end
@@ -219,7 +231,7 @@ class PolyPressure < NoteEvent
     end
     def to_s
 	return super <<
-	    "poly press #{number_to_s(@print_channel_numbers_from_one ? @channel + 1 : @channel)} #{note_to_s} #{number_to_s(@velocity)}"
+	    "poly press #{channel_to_s(@channel)} #{note_to_s} #{number_to_s(@velocity)}"
     end
 end
 
@@ -543,7 +555,9 @@ class Tempo < MetaEvent
 
     # Translates microseconds per quarter note (beat) to beats per minute.
     def Tempo.mpq_to_bpm(mpq)
-	return MICROSECS_PER_MINUTE / mpq
+        # Nov 17 2007: Fixed integer rounding error issue:
+        # 110 bpm (as 545455 msecs) becomes 109.999 (which became 109 bpm)
+	return Integer(MICROSECS_PER_MINUTE.to_f / mpq + 0.49)
     end
 
     def initialize(msecs_per_qnote, delta_time = 0)
@@ -573,4 +587,101 @@ class Tempo < MetaEvent
 	"tempo #{@data} msecs per qnote (#{Tempo.mpq_to_bpm(@data)} bpm)"
     end
 end
+
+# Container for time signature events
+class TimeSig < MetaEvent
+  
+    # Constructor
+    def initialize(numer, denom, clocks, qnotes, delta_time = 0)
+       super(META_TIME_SIG, [numer, denom, clocks, qnotes], delta_time)
+       @is_timesig = true
+    end
+    
+    # Returns the complete event as stored in the sequence
+    def data_as_bytes
+        data = ''
+	data << @status
+	data << @meta_type
+	data << 4
+        data << @data[0]
+        data << @data[1]
+        data << @data[2]
+        data << @data[3]
+    end
+
+    # Calculates the duration (in ticks) for a full measure 
+    def measure_duration(ppqn)       
+       (4 * ppqn * @data[0]) / (2**@data[1])
+    end
+    
+    # Returns the numerator (the top digit) for the time signature
+    def numerator
+       @data[0] 
+    end
+    
+    # Returns the denominator of the time signature. Use it as a power of 2
+    # to get the displayed (lower-part) digit of the time signature.
+    def denominator
+       @data[1]
+    end
+    
+    # Returns the metronome tick duration for the time signature. On
+    # each quarter note, there's 24 ticks.
+    def metronome_ticks
+       @data[2]
+    end
+    
+    # Returns the time signature for the event as a string.
+    # Example: "time sig 3/4"
+    def to_s
+       "time sig #{@data[0]}/#{2**@data[1]}"
+    end
+end
+
+# Container for key signature events  
+class KeySig < MetaEvent
+    
+    # Constructor
+    def initialize(sharpflat, is_minor, delta_time = 0)
+       super(META_KEY_SIG, [sharpflat, is_minor], delta_time)   
+       @is_keysig = true
+    end
+    
+    # Returns the complete event as stored in the sequence
+    def data_as_bytes
+        data = ''
+	data << @status
+	data << @meta_type
+	data << 2
+        data << @data[0]
+        data << @data[1] ? 1 : 0
+    end
+    
+    # Returns true if it's a minor key, false if major key
+    def minor_key?
+       @data[1] 
+    end
+    
+    # Returns true if it's a major key, false if minor key
+    def major_key?
+       !@data[1]
+    end
+    
+    # Returns the number of sharps/flats in the key sig. Negative for flats.
+    def sharpflat
+       @data[0] > 7 ? @data[0] - 256 : @data[0]
+    end
+    
+    # Returns the key signature as a text string.
+    # Example: "key sig A flat major"
+    def to_s
+        majorkeys = ['C flat', 'G flat', 'D flat', 'A flat', 'E flat', 'B flat', 'F', 
+                     'C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#']
+        minorkeys = ['a flat', 'e flat', 'b flat', 'f', 'c', 'g', 'd', 
+                      'a', 'e', 'b', 'f#', 'c#', 'g#', 'd#', 'a#']
+        minor_key? ? "key sig #{minorkeys[sharpflat + 7]} minor" :
+                 "key sig #{majorkeys[sharpflat + 7]} major"
+    end
+end
+
 end

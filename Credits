@@ -19,3 +19,8 @@ Emanuel Borsboom <emanuel.borsboom@gmail.com>
 Christopher Rose <cmr@synopsys.com>
 
     Found bug in Track#recalc_delta_from_times.
+
+Jari Williamsson <jari.williamsson@mailbox.swipnet.se>
+
+    Lots of great improvements: Added the Measure class. Fixed bpm calculation
+    bugs. Added TimeSig and KeySig classes. Added get_measures to Sequence.
