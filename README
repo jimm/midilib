@@ -92,6 +92,24 @@ This bit mask is set when the track is read from the MIDI file by a SeqReader
 but is _not_ kept up to date by any other methods. Specifically, if you add
 events to a track at any other time, the bit mask will not be updated.
 
+=== MIDI::Measure
+
+This class contains information about a measure from the sequence. Measure
+data is based on the time signature information from the sequence and is not
+stored in the sequence itself.
+
+=== MIDI::Measures
+
+The class MIDI::Sequence method get_measures returns a MIDI::Measures object.
+MIDI::Measures is a subclass of Array. It is a specialized container for
+MIDI::Measure objects, which can be use to map event times to measure numbers.
+Please note that this object has to be remade when events are deleted/added in
+the sequence.
+
+MIDI::Measure and MIDI::Measures are brought to us by Jari Williamsson
+<jari.williamsson@mailbox.swipnet.se>, who also contributed some improvements
+to the MIDI::Event and MIDI::Track classes.
+
 === MIDI::Event
 
 Each event holds not only its delta time but also its time from the start of

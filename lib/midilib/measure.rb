@@ -64,8 +64,7 @@ class Measures < Array
    # Returns +nil+ if the event isn't found in the container (should
    # never happen if the MIDI::Measures object is up to date).
    def measure_for_event(e)
-      each {|m| return m if m.contains_event?(e) }
-      nil
+     detect { | m | m.contains_event?(e) }
    end
    
    # Returns the event's time as a formatted MBT string (Measure:Beat:Ticks)
