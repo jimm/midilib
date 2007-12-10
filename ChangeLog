@@ -1,7 +1,11 @@
-2007-12-09  Jari Williamsson  <jari.williamsson@mailbox.swipnet.se>
+2007-12-09  Jim Menard  <jim@iamplify.com>
 
-	* lib/midilib/event.rb: Added the Measure class. Fixed bpm
-	calculation bugs. Added TimeSig and KeySig classes.
+	* examples/measures_mbt.rb: Added.
+
+2007-12-09  Jim Menard  <jim@iamplify.com>
+
+	* lib/midilib/event.rb: Added code that fixes bpm calculation
+	bugs, and his TimeSig and KeySig classes.
 
 	* lib/midilib/measure.rb: Added.
 

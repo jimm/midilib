@@ -22,5 +22,5 @@ Christopher Rose <cmr@synopsys.com>
 
 Jari Williamsson <jari.williamsson@mailbox.swipnet.se>
 
-    Lots of great improvements: Added the Measure class. Fixed bpm calculation
-    bugs. Added TimeSig and KeySig classes. Added get_measures to Sequence.
+    Contributed Measure and Measures, TimeSig and KeySig, and fixes to events.
+    Added get_measures to Sequence. Contributed the measures_mbt.rb example.
