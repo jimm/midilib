@@ -1,3 +1,8 @@
+2007-12-11  Jim Menard  <jim@iamplify.com>
+
+	* lib/midilib/io/seqreader.rb: Fixed text method and added default
+	implementation of key_signature.
+
 2007-12-09  Jim Menard  <jim@iamplify.com>
 
 	* examples/measures_mbt.rb: Added.

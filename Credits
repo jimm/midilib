@@ -23,4 +23,5 @@ Christopher Rose <cmr@synopsys.com>
 Jari Williamsson <jari.williamsson@mailbox.swipnet.se>
 
     Contributed Measure and Measures, TimeSig and KeySig, and fixes to events.
-    Added get_measures to Sequence. Contributed the measures_mbt.rb example.
+    Added get_measures to Sequence. Added default implementaiton of
+    key_signature in SeqReader. Contributed the measures_mbt.rb example.

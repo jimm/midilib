@@ -145,9 +145,11 @@ class SeqReader < MIDIFile
 
     def text(type, msg)
 	case type
-	when META_SEQ_NAME
-	    @track.events << MetaEvent.new(META_SEQ_NAME, msg, 0)
-	when META_INSTRUMENT
+        when META_TEXT, META_LYRIC, META_CUE
+            @track.events << MetaEvent.new(type, msg, @curr_ticks)
+	when META_SEQ_NAME, META_COPYRIGHT
+	    @track.events << MetaEvent.new(type, msg, 0)
+	when META_INSTRUMENT         
 	    @track.instrument = msg
 	when META_MARKER
 	    @track.events << Marker.new(msg, @curr_ticks)
@@ -168,6 +170,7 @@ class SeqReader < MIDIFile
 
     def time_signature(numer, denom, clocks, qnotes)
 	@seq.time_signature(numer, denom, clocks, qnotes)
+        @track.events << TimeSig.new(numer, denom, clocks, qnotes, @curr_ticks)
     end
 
 # --
@@ -179,10 +182,11 @@ class SeqReader < MIDIFile
 	@track.events << Tempo.new(microsecs, @curr_ticks)
     end
 
-# --
-#      def key_signature(sharpflat, is_minor)
-#      end
+    def key_signature(sharpflat, is_minor)
+      @track.events << KeySig.new(sharpflat, is_minor, @curr_ticks)
+    end
 
+# --
 #      def arbitrary(msg)
 #      end
 # ++
