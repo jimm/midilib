@@ -338,6 +338,11 @@ non-commercial purposes as long as the author is given credit.
 
 === Recent Changes
 
+==== Changes for 1.1.0:
+
+* Added test/test.mid to list of files to be included when packaging midifile
+  for distribution.
+
 ==== Changes for 1.0.0:
 
 * Fixed the bug in Track#recalc_delta_from_times found by Christopher Rose.
