@@ -14,7 +14,7 @@ PKG_FILES = FileList[ 'ChangeLog', 'Credits', 'README', 'Rakefile', 'TODO',
     'html/**/*',
     'install.rb',
     'lib/**/*.rb',
-    'test/**/*.rb']
+    'test/**/*']
 
 task :default => [:package]
 
