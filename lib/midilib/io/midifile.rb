@@ -54,10 +54,11 @@ class MIDIFile
     end
 
     # This default getc implementation tries to read a single character
-    # from io.
+    # from io and returns it as an integer.
     def getc
 	@bytes_to_be_read -= 1
-	return @io.getc()
+	c = @io.getc()
+	c.respond_to?(:bytes) ? c.bytes.first : c
     end
 
     # The default error handler.
