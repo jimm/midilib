@@ -338,6 +338,15 @@ non-commercial purposes as long as the author is given credit.
 
 === Recent Changes
 
+==== Changes for 1.1.2:
+
+* Define MIDI::IO::MIDIFile.getc differently for different Ruby versions,
+  instead of checking for String.bytes every time we read a byte.
+
+==== Changes for 1.1.1:
+
+* Make MIDI::IO::MIDIFile.getc do the right thing for both Ruby 1.8 and 1.9.
+
 ==== Changes for 1.1.0:
 
 * Added test/test.mid to list of files to be included when packaging midifile
