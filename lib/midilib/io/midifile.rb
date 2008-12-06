@@ -55,7 +55,7 @@ class MIDIFile
 
     # This default getc implementation tries to read a single character
     # from io and returns it as an integer.
-    if "".respond_to?(:bytes)
+    if RUBY_VERSION >= '1.9'
 	def getc
 	    @bytes_to_be_read -= 1
 	    @io.getc().bytes.first
