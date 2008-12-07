@@ -23,5 +23,10 @@ Christopher Rose <cmr@synopsys.com>
 Jari Williamsson <jari.williamsson@mailbox.swipnet.se>
 
     Contributed Measure and Measures, TimeSig and KeySig, and fixes to events.
-    Added get_measures to Sequence. Added default implementaiton of
+    Added get_measures to Sequence. Added default implementation of
     key_signature in SeqReader. Contributed the measures_mbt.rb example.
+
+Noah Thorp <noah@rixiform.com>
+
+    Found a bug in the code intended to make midilib work under Ruby 1.9.
+    Found another bug in KeySing.data_as_bytes.

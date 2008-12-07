@@ -654,7 +654,7 @@ class KeySig < MetaEvent
 	data << @meta_type
 	data << 2
         data << @data[0]
-        data << @data[1] ? 1 : 0
+        data << (@data[1] ? 1 : 0)
     end
     
     # Returns true if it's a minor key, false if major key
