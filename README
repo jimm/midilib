@@ -338,6 +338,10 @@ non-commercial purposes as long as the author is given credit.
 
 === Recent Changes
 
+==== New code repository
+
+The midilib code is now hosted at Github (http://github.com/jimm/midilib).
+
 ==== Changes for 1.1.4:
 
 * Fixed a bug in KeySig.data_as_bytes. Thanks to Noah Thorp for finding this
