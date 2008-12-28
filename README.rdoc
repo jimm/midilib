@@ -300,7 +300,7 @@ the format of MIDI commands.
 
 = To Do
 
-:include: TODO
+:include: TODO.rdoc
 
 
 = Support

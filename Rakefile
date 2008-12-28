@@ -9,7 +9,8 @@ PROJECT_NAME = 'midilib'
 RUBYFORGE_USER = 'jimm'
 RDOC_DIR = 'html'
 
-PKG_FILES = FileList[ 'ChangeLog', 'Credits', 'README', 'Rakefile', 'TODO',
+PKG_FILES = FileList[ 'ChangeLog', 'Credits', 'Rakefile',
+    'README.rdoc', 'TODO.rdoc',
     'examples/**/*',
     'html/**/*',
     'install.rb',
@@ -30,8 +31,8 @@ spec = Gem::Specification.new do |s|
     s.files = PKG_FILES.to_a
 
     s.has_rdoc = true
-    s.rdoc_options << '--main' << 'README'
-    s.extra_rdoc_files = ['README', 'TODO']
+    s.rdoc_options << '--main' << 'README.rdoc'
+    s.extra_rdoc_files = ['README.rdoc', 'TODO.rdoc']
 
     s.author = 'Jim Menard'
     s.email = 'jimm@io.com'
@@ -54,9 +55,9 @@ end
 
 # creates an "rdoc" task
 Rake::RDocTask.new do | rd |
-    rd.main = 'README'
+    rd.main = 'README.rdoc'
     rd.title = PROJECT_NAME
-    rd.rdoc_files.include('README', 'TODO', 'lib/**/*.rb')
+    rd.rdoc_files.include('README.rdoc', 'TODO.rdoc', 'lib/**/*.rb')
 end
 
 task :rubyforge => [:rdoc] do

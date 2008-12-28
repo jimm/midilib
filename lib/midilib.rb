@@ -3,7 +3,7 @@
 # This is the top-level include file for midilib. You can require this
 # file or require individual files from the midilib directory.
 #
-# See the README file or http://midilib.rubyforge.org for details.
+# See the README.rdoc file or http://midilib.rubyforge.org for details.
 
 require 'midilib/info'
 require 'midilib/sequence'
