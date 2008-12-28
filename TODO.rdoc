@@ -1,6 +1,10 @@
 == Bugs
 
-* None known.
+* Track#recalc_delta_from_times needs to use a stable sorting algorithm. See
+  Adam's notes at http://github.com/adamjmurray/cosy/wikis/midilib-notes and
+  solution at
+  http://github.com/adamjmurray/cosy/tree/master/lib/cosy/renderer/midi_file_renderer.rb.
+  Atam has given me permission to include his fix.
 
 == Features
 
@@ -22,4 +26,6 @@
 
 == Tests
 
-* More needed?
+* Tests for Adam's stable sorting algorithm.
+
+* Tests for Noah Thorp's midilib bug fixes.
