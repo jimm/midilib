@@ -4,7 +4,7 @@
   Adam's notes at http://github.com/adamjmurray/cosy/wikis/midilib-notes and
   solution at
   http://github.com/adamjmurray/cosy/tree/master/lib/cosy/renderer/midi_file_renderer.rb.
-  Atam has given me permission to include his fix.
+  Adam has given me permission to include his fix.
 
 == Features
 
