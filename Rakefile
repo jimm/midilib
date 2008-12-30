@@ -64,6 +64,11 @@ task :rubyforge => [:rdoc] do
     Rake::RubyForgePublisher.new(PROJECT_NAME, RUBYFORGE_USER).upload
 end
 
+desc "Publish html docs to midilib.rubyforge.org"
+task :publish => [:rdoc] do
+    system "scp -rC html/* jimm@rubyforge.org:/var/www/gforge-projects/midilib"
+end
+
 task :test do
     Rake::run_tests
 end
