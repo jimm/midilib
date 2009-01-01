@@ -190,7 +190,7 @@ class NoteEvent < ChannelEvent
 	data << (@status + @channel)
 	data << @note
 	data << @velocity
-	return data
+	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
 end
 
@@ -250,7 +250,7 @@ class Controller < ChannelEvent
 	data << (@status + @channel)
 	data << @controller
 	data << @value
-	return data
+	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
 
     def to_s
@@ -271,7 +271,7 @@ class ProgramChange < ChannelEvent
 	data = ''
 	data << (@status + @channel)
 	data << @program
-	return data
+	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
 
     def to_s
@@ -291,7 +291,7 @@ class ChannelPressure < ChannelEvent
 	data = ''
 	data << (@status + @channel)
 	data << @pressure
-	return data
+	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
 
     def to_s
@@ -312,7 +312,7 @@ class PitchBend < ChannelEvent
 	data << (@status + @channel)
 	data << (@value & 0x7f) # lsb
 	data << ((@value >> 7) & 0x7f) # msb
-	return data
+	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
 
     def to_s
@@ -341,7 +341,7 @@ class SystemExclusive < SystemCommon
 	data << Utils.as_var_len(@data.length)
 	data << @data
 	data << EOX
-	return data
+	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
 
     def to_s
@@ -362,7 +362,7 @@ class SongPointer < SystemCommon
 	data << @status
 	data << ((@pointer >> 8) & 0xff)
 	data << (@pointer & 0xff)
-	return data
+	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
 
     def to_s
@@ -382,7 +382,7 @@ class SongSelect < SystemCommon
 	data = ''
 	data << @status
 	data << @song
-	return data
+	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
 
     def to_s
@@ -398,7 +398,7 @@ class TuneRequest < SystemCommon
     def data_as_bytes
 	data = ''
 	data << @status
-	return data
+	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
 
     def to_s
@@ -415,7 +415,7 @@ class Realtime < Event
     def data_as_bytes
 	data = ''
 	data << @status
-	return data
+	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
 
     def to_s
@@ -495,7 +495,7 @@ class MetaEvent < Event
 	data << @meta_type
 	data << (@data ? Utils.as_var_len(@data.length) : 0)
 	data << @data if @data
-	return data
+	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
 
     def to_s
@@ -580,7 +580,7 @@ class Tempo < MetaEvent
 	data << ((@data >> 16) & 0xff)
 	data << ((@data >> 8) & 0xff)
 	data << (@data & 0xff)
-	return data
+	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
 
     def to_s
@@ -607,6 +607,7 @@ class TimeSig < MetaEvent
         data << @data[1]
         data << @data[2]
         data << @data[3]
+	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
 
     # Calculates the duration (in ticks) for a full measure 
@@ -655,6 +656,7 @@ class KeySig < MetaEvent
 	data << 2
         data << @data[0]
         data << (@data[1] ? 1 : 0)
+	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
     
     # Returns true if it's a minor key, false if major key
