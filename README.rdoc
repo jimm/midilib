@@ -329,7 +329,7 @@ http://www.ruby-lang.org/en/LICENSE.txt.
 midilib may be freely copied in its entirety providing this notice, all
 source code, all documentation, and all other files are included.
 
-midilib is Copyright (c) 2003-2005 by Jim Menard.
+midilib is Copyright (c) 2003-2009 by Jim Menard.
 
 The song "No Fences" contained in the MIDI file examples/NoFences.mid is
 Copyright (c) 1992 by Jim Menard (jimm@io.com). It may be freely used for
