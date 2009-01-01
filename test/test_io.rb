@@ -49,7 +49,8 @@ class IOTester < Test::Unit::TestCase
 
 	puts '    comparing sequences' if $DEBUG
 	compare_sequences(seq0, seq1)
-	File.delete(OUTPUT_FILE)
+      ensure
+	File.delete(OUTPUT_FILE) if File.exist?(OUTPUT_FILE)
     end
 
 end
