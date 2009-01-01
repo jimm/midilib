@@ -316,7 +316,7 @@ the format of MIDI commands.
 = Administrivia
 
 Author:: Jim Menard (mailto:jimm@io.com)
-Copyright:: Copyright (c) 2003-2005 Jim Menard
+Copyright:: Copyright (c) 2003-2009 Jim Menard
 License:: Distributed under the same license as Ruby.
 
 
