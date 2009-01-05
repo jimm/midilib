@@ -186,11 +186,10 @@ class NoteEvent < ChannelEvent
     end
 
     def data_as_bytes
-	data = ''
+	data = []
 	data << (@status + @channel)
 	data << @note
 	data << @velocity
-	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
 end
 
@@ -246,11 +245,10 @@ class Controller < ChannelEvent
     end
 
     def data_as_bytes
-	data = ''
+	data = []
 	data << (@status + @channel)
 	data << @controller
 	data << @value
-	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
 
     def to_s
@@ -268,10 +266,9 @@ class ProgramChange < ChannelEvent
     end
 
     def data_as_bytes
-	data = ''
+	data = []
 	data << (@status + @channel)
 	data << @program
-	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
 
     def to_s
@@ -288,10 +285,9 @@ class ChannelPressure < ChannelEvent
     end
 
     def data_as_bytes
-	data = ''
+	data = []
 	data << (@status + @channel)
 	data << @pressure
-	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
 
     def to_s
@@ -308,11 +304,10 @@ class PitchBend < ChannelEvent
     end
 
     def data_as_bytes
-	data = ''
+	data = []
 	data << (@status + @channel)
 	data << (@value & 0x7f) # lsb
 	data << ((@value >> 7) & 0x7f) # msb
-	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
 
     def to_s
@@ -336,12 +331,12 @@ class SystemExclusive < SystemCommon
     end
 
     def data_as_bytes
-	data = ''
+	data = []
 	data << @status
 	data << Utils.as_var_len(@data.length)
 	data << @data
 	data << EOX
-	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
+	data.flatten
     end
 
     def to_s
@@ -358,11 +353,10 @@ class SongPointer < SystemCommon
     end
 
     def data_as_bytes
-	data = ''
+	data = []
 	data << @status
 	data << ((@pointer >> 8) & 0xff)
 	data << (@pointer & 0xff)
-	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
 
     def to_s
@@ -379,10 +373,9 @@ class SongSelect < SystemCommon
     end
 
     def data_as_bytes
-	data = ''
+	data = []
 	data << @status
 	data << @song
-	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
 
     def to_s
@@ -396,9 +389,8 @@ class TuneRequest < SystemCommon
     end
 
     def data_as_bytes
-	data = ''
+	data = []
 	data << @status
-	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
 
     def to_s
@@ -413,9 +405,8 @@ class Realtime < Event
     end
 
     def data_as_bytes
-	data = ''
+	data = []
 	data << @status
-	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
 
     def to_s
@@ -490,12 +481,12 @@ class MetaEvent < Event
     end
 
     def data_as_bytes
-	data = ''
+	data = []
 	data << @status
 	data << @meta_type
 	data << (@data ? Utils.as_var_len(@data.length) : 0)
 	data << @data if @data
-	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
+	data.flatten
     end
 
     def to_s
@@ -573,14 +564,13 @@ class Tempo < MetaEvent
     end
 
     def data_as_bytes
-	data = ''
+	data = []
 	data << @status
 	data << @meta_type
 	data << 3
 	data << ((@data >> 16) & 0xff)
 	data << ((@data >> 8) & 0xff)
 	data << (@data & 0xff)
-	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
 
     def to_s
@@ -599,7 +589,7 @@ class TimeSig < MetaEvent
     
     # Returns the complete event as stored in the sequence
     def data_as_bytes
-        data = ''
+        data = []
 	data << @status
 	data << @meta_type
 	data << 4
@@ -607,7 +597,6 @@ class TimeSig < MetaEvent
         data << @data[1]
         data << @data[2]
         data << @data[3]
-	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
 
     # Calculates the duration (in ticks) for a full measure 
@@ -650,13 +639,12 @@ class KeySig < MetaEvent
     
     # Returns the complete event as stored in the sequence
     def data_as_bytes
-        data = ''
+        data = []
 	data << @status
 	data << @meta_type
 	data << 2
         data << @data[0]
         data << (@data[1] ? 1 : 0)
-	RUBY_VERSION >= '1.9' ? data.bytes.to_a : data
     end
     
     # Returns true if it's a minor key, false if major key

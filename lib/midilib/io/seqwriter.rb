@@ -56,7 +56,7 @@ class SeqWriter
 	    status = possibly_munge_due_to_running_status_byte(data,
 							       prev_status)
 
-	    @bytes_written += @io.write(data)
+	    @bytes_written += write_bytes(data)
 
 	    prev_event = event
 	    prev_status = status
@@ -65,7 +65,7 @@ class SeqWriter
 	# Write track end event.
 	event = MetaEvent.new(META_TRACK_END)
 	write_var_len(0)
-	@bytes_written += @io.write(event.data_as_bytes())
+	@bytes_written += write_bytes(event.data_as_bytes())
 
 	# Go back to beginning of track data and write number of bytes,
 	# then come back here to end of file.
@@ -91,7 +91,7 @@ class SeqWriter
 	# exactly the same, the rest is trivial. If it's note on/note off,
 	# we can combine those further.
 	if status == prev_status
-	    data[0] = ''	# delete status byte from data
+	    data[0,1] = nil	# delete status byte from data
 	    return status + chan
 	elsif status == NOTE_OFF && data[2] == 64
 	    # If we see a note off and the velocity is 64, we can store
@@ -101,7 +101,7 @@ class SeqWriter
 	    data[2] = 0		# set vel to 0; do before possible shrinking
 	    status = NOTE_ON + chan
 	    if prev_status == NOTE_ON
-		data[0] = ''	# delete status byte
+		data[0,1] = []	# delete status byte
 	    else
 		data[0] = status
 	    end
@@ -116,34 +116,36 @@ class SeqWriter
 	event = MetaEvent.new(META_INSTRUMENT, instrument)
 	write_var_len(0)
 	data = event.data_as_bytes()
-	@bytes_written += @io.write(data)
+	@bytes_written += write_bytes(data)
     end
 
     def write_var_len(val)
 	buffer = Utils.as_var_len(val)
-	@bytes_written += @io.write(buffer)
+	@bytes_written += write_bytes(buffer)
     end
 
     def write16(val)
 	val = (-val | 0x8000) if val < 0
 
-	buffer = ''
-	buffer << ((val >> 8) & 0xff)
-	buffer << (val & 0xff)
-
-	@bytes_written += @io.write(buffer)
+	buffer = []
+	@io.putc((val >> 8) & 0xff)
+	@io.putc(val & 0xff)
+	@bytes_written += 2
     end
 
     def write32(val)
 	val = (-val | 0x80000000) if val < 0
 
-	buffer = ''
-	buffer << ((val >> 24) & 0xff)
-	buffer << ((val >> 16) & 0xff)
-	buffer << ((val >> 8) & 0xff)
-	buffer << (val & 0xff)
+	@io.putc((val >> 24) & 0xff)
+	@io.putc((val >> 16) & 0xff)
+	@io.putc((val >> 8) & 0xff)
+	@io.putc(val & 0xff)
+	@bytes_written += 4
+    end
 
-	@bytes_written += @io.write(buffer)
+    def write_bytes(bytes)
+	bytes.each { |b| @io.putc(b) }
+	bytes.length
     end
 end
 

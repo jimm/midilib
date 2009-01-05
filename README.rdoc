@@ -338,6 +338,11 @@ non-commercial purposes as long as the author is given credit.
 
 === Recent Changes
 
+==== Changes for 1.2.0:
+
+Use byte arrays instead of strings for passing around data. All tests now pass
+for both Ruby 1.8.X and 1.9.X.
+
 ==== New code repository
 
 The midilib code is now hosted at Github (http://github.com/jimm/midilib).

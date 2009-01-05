@@ -1,10 +1,10 @@
-require 'midilib'
-require 'test/unit'
-
 # Start looking for MIDI classes in the directory above this one.
 # This forces us to use the local copy of MIDI, even if there is
 # a previously installed version out there somewhere.
 $LOAD_PATH[0, 0] = File.join(File.dirname(__FILE__), '..', 'lib')
+
+require 'test/unit'
+require 'midilib'
 
 class VarLenTester < Test::Unit::TestCase
 
@@ -25,7 +25,7 @@ class VarLenTester < Test::Unit::TestCase
 
     def num_to_var_len(num, answer)
 	varlen = MIDI::Utils.as_var_len(num)
-	varlen.reverse.each_byte { | b |
+	varlen.reverse.each { | b |
 	    assert_equal(answer & 0xff, b)
 	    answer = answer >> 8
 	}

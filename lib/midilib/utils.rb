@@ -22,7 +22,7 @@ class Utils
     # input from a stream of bytes. Therefore we don't supply it here. That is
     # a part of the MIDIFile class.
     def Utils.as_var_len(val)
-	buffer = ''
+	buffer = []
 	buffer << (val & 0x7f)
 	val = (val >> 7)
 	while val > 0

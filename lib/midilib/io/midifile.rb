@@ -1,5 +1,15 @@
 require 'midilib/consts'
 
+if RUBY_VERSION < '1.9'
+  class IO
+    def readbyte
+      c = getc()
+      raise 'unexpected EOF' unless c
+      c
+    end
+  end
+end
+
 module MIDI
 
 module IO
@@ -12,6 +22,9 @@ module IO
 # See SeqReader for a subclass that uses these methods to create Event
 # objects.
 class MIDIFile
+
+    MThd_BYTE_ARRAY = [77, 84, 104, 100] # "MThd"
+    MTrk_BYTE_ARRAY = [77, 84, 114, 107] # "MTrk"
 
     # This array is indexed by the high half of a status byte. Its
     # value is either the number of bytes needed (1 or 2) for a channel
@@ -53,18 +66,18 @@ class MIDIFile
 	ntrks.times { read_track() }
     end
 
-    # This default getc implementation tries to read a single character
+    # This default getc implementation tries to read a single byte
     # from io and returns it as an integer.
-    if RUBY_VERSION >= '1.9'
-	def getc
-	    @bytes_to_be_read -= 1
-	    @io.getc().bytes.first
-	end
-    else
-	def getc
-	    @bytes_to_be_read -= 1
-            @io.getc()
-	end
+    def getc
+      @bytes_to_be_read -= 1
+      @io.readbyte()
+    end
+
+    # Return the next +n+ bytes from @io as an array.
+    def get_bytes(n)
+	buf = []
+	n.times { buf << getc() }
+	buf
     end
 
     # The default error handler.
@@ -144,31 +157,31 @@ class MIDIFile
 
     # Read through 'MThd' or 'MTrk' header string. If skip is true, attempt
     # to skip initial trash. If there is an error, #error is called.
-    def read_mt_header_string(s, skip)
-	b = ''
+    def read_mt_header_string(bytes, skip)
+	b = []
 	bytes_to_read = 4
 	while true
-	    b << @io.read(bytes_to_read)
+	    data = get_bytes(bytes_to_read)
+	    b += data
 	    if b.length < 4
 		error("unexpected EOF while trying to read header" +
 		      " string #{s}")
 	    end
-	    @bytes_to_be_read -= bytes_to_read
 
-	    # See if we found the string we're looking for
-	    return if b == s
+	    # See if we found the bytes we're looking for
+	    return if b == bytes
 
 	    if skip		# Try again with the next char
-		i = b.index(s[0], 1)
+		i = b[1..-1].index(bytes[0])
 		if i.nil?
-		    b = ''
+		    b = []
 		    bytes_to_read = 4
 		else
 		    b = b[i..-1]
 		    bytes_to_read = 4 - i
 		end
 	    else
-		error("header string #{s} not found")
+		error("header string #{bytes.collect{|b| b.chr}.join} not found")
 	    end
 	end
     end
@@ -176,7 +189,7 @@ class MIDIFile
     # Read a header chunk.
     def read_header
 	@bytes_to_be_read = 0
-	read_mt_header_string('MThd', @skip_init)
+	read_mt_header_string(MThd_BYTE_ARRAY, @skip_init) # "MThd"
 
 	@bytes_to_be_read = read32()
 	format = read16()
@@ -187,7 +200,7 @@ class MIDIFile
 
 	# Flush any extra stuff, in case the length of the header is not 6
 	if @bytes_to_be_read > 0
-	    @io.read(@bytes_to_be_read)
+	    get_bytes(@bytes_to_be_read)
 	    @bytes_to_be_read = 0
 	end
 
@@ -202,7 +215,7 @@ class MIDIFile
 	status = 0		# (Possibly running) status byte
 
 	@bytes_to_be_read = 0
-	read_mt_header_string('MTrk', false)
+	read_mt_header_string(MTrk_BYTE_ARRAY, false)
 
 	@bytes_to_be_read = read32()
 	@curr_ticks = @ticks_so_far = 0
@@ -287,11 +300,12 @@ class MIDIFile
 	m = msg()		# Copy of internal message buffer
 
 	# Create raw data array
-	@raw_data = ''
+	@raw_data = []
 	@raw_data << META_EVENT
 	@raw_data << type
 	@raw_data << @raw_var_num_data
 	@raw_data << m
+	@raw_data.flatten!
 
 	case type
 	when META_SEQ_NUM
@@ -375,7 +389,7 @@ class MIDIFile
 
     # Read a varlen value.
     def read_var_len
-	@raw_var_num_data = ''
+	@raw_var_num_data = []
 	c = getc()
 	@raw_var_num_data << c
 	val = c
@@ -414,7 +428,7 @@ class MIDIFile
 	    return
 	end
 
-	buf = Array.new()
+	buf = []
 
 	buf << (val & 0x7f)
 	while (value >>= 7) > 0
@@ -432,14 +446,14 @@ class MIDIFile
     # Read and add a number of bytes to the message buffer. Return
     # the last byte (so we can see if it's an EOX or not).
     def msg_read(n_bytes)
-	@msg_buf << @io.read(n_bytes)
-	@bytes_to_be_read -= n_bytes
+	@msg_buf += get_bytes(n_bytes)
+	@msg_buf.flatten!
 	return @msg_buf[-1]
     end
 
     # Initialize the internal message buffer.
     def msg_init
-	@msg_buf = ''
+	@msg_buf = []
     end
 
     # Return a copy of the internal message buffer.

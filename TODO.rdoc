@@ -1,7 +1,5 @@
 == Bugs
 
-* IOTester#test_read_and_write fails under Ruby 1.9.
-
 * Track#recalc_delta_from_times needs to use a stable sorting algorithm. See
   Adam's notes at http://github.com/adamjmurray/cosy/wikis/midilib-notes and
   solution at
