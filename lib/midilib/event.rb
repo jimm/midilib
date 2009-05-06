@@ -473,6 +473,20 @@ class MetaEvent < Event
     attr_reader :meta_type
     attr_reader :data
 
+    def self.bytes_as_str(bytes)
+	bytes ? bytes.collect { |byte| byte.chr }.join : nil
+    end
+
+    if RUBY_VERSION >= '1.9'
+	def self.str_as_bytes(str)
+	    str.split(//).collect { |chr| chr.ord }
+	end
+    else
+	def self.str_as_bytes(str)
+	    str.split(//).collect { |chr| chr[0] }
+	end
+    end
+
     def initialize(meta_type, data = nil, delta_time = 0)
 	super(META_EVENT, delta_time)
 	@meta_type = meta_type
@@ -490,18 +504,14 @@ class MetaEvent < Event
     end
 
     def data_as_str
-	@data ? @data.collect { |byte| byte.chr }.join : nil
+	MetaEvent.bytes_as_str(@data)
     end
 
     # Stores bytes. If data is a string, splits it into an array of bytes.
     def data=(data)
 	case data
 	when String
-	    if RUBY_VERSION >= '1.9'
-		@data = data.split(//).collect { |chr| chr.ord }
-	    else
-		@data = data.split(//).collect { |chr| chr[0] }
-	    end
+	    @data = MetaEvent.str_as_bytes(data)
 	else
 	    @data = data
 	end

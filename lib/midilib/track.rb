@@ -17,7 +17,7 @@ class Track
 
     UNNAMED = 'Unnamed'
 
-    attr_accessor :instrument, :events, :channels_used
+    attr_accessor :events, :channels_used
     attr_reader :sequence
 
     def initialize(sequence)
@@ -48,6 +48,19 @@ class Track
 	    event = MetaEvent.new(META_SEQ_NAME, name, 0)
 	    @events[0, 0] = event
 	end
+    end
+
+    def instrument
+	MetaEvent.bytes_as_str(@instrument)
+    end
+
+    def instrument=(str_or_bytes)
+	@instrument = case str_or_bytes
+		      when String
+			    MetaEvent.str_as_bytes(str_or_bytes)
+		      else
+			    str_or_bytes
+		      end
     end
 
     # Merges an array of events into our event list. After merging, the

@@ -167,18 +167,29 @@ class EventTester < Test::Unit::TestCase
 	e = MIDI::MetaEvent.new(MIDI::META_TEXT, [97, 98, 99])
 	assert_equal([97, 98, 99], e.data)
 	assert_equal('abc', e.data_as_str)
+
+        assert_equal([MIDI::META_EVENT, MIDI::META_TEXT, 3, 97, 98, 99], e.data_as_bytes)
+    end
+
+    def test_meta_event_string_in_ctor
+	e = MIDI::MetaEvent.new(MIDI::META_TEXT, 'abc')
+	assert_equal([97, 98, 99], e.data)
+	assert_equal('abc', e.data_as_str)
+        assert_equal([MIDI::META_EVENT, MIDI::META_TEXT, 3, 97, 98, 99], e.data_as_bytes)
     end
 
     def test_meta_event_data_assignment
+	foobar_as_array = [102, 111, 111, 98, 97, 114]
+
 	e = MIDI::MetaEvent.new(MIDI::META_TEXT, [97, 98, 99])
 	e.data = 'foobar'
 	assert_equal('foobar', e.data_as_str)
-	assert_equal([102, 111, 111, 98, 97, 114], e.data)
+	assert_equal(foobar_as_array, e.data)
 
 	e.data = nil
-	e.data = [102, 111, 111, 98, 97, 114]
+	e.data = foobar_as_array
 	assert_equal('foobar', e.data_as_str)
-	assert_equal([102, 111, 111, 98, 97, 114], e.data)
+	assert_equal(foobar_as_array, e.data)
     end
 
 end

@@ -57,6 +57,7 @@ class IOTester < Test::Unit::TestCase
 	seq = MIDI::Sequence.new
 	File.open(SEQ_TEST_FILE, 'rb') { |f| seq.read(f) }
 	assert_equal('Sequence Name', seq.tracks[0].name)
+	assert_equal(MIDI::GM_PATCH_NAMES[0], seq.tracks[1].instrument)
     end
 
 end

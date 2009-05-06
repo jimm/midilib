@@ -130,4 +130,9 @@ class TrackTester < Test::Unit::TestCase
 	assert_equal(320, @track.events[2].time_from_start) # was 300
     end
 
+    def test_instrument
+	@track.instrument = 'foo'
+	assert_equal('foo', @track.instrument)
+    end
+
 end
