@@ -30,3 +30,8 @@ Noah Thorp <noah@rixiform.com>
 
     Found a bug in the code intended to make midilib work under Ruby 1.9.
     Found another bug in KeySing.data_as_bytes.
+
+Zach Chadwick (zachad on Github)
+
+    Reported a problem that led to a fix in the way that strings and byte
+    arrays are handled and output in meta events.
