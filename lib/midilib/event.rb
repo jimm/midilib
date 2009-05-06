@@ -471,13 +471,13 @@ end
 
 class MetaEvent < Event
     attr_reader :meta_type
-    attr_accessor :data
+    attr_reader :data
 
     def initialize(meta_type, data = nil, delta_time = 0)
 	super(META_EVENT, delta_time)
 	@meta_type = meta_type
-	@data = data
 	@is_meta = true
+	self.data=(data)
     end
 
     def data_as_bytes
@@ -489,6 +489,24 @@ class MetaEvent < Event
 	data.flatten
     end
 
+    def data_as_str
+	@data ? @data.collect { |byte| byte.chr }.join : nil
+    end
+
+    # Stores bytes. If data is a string, splits it into an array of bytes.
+    def data=(data)
+	case data
+	when String
+	    if RUBY_VERSION >= '1.9'
+		@data = data.split(//).collect { |chr| chr.ord }
+	    else
+		@data = data.split(//).collect { |chr| chr[0] }
+	    end
+	else
+	    @data = data
+	end
+    end
+
     def to_s
 	str = super()
 	str << "meta #{number_to_s(@meta_type)} "
@@ -497,23 +515,21 @@ class MetaEvent < Event
 	when META_SEQ_NUM
 	    str << "sequence number"
 	when META_TEXT
-	    str << "text: #{@data}"
+	    str << "text: #{data_as_str}"
 	when META_COPYRIGHT
-	    str << "copyright: #{@data}"
+	    str << "copyright: #{data_as_str}"
 	when META_SEQ_NAME
-	    str << "sequence or track name: #{@data}"
+	    str << "sequence or track name: #{data_as_str}"
 	when META_INSTRUMENT
-	    str << "instrument name: #{@data}"
+	    str << "instrument name: #{data_as_str}"
 	when META_LYRIC
-	    str << "lyric: #{@data}"
+	    str << "lyric: #{data_as_str}"
 	when META_MARKER
-	    str << "marker: #{@data}"
+	    str << "marker: #{data_as_str}"
 	when META_CUE
 	    str << "cue point: #{@data}"
 	when META_TRACK_END
 	    str << "track end"
-#  	when META_SET_TEMPO
-#  	    str << "set tempo: #{@data}"
 	when META_SMPTE
 	    str << "smpte"
 	when META_TIME_SIG
@@ -523,6 +539,7 @@ class MetaEvent < Event
 	when META_SEQ_SPECIF
 	    str << "sequence specific"
 	else
+	    # Some other possible @meta_type values are handled by subclasses.
 	    str << "(other)"
 	end
 	return str

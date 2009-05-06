@@ -163,4 +163,22 @@ class EventTester < Test::Unit::TestCase
 	assert_equal(480, e.time_from_start)
     end
 
+    def test_meta_strings
+	e = MIDI::MetaEvent.new(MIDI::META_TEXT, [97, 98, 99])
+	assert_equal([97, 98, 99], e.data)
+	assert_equal('abc', e.data_as_str)
+    end
+
+    def test_meta_event_data_assignment
+	e = MIDI::MetaEvent.new(MIDI::META_TEXT, [97, 98, 99])
+	e.data = 'foobar'
+	assert_equal('foobar', e.data_as_str)
+	assert_equal([102, 111, 111, 98, 97, 114], e.data)
+
+	e.data = nil
+	e.data = [102, 111, 111, 98, 97, 114]
+	assert_equal('foobar', e.data_as_str)
+	assert_equal([102, 111, 111, 98, 97, 114], e.data)
+    end
+
 end

@@ -53,4 +53,10 @@ class IOTester < Test::Unit::TestCase
 	File.delete(OUTPUT_FILE) if File.exist?(OUTPUT_FILE)
     end
 
+    def test_read_strings
+	seq = MIDI::Sequence.new
+	File.open(SEQ_TEST_FILE, 'rb') { |f| seq.read(f) }
+	assert_equal('Sequence Name', seq.tracks[0].name)
+    end
+
 end

@@ -34,7 +34,7 @@ class Track
 	event = @events.detect { | e |
 	    e.meta? && e.meta_type == META_SEQ_NAME
 	}
-	return event ? event.data : UNNAMED
+	return event ? event.data_as_str : UNNAMED
     end
 
     # Set track name. Replaces or creates a name meta-event.
