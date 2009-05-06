@@ -134,6 +134,13 @@ received and should be sent. This is useful for start/continue/stop events
 that control other devices, for example.) Note that when a MIDI::Realtime
 event is written out to a MIDI file, the delta time is not written.
 
+MIDI::MetaEvent events hold an array of bytes named 'data'. Many meta events
+are string holders (text, lyric, marker, etc.) Though the 'data' value is
+always an array of bytes, MIDI::MetaEvent helps with saving and accessing
+string. The MIDI::MetaEvent#data_as_str method returns the data bytes as a
+string. When assigning to a meta event's data, if you pass in a string it will
+get converted to an array of bytes.
+
 
 == How To Use
 
