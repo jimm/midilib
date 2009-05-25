@@ -26,7 +26,7 @@ Jari Williamsson <jari.williamsson@mailbox.swipnet.se>
     Added get_measures to Sequence. Added default implementation of
     key_signature in SeqReader. Contributed the measures_mbt.rb example.
 
-Noah Thorp <noah@rixiform.com>
+Noah Thorp
 
     Found a bug in the code intended to make midilib work under Ruby 1.9.
     Found another bug in KeySing.data_as_bytes.
