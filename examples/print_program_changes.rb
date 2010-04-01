@@ -23,6 +23,6 @@ seq.each { | track |
   track.each { | e |
     e.print_decimal_numbers = true
     e.print_channel_numbers_from_one = true
-    puts e if e.program_change?
+    puts e if e.kind_of?(MIDI::ProgramChange)
   }
 }
