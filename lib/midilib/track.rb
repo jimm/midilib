@@ -32,7 +32,7 @@ class Track
     # Return track name. If there is no name, return UNNAMED.
     def name
 	event = @events.detect { | e |
-	    e.meta? && e.meta_type == META_SEQ_NAME
+	    e.kind_of?(MetaEvent) && e.meta_type == META_SEQ_NAME
 	}
 	return event ? event.data_as_str : UNNAMED
     end
@@ -40,7 +40,7 @@ class Track
     # Set track name. Replaces or creates a name meta-event.
     def name=(name)
 	event = @events.detect { | e |
-	    e.meta? && e.meta_type == META_SEQ_NAME
+	    e.kind_of?(MetaEvent) && e.meta_type == META_SEQ_NAME
 	}
 	if event
 	    event.data = name

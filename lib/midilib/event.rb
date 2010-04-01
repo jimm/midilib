@@ -30,16 +30,6 @@ class Event
     def initialize(status = 0, delta_time = 0)
 	@status = status
 	@delta_time = delta_time
-	@is_channel = false	# the majority of events are channel events
-	@is_note = false	# note on, note off, and poly press return true
-	@is_note_on = false
-	@is_note_off = false
-	@is_meta = false
-	@is_system = false
-	@is_realtime = false
-        @is_timesig = false
-        @is_keysig = false        
-	@is_program_change = false
 	@time_from_start = 0	# maintained by tracks
     end
     protected :initialize
@@ -49,57 +39,6 @@ class Event
     # exception.
     def data_as_bytes
 	raise "subclass responsibility"
-    end
-
-    # Returns +true+ if this is a channel event.
-    def channel?
-	return @is_channel
-    end
-
-    # Returns +true+ if this is a note on, note off, or polyphonic pressure
-    # event.
-    def note?
-	return @is_note
-    end
-
-    # Returns +true+ if this is a note on event.
-    def note_on?
-	@is_note_on
-    end
-
-    # Returns +true+ if this is a note off event.
-    def note_off?
-	@is_note_off
-    end
-
-    # Returns +true+ if this is a meta event.
-    def meta?
-	return @is_meta
-    end
-
-    # Returns +true+ if this is a system message event.
-    def system?
-	return @is_system
-    end
-    
-    # Returns +true+ if this is a time signature event.
-    def timesig?
-       return @is_timesig
-    end
-    
-    # Returns +true+ if this is a key signature event.
-    def keysig?
-        return @is_keysig
-    end
-
-    # Returns +true+ if this is a realtime status byte.
-    def realtime?
-	return @is_realtime
-    end
-
-    # Returns +true+ if this is a program change.
-    def program_change?
-	return @is_program_change        
     end
 
     # Quantize this event's time_from_start by moving it to the nearest
@@ -148,7 +87,6 @@ class ChannelEvent < Event
     def initialize(status, channel, delta_time)
 	super(status, delta_time)
 	@channel = channel
-	@is_channel = true
     end
     protected :initialize
 
@@ -166,7 +104,6 @@ class NoteEvent < ChannelEvent
 	super(status, channel, delta_time)
 	@note = note
 	@velocity = velocity
-	@is_note = true
     end
     protected :initialize
 
@@ -197,8 +134,8 @@ class NoteOnEvent < NoteEvent
     attr_accessor :off
     def initialize(channel = 0, note = 64, velocity = 64, delta_time = 0)
 	super(NOTE_ON, channel, note, velocity, delta_time)
-	@is_note_on = true
     end
+
     def to_s
 	return super <<
 	    "on #{note_to_s} #{number_to_s(@velocity)}"
@@ -209,8 +146,8 @@ class NoteOffEvent < NoteEvent
     attr_accessor :on
     def initialize(channel = 0, note = 64, velocity = 64, delta_time = 0)
 	super(NOTE_OFF, channel, note, velocity, delta_time)
-	@is_note_off = true
     end
+
     def to_s
 	return super <<
 	    "off #{note_to_s} #{number_to_s(@velocity)}"
@@ -241,7 +178,6 @@ class Controller < ChannelEvent
 	super(CONTROLLER, channel, delta_time)
 	@controller = controller
 	@value = value
-	@is_controller = true
     end
 
     def data_as_bytes
@@ -262,7 +198,6 @@ class ProgramChange < ChannelEvent
     def initialize(channel = 0, program = 0, delta_time = 0)
 	super(PROGRAM_CHANGE, channel, delta_time)
 	@program = program
-	@is_program_change = true
     end
 
     def data_as_bytes
@@ -318,7 +253,6 @@ end
 class SystemCommon < Event
     def initialize(status, delta_time)
 	super(status, delta_time)
-	@is_system = true
     end
 end
 
@@ -401,7 +335,6 @@ end
 class Realtime < Event
     def initialize(status, delta_time)
 	super(status, delta_time)
-	@is_realtime = true
     end
 
     def data_as_bytes
@@ -490,7 +423,6 @@ class MetaEvent < Event
     def initialize(meta_type, data = nil, delta_time = 0)
 	super(META_EVENT, delta_time)
 	@meta_type = meta_type
-	@is_meta = true
 	self.data=(data)
     end
 
@@ -611,7 +543,6 @@ class TimeSig < MetaEvent
     # Constructor
     def initialize(numer, denom, clocks, qnotes, delta_time = 0)
        super(META_TIME_SIG, [numer, denom, clocks, qnotes], delta_time)
-       @is_timesig = true
     end
     
     # Returns the complete event as stored in the sequence
@@ -661,7 +592,6 @@ class KeySig < MetaEvent
     # Constructor
     def initialize(sharpflat, is_minor, delta_time = 0)
        super(META_KEY_SIG, [sharpflat, is_minor], delta_time)   
-       @is_keysig = true
     end
     
     # Returns the complete event as stored in the sequence

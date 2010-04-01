@@ -55,64 +55,6 @@ class EventTester < Test::Unit::TestCase
 	assert_equal("0: ch 00 on E4 40", e.to_s)
     end
 
-    def test_bools_note_on
-      e = MIDI::NoteOnEvent.new
-      assert(e.channel?)
-      assert(e.note?)
-      assert(e.note_on?)
-      assert(!e.note_off?)
-      assert(!e.meta?)
-      assert(!e.system?)
-      assert(!e.realtime?)
-    end
-
-    def test_bools_note_off
-      e = MIDI::NoteOffEvent.new
-      assert(e.channel?)
-      assert(e.note?)
-      assert(!e.note_on?)
-      assert(e.note_off?)
-      assert(!e.meta?)
-      assert(!e.system?)
-      assert(!e.realtime?)
-    end
-
-    def test_bools_realtime
-      e = MIDI::Clock.new
-      assert(!e.channel?)
-      assert(!e.note?)
-      assert(!e.meta?)
-      assert(!e.system?)
-      assert(e.realtime?)
-    end
-
-    def test_bools_controller
-      e = MIDI::Controller.new
-      assert(e.channel?)
-      assert(!e.note?)
-      assert(!e.meta?)
-      assert(!e.system?)
-      assert(!e.realtime?)
-    end
-
-    def test_bools_meta
-      e = MIDI::MetaEvent.new(MIDI::META_SEQ_NUM)
-      assert(!e.channel?)
-      assert(!e.note?)
-      assert(e.meta?)
-      assert(!e.system?)
-      assert(!e.realtime?)
-    end
-
-    def test_bools_system
-      e = MIDI::TuneRequest.new
-      assert(!e.channel?)
-      assert(!e.note?)
-      assert(!e.meta?)
-      assert(e.system?)
-      assert(!e.realtime?)
-    end
-
     def test_pitch_bend
       e = MIDI::PitchBend.new(0, 128)
       b = e.data_as_bytes

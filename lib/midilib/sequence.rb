@@ -153,7 +153,7 @@ class Sequence
        max_pos = 0
        @tracks.each  { |t|
          t.each { |e| 
-           time_sigs << e if e.timesig?           
+           time_sigs << e if e.kind_of?(MIDI::TimeSig)
            max_pos = e.time_from_start if e.time_from_start > max_pos
          }
        }
