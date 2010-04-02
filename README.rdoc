@@ -360,6 +360,10 @@ http://wiki.github.com/adamjmurray/cosy/midilib-notes and
 http://github.com/adamjmurray/cosy/blob/master/lib/cosy/helper/midi_file_renderer_helper.rb
 for details.
 
+Aliased Track#sort to Track#recalc_delta_from_times, since all sort did was
+sort the events then call recalc_delta_from_times, and
+recalc_delta_from_times sorts the events before doing anything else.
+
 ==== Changes for 1.2.0:
 
 Use byte arrays instead of strings for passing around data. All tests now pass
