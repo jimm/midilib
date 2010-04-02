@@ -511,9 +511,7 @@ class Tempo < MetaEvent
 
     # Translates microseconds per quarter note (beat) to beats per minute.
     def Tempo.mpq_to_bpm(mpq)
-        # Nov 17 2007: Fixed integer rounding error issue:
-        # 110 bpm (as 545455 msecs) becomes 109.999 (which became 109 bpm)
-	return Integer(MICROSECS_PER_MINUTE.to_f / mpq + 0.49)
+	return MICROSECS_PER_MINUTE.to_f / mpq.to_f
     end
 
     def initialize(msecs_per_qnote, delta_time = 0)

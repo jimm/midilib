@@ -347,22 +347,24 @@ non-commercial purposes as long as the author is given credit.
 
 ==== Changes for 1.3.0:
 
-NoteOnEvent and NoteOffEvent renamed to NoteOn and NoteOff. The old names
-will still work for a while.
+MIDI::NoteOnEvent and MIDI::NoteOffEvent renamed to MIDI::NoteOn and
+MIDI::NoteOff. The old names will still work for a while.
 
-The Event boolean methods like meta? and note? have been removed. Use the
-event classes themselves (for example, MIDI::MetaEvent === my_event or
+The MIDI::Event boolean methods like meta? and note? have been removed. Use
+the event classes themselves (for example, MIDI::MetaEvent === my_event or
 my_event.kind_of?(MIDI::MetaEvent)).
 
 Introduced Adam Murray's stable sorting code for
-Track#recalc_delta_from_times. See
+MIDI::Track#recalc_delta_from_times. See
 http://wiki.github.com/adamjmurray/cosy/midilib-notes and
 http://github.com/adamjmurray/cosy/blob/master/lib/cosy/helper/midi_file_renderer_helper.rb
 for details.
 
-Aliased Track#sort to Track#recalc_delta_from_times, since all sort did was
-sort the events then call recalc_delta_from_times, and
+Aliased MIDI::Track#sort to MIDI::Track#recalc_delta_from_times, since all
+sort did was sort the events then call recalc_delta_from_times, and
 recalc_delta_from_times sorts the events before doing anything else.
+
+MIDI::Tempo#mpq_to_bpm now returns a float.
 
 ==== Changes for 1.2.0:
 
