@@ -26,7 +26,6 @@ spec = Gem::Specification.new do |s|
     s.requirements << 'none'
 
     s.require_path = 'lib'
-    s.autorequire = PROJECT_NAME
 
     s.files = PKG_FILES.to_a
 
