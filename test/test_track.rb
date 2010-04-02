@@ -12,7 +12,7 @@ class TrackTester < Test::Unit::TestCase
 	@seq = MIDI::Sequence.new
 	@track = MIDI::Track.new(@seq)
 	@seq.tracks << @track
-	3.times { @track.events << MIDI::NoteOnEvent.new(0, 64, 64, 100) }
+	3.times { @track.events << MIDI::NoteOn.new(0, 64, 64, 100) }
 	@track.recalc_times
     end
 
@@ -26,7 +26,7 @@ class TrackTester < Test::Unit::TestCase
     end
 
     def test_append_event
-	@track.events << MIDI::NoteOnEvent.new(0, 64, 64, 100)
+	@track.events << MIDI::NoteOn.new(0, 64, 64, 100)
 	@track.recalc_times
 	assert_equal(4, @track.events.length)
 	4.times { | i |
@@ -36,7 +36,7 @@ class TrackTester < Test::Unit::TestCase
 
     def test_append_list
 	@track.events +=
-	       (1..12).collect { | i | MIDI::NoteOnEvent.new(0, 64, 64, 3) }
+	       (1..12).collect { | i | MIDI::NoteOn.new(0, 64, 64, 3) }
 	@track.recalc_times
 
 	3.times { | i |
@@ -51,7 +51,7 @@ class TrackTester < Test::Unit::TestCase
     end
 
     def test_insert
-	@track.events[1,0] = MIDI::NoteOnEvent.new(0, 64, 64, 3)
+	@track.events[1,0] = MIDI::NoteOn.new(0, 64, 64, 3)
 	@track.recalc_times
 	assert_equal(100, @track.events[0].time_from_start)
 	assert_equal(103, @track.events[1].time_from_start)
@@ -60,7 +60,7 @@ class TrackTester < Test::Unit::TestCase
     end
 
     def test_merge
-	list = (1..12).collect { | i | MIDI::NoteOnEvent.new(0, 64, 64, 10) }
+	list = (1..12).collect { | i | MIDI::NoteOn.new(0, 64, 64, 10) }
 	@track.merge(list)
 	assert_equal(15, @track.events.length)
 	assert_equal(10, @track.events[0].time_from_start)
@@ -135,4 +135,10 @@ class TrackTester < Test::Unit::TestCase
 	assert_equal('foo', @track.instrument)
     end
 
+    def test_old_note_class_names
+        x = MIDI::NoteOn.new(0, 64, 64, 10)
+        assert(x.kind_of?(MIDI::NoteOnEvent))  # old name
+        x = MIDI::NoteOff.new(0, 64, 64, 10)
+        assert(x.kind_of?(MIDI::NoteOffEvent)) # old name
+    end
 end

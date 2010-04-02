@@ -130,7 +130,7 @@ class NoteEvent < ChannelEvent
     end
 end
 
-class NoteOnEvent < NoteEvent
+class NoteOn < NoteEvent
     attr_accessor :off
     def initialize(channel = 0, note = 64, velocity = 64, delta_time = 0)
 	super(NOTE_ON, channel, note, velocity, delta_time)
@@ -142,7 +142,10 @@ class NoteOnEvent < NoteEvent
     end
 end
 
-class NoteOffEvent < NoteEvent
+# Old class name for compatability
+NoteOnEvent = NoteOn
+
+class NoteOff < NoteEvent
     attr_accessor :on
     def initialize(channel = 0, note = 64, velocity = 64, delta_time = 0)
 	super(NOTE_OFF, channel, note, velocity, delta_time)
@@ -153,6 +156,9 @@ class NoteOffEvent < NoteEvent
 	    "off #{note_to_s} #{number_to_s(@velocity)}"
     end
 end
+
+# Old class name for compatability
+NoteOffEvent = NoteOff
 
 class PolyPressure < NoteEvent
     def initialize(channel = 0, note = 64, value = 0, delta_time = 0)

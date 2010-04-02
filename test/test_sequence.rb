@@ -12,7 +12,7 @@ class SequenceTester < Test::Unit::TestCase
 	@seq = MIDI::Sequence.new
 	@track = MIDI::Track.new(@seq)
 	@seq.tracks << @track
-	3.times { @track.events << MIDI::NoteOnEvent.new(0, 64, 64, 100) }
+	3.times { @track.events << MIDI::NoteOn.new(0, 64, 64, 100) }
 	@track.recalc_times
     end
 

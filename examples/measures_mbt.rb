@@ -21,7 +21,7 @@ measures = seq.get_measures
 
 seq.each { | track |
   track.each { | e |        
-    if e.kind_of?(MIDI::NoteOnEvent) then
+    if e.kind_of?(MIDI::NoteOn) then
       # Print out start of notes
       e.print_note_names = true
       puts measures.to_mbt(e) + "  ch #{e.channel}:  #{e.note_to_s}"

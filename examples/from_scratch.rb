@@ -41,8 +41,8 @@ track.events << Controller.new(0, CC_VOLUME, 127)
 track.events << ProgramChange.new(0, 1, 0)
 quarter_note_length = seq.note_to_delta('quarter')
 [0, 2, 4, 5, 7, 9, 11, 12].each { | offset |
-  track.events << NoteOnEvent.new(0, 64 + offset, 127, 0)
-  track.events << NoteOffEvent.new(0, 64 + offset, 127, quarter_note_length)
+  track.events << NoteOn.new(0, 64 + offset, 127, 0)
+  track.events << NoteOff.new(0, 64 + offset, 127, quarter_note_length)
 }
 
 # Calling recalc_times is not necessary, because that only sets the events'
