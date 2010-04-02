@@ -354,6 +354,12 @@ The Event boolean methods like meta? and note? have been removed. Use the
 event classes themselves (for example, MIDI::MetaEvent === my_event or
 my_event.kind_of?(MIDI::MetaEvent)).
 
+Introduced Adam Murray's stable sorting code for
+Track#recalc_delta_from_times. See
+http://wiki.github.com/adamjmurray/cosy/midilib-notes and
+http://github.com/adamjmurray/cosy/blob/master/lib/cosy/helper/midi_file_renderer_helper.rb
+for details.
+
 ==== Changes for 1.2.0:
 
 Use byte arrays instead of strings for passing around data. All tests now pass

@@ -1,5 +1,47 @@
 require 'midilib/event'
 
+# This is taken from
+# http://github.com/adamjmurray/cosy/blob/master/lib/cosy/helper/midi_file_renderer_helper.rb
+# with permission from Adam Murray, who originally suggested this fix.
+# See http://wiki.github.com/adamjmurray/cosy/midilib-notes for details.
+# First we need to add some API infrastructure:
+class Array
+  # This code borrowed from 'Moser' http://codesnippets.joyent.com/posts/show/1699
+  
+  # A stable sorting algorithm that maintains the relative order of equal elements
+  def mergesort(&cmp)
+    if cmp == nil
+      cmp = lambda { |a, b| a <=> b }
+    end
+    if size <= 1
+      self.dup
+    else
+      halves = split.map{ |half|
+        half.mergesort(&cmp)
+      }
+      merge(*halves, &cmp)
+    end
+  end
+
+  protected
+  def split
+    n = (length / 2).floor - 1
+    [self[0..n], self[n+1..-1]]
+  end
+
+  def merge(first, second, &predicate)
+    result = []
+    until first.empty? || second.empty?
+      if predicate.call(first.first, second.first) <= 0
+        result << first.shift
+      else
+        result << second.shift
+      end
+    end
+    result.concat(first).concat(second)
+  end
+end
+
 module MIDI
 
 # A Track is a list of events.
@@ -113,7 +155,10 @@ class Track
     def recalc_delta_from_times(starting_at=0, list=@events)
 	prev_time_from_start = 0
 	# We need to sort the sublist. sublist.sort! does not do what we want.
-	list[starting_at .. -1] = list[starting_at .. -1].sort { | e1, e2 |
+        # We call mergesort instead of Array.sort because sort is not stable
+        # (it can mix up the order of events that have the same start time).
+        # See http://wiki.github.com/adamjmurray/cosy/midilib-notes for details.
+	list[starting_at .. -1] = list[starting_at .. -1].mergesort { | e1, e2 |
 	    e1.time_from_start <=> e2.time_from_start
 	}
 	list[starting_at .. -1].each { | e |

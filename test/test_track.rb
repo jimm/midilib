@@ -141,4 +141,32 @@ class TrackTester < Test::Unit::TestCase
         x = MIDI::NoteOff.new(0, 64, 64, 10)
         assert(x.kind_of?(MIDI::NoteOffEvent)) # old name
     end
+
+    def test_mergesort
+        @track.events = []
+
+        # Two events with later start times but earlier in the event list
+        e2 = MIDI::NoteOff.new(0, 64, 64, 100)
+        e2.time_from_start = 100
+        @track.events << e2
+
+        e3 = MIDI::NoteOn.new(0, 64, 64, 100)
+        e3.time_from_start = 100
+        @track.events << e3
+
+        # Earliest start time, latest in the list of events
+        e1 = MIDI::NoteOn.new(0, 64, 64, 100)
+        e1.time_from_start = 0
+        @track.events << e1
+
+        # Recalc sorts. Make sure note off/note on pair at t 100 are in the
+        # correct order.
+        @track.recalc_delta_from_times
+        
+        # These tests would fail before we moved to mergesort.
+        assert_equal(e1, @track.events[0])
+        assert_equal(e2, @track.events[1])
+        assert_equal(e3, @track.events[2])
+
+    end
 end
