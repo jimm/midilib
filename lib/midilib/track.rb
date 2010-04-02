@@ -116,7 +116,7 @@ class Track
     def merge_event_lists(list1, list2)
 	recalc_times(0, list1)
 	recalc_times(0, list2)
-	list = (list1 + list2).sort_by { | e | e.time_from_start }
+        list = list1 + list2
 	recalc_delta_from_times(0, list)
 	return list
     end
@@ -175,10 +175,11 @@ class Track
     # Sort events by their time_from_start. After sorting,
     # recalc_delta_from_times is called to make sure that the delta times
     # reflect the possibly new event order.
-    def sort
-	@events = @events.sort_by { | e | e.time_from_start }
-	recalc_delta_from_times()
-    end
+    #
+    # Note: this method is redundant, since recalc_delta_from_times sorts
+    # the events first. This method may go away in a future release, or at
+    # least be aliased to recalc_delta_from_times.
+    alias_method :sort, :recalc_delta_from_times
 end
 
 end
