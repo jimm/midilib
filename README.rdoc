@@ -345,7 +345,7 @@ non-commercial purposes as long as the author is given credit.
 
 === Recent Changes
 
-==== Changes for 1.3.0:
+==== Changes for 2.0.0:
 
 MIDI::NoteOnEvent and MIDI::NoteOffEvent renamed to MIDI::NoteOn and
 MIDI::NoteOff. The old names will still work for a while.
