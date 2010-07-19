@@ -160,7 +160,7 @@ number of tracks and the number of the current track that has just been read.
 This is useful for notifying the user of progress, for example by updating a
 GUI progress bar.
 
- require 'midi/io/seqreader'
+ require 'midilib/io/seqreader'
 
  # Create a new, empty sequence.
  seq = MIDI::Sequence.new()
@@ -179,7 +179,7 @@ GUI progress bar.
 To write a MIDI file, call the write method, passing in an IO object.
 
 
- require 'midi/io/seqwriter'
+ require 'midilib/io/seqwriter'
 
  # Start with a sequence that has something worth saving.
  seq = read_or_create_seq_we_care_not_how()
@@ -201,8 +201,8 @@ be transposed: the method #note? returns true.
 
 ==== Transposing One Channel
 
- require 'midi/io/seqreader'
- require 'midi/io/seqwriter'
+ require 'midilib/io/seqreader'
+ require 'midilib/io/seqwriter'
 
  # Create a new, empty sequence.
  seq = MIDI::Sequence.new()
