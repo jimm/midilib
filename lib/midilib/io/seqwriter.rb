@@ -91,7 +91,7 @@ class SeqWriter
 	# exactly the same, the rest is trivial. If it's note on/note off,
 	# we can combine those further.
 	if status == prev_status
-	    data[0,1] = nil	# delete status byte from data
+	    data[0,1] = []	# delete status byte from data
 	    return status + chan
 	elsif status == NOTE_OFF && data[2] == 64
 	    # If we see a note off and the velocity is 64, we can store
