@@ -5,9 +5,9 @@ MIDI files and manipulating MIDI event data. Classes include MIDI::Sequence,
 MIDI::Track, MIDI::Event, and MIDI::IO::MIDIFile and its subclasses
 MIDI::IO::SeqReader and MIDI::IO::SeqWriter.
 
-The Web site of midilib is (http://midilib.rubyforge.org). The RubyForge
-project page is http://rubyforge.org/projects/midilib, where the latest
-version of midilib may be downloaded. midilib is also available as a RubyGem.
+The Web site of midilib is (http://github.com/jimm/midilib). The GitHub
+project page is http://github.com/jimm/midilib, where the latest version of
+midilib may be downloaded. midilib is also available as a RubyGem.
 
 
 == Dependencies
