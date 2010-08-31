@@ -5,9 +5,9 @@ MIDI files and manipulating MIDI event data. Classes include MIDI::Sequence,
 MIDI::Track, MIDI::Event, and MIDI::IO::MIDIFile and its subclasses
 MIDI::IO::SeqReader and MIDI::IO::SeqWriter.
 
-The Web site of midilib is (http://midilib.rubyforge.org). The RubyForge
-project page is http://rubyforge.org/projects/midilib, where the latest
-version of midilib may be downloaded. midilib is also available as a RubyGem.
+The Web site of midilib is (http://github.com/jimm/midilib). The GitHub
+project page is http://github.com/jimm/midilib and the RubyGems.org page is
+http://rubygems.org/gems/midilib.
 
 
 == Dependencies
@@ -344,6 +344,27 @@ non-commercial purposes as long as the author is given credit.
 
 
 === Recent Changes
+
+==== Changes for 2.0.0:
+
+MIDI::NoteOnEvent and MIDI::NoteOffEvent renamed to MIDI::NoteOn and
+MIDI::NoteOff. The old names will still work for a while.
+
+The MIDI::Event boolean methods like meta? and note? have been removed. Use
+the event classes themselves (for example, MIDI::MetaEvent === my_event or
+my_event.kind_of?(MIDI::MetaEvent)).
+
+Introduced Adam Murray's stable sorting code for
+MIDI::Track#recalc_delta_from_times. See
+http://wiki.github.com/adamjmurray/cosy/midilib-notes and
+http://github.com/adamjmurray/cosy/blob/master/lib/cosy/helper/midi_file_renderer_helper.rb
+for details.
+
+Aliased MIDI::Track#sort to MIDI::Track#recalc_delta_from_times, since all
+sort did was sort the events then call recalc_delta_from_times, and
+recalc_delta_from_times sorts the events before doing anything else.
+
+MIDI::Tempo#mpq_to_bpm now returns a float.
 
 ==== Changes for 1.2.0:
 
