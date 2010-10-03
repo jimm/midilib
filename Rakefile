@@ -64,3 +64,5 @@ end
 task :test do
     Rake::run_tests
 end
+
+task :clean => [:clobber_rdoc, :clobber_package]
