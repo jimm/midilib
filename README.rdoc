@@ -352,7 +352,15 @@ MIDI::NoteOff. The old names will still work for a while.
 
 The MIDI::Event boolean methods like meta? and note? have been removed. Use
 the event classes themselves (for example, MIDI::MetaEvent === my_event or
-my_event.kind_of?(MIDI::MetaEvent)).
+my_event.kind_of?(MIDI::MetaEvent)). Case statements that use classes work,
+too:
+
+  case my_event
+  when MIDI::NoteOn
+    do_this()
+  when MIDI::NoteOff
+    do_that()
+  end
 
 Introduced Adam Murray's stable sorting code for
 MIDI::Track#recalc_delta_from_times. See
