@@ -479,9 +479,3 @@ The midilib code is now hosted at Github (http://github.com/jimm/midilib).
 This software is provided "as is" and without any express or implied
 warranties, including, without limitation, the implied warranties of
 merchantability and fitness for a particular purpose.
-
---
-# Local Variables:
-# mode:rdoc
-# End:
-++
