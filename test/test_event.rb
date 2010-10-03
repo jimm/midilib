@@ -9,7 +9,7 @@ require 'midilib'
 class EventTester < Test::Unit::TestCase
 
     def test_note_on
-	e = MIDI::NoteOnEvent.new
+	e = MIDI::NoteOn.new
 	assert_equal(MIDI::NOTE_ON, e.status)
 	assert_equal(0, e.channel)
 	assert_equal(64, e.note)
@@ -19,7 +19,7 @@ class EventTester < Test::Unit::TestCase
     end
 
     def test_quantize
-	e = MIDI::NoteOnEvent.new
+	e = MIDI::NoteOn.new
 	e.quantize_to(4)
 	assert_equal(0, e.time_from_start)
 
@@ -45,7 +45,7 @@ class EventTester < Test::Unit::TestCase
     end
 
     def test_to_s
-	e = MIDI::NoteOnEvent.new
+	e = MIDI::NoteOn.new
 	assert_equal("0: ch 00 on 40 40", e.to_s)
 	e.print_decimal_numbers = true
 	assert_equal("0: ch 0 on 64 64", e.to_s)
@@ -53,64 +53,6 @@ class EventTester < Test::Unit::TestCase
 	assert_equal("0: ch 0 on E4 64", e.to_s)
 	e.print_decimal_numbers = false
 	assert_equal("0: ch 00 on E4 40", e.to_s)
-    end
-
-    def test_bools_note_on
-      e = MIDI::NoteOnEvent.new
-      assert(e.channel?)
-      assert(e.note?)
-      assert(e.note_on?)
-      assert(!e.note_off?)
-      assert(!e.meta?)
-      assert(!e.system?)
-      assert(!e.realtime?)
-    end
-
-    def test_bools_note_off
-      e = MIDI::NoteOffEvent.new
-      assert(e.channel?)
-      assert(e.note?)
-      assert(!e.note_on?)
-      assert(e.note_off?)
-      assert(!e.meta?)
-      assert(!e.system?)
-      assert(!e.realtime?)
-    end
-
-    def test_bools_realtime
-      e = MIDI::Clock.new
-      assert(!e.channel?)
-      assert(!e.note?)
-      assert(!e.meta?)
-      assert(!e.system?)
-      assert(e.realtime?)
-    end
-
-    def test_bools_controller
-      e = MIDI::Controller.new
-      assert(e.channel?)
-      assert(!e.note?)
-      assert(!e.meta?)
-      assert(!e.system?)
-      assert(!e.realtime?)
-    end
-
-    def test_bools_meta
-      e = MIDI::MetaEvent.new(MIDI::META_SEQ_NUM)
-      assert(!e.channel?)
-      assert(!e.note?)
-      assert(e.meta?)
-      assert(!e.system?)
-      assert(!e.realtime?)
-    end
-
-    def test_bools_system
-      e = MIDI::TuneRequest.new
-      assert(!e.channel?)
-      assert(!e.note?)
-      assert(!e.meta?)
-      assert(e.system?)
-      assert(!e.realtime?)
     end
 
     def test_pitch_bend
@@ -126,7 +68,7 @@ class EventTester < Test::Unit::TestCase
     end
 
     def test_quantize
-	e = MIDI::NoteOnEvent.new(0, 64, 64, 0)
+	e = MIDI::NoteOn.new(0, 64, 64, 0)
 	e.quantize_to(80)
 	assert_equal(0, e.time_from_start)
 

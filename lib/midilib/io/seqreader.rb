@@ -75,7 +75,7 @@ class SeqReader < MIDIFile
 	    return
 	end
 
-	on = NoteOnEvent.new(chan, note, vel, @curr_ticks)
+	on = NoteOn.new(chan, note, vel, @curr_ticks)
 	@track.events << on
 	@pending << on
 	track_uses_channel(chan)
@@ -96,7 +96,7 @@ class SeqReader < MIDIFile
     end
 
     def make_note_off(on, vel)
-	off = NoteOffEvent.new(on.channel, on.note, vel, @curr_ticks)
+	off = NoteOff.new(on.channel, on.note, vel, @curr_ticks)
 	@track.events << off
 	on.off = off
 	off.on = on

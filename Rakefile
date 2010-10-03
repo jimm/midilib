@@ -2,11 +2,9 @@ require 'rubygems'
 require 'rake'
 require 'rake/rdoctask'
 require 'rake/gempackagetask'
-require 'rake/contrib/rubyforgepublisher'
 require 'rake/runtest'
 
 PROJECT_NAME = 'midilib'
-RUBYFORGE_USER = 'jimm'
 RDOC_DIR = 'html'
 
 PKG_FILES = FileList[ 'ChangeLog', 'Credits', 'Rakefile',
@@ -26,7 +24,6 @@ spec = Gem::Specification.new do |s|
     s.requirements << 'none'
 
     s.require_path = 'lib'
-    s.autorequire = PROJECT_NAME
 
     s.files = PKG_FILES.to_a
 
@@ -36,7 +33,7 @@ spec = Gem::Specification.new do |s|
 
     s.author = 'Jim Menard'
     s.email = 'jimm@io.com'
-    s.homepage = 'http://midilib.rubyforge.org'
+    s.homepage = 'http://github.com/jimm/midilib'
     s.rubyforge_project = PROJECT_NAME
 
     s.summary = "MIDI file and event manipulation library"
@@ -60,13 +57,8 @@ Rake::RDocTask.new do | rd |
     rd.rdoc_files.include('README.rdoc', 'TODO.rdoc', 'lib/**/*.rb')
 end
 
-task :rubyforge => [:rdoc] do
-    Rake::RubyForgePublisher.new(PROJECT_NAME, RUBYFORGE_USER).upload
-end
-
-desc "Publish html docs to midilib.rubyforge.org"
-task :publish => [:rdoc] do
-    system "scp -rC html/* jimm@rubyforge.org:/var/www/gforge-projects/midilib"
+task :publish => [:rdoc, :package] do
+  system "gem push"
 end
 
 task :test do

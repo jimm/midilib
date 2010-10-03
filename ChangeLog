@@ -1,3 +1,5 @@
+For any further change descriptions, see the Git logs.
+
 2007-12-11  Jim Menard  <jim@iamplify.com>
 
 	* lib/midilib/io/seqreader.rb: Fixed text method and added default
@@ -25,7 +27,7 @@
 
 	* Version 1.0.0 released. I will no longer be maintaining this
 	change log; the Subversion comments should be sufficient.
-	
+
 2006-08-20  Jim Menard  <jimm@io.com>
 
 	* lib/midilib/event.rb (PolyPressure::initialize): Fixed the

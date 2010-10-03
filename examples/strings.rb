@@ -27,7 +27,7 @@ File.open(ARGV[0] || DEFAULT_MIDI_TEST_FILE, 'rb') { | file |
 include MIDI
 seq.each { | track |
     track.each { | event |
-	puts event.data if event.meta? &&
+	puts event.data if event.kind_of?(MIDI::MetaEvent) &&
 	    [META_TEXT, META_COPYRIGHT, META_SEQ_NAME, META_INSTRUMENT,
 	     META_LYRIC, META_CUE, META_MARKER].include?(event.meta_type)
     }

@@ -58,7 +58,7 @@ File.open(ARGV[0], 'rb') { | file |
 
 seq.each { | track |
     track.each { | event |
-        if event.note? && event.channel == channel
+        if event.kind_of?(MIDI::NoteEvent) && event.channel == channel
 	    val = event.note + transpose
 	    if val < 0 || val > 127
 		$stderr.puts "transposition out of range; ignored"

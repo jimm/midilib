@@ -5,7 +5,7 @@
 # This script installs midilib into the Ruby site-local library directory.
 #
 # Author:: Jim Menard (mailto:jimm@io.com)
-# Copyright:: Copyright (c) 2003-2009 by Jim Menard
+# Copyright:: Copyright (c) 2003-2010 by Jim Menard
 # License:: Distributed under the same license as Ruby.
 #
 

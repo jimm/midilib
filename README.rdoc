@@ -323,7 +323,7 @@ the format of MIDI commands.
 = Administrivia
 
 Author:: Jim Menard (mailto:jimm@io.com)
-Copyright:: Copyright (c) 2003-2009 Jim Menard
+Copyright:: Copyright (c) 2003-2010 Jim Menard
 License:: Distributed under the same license as Ruby.
 
 
@@ -336,7 +336,7 @@ http://www.ruby-lang.org/en/LICENSE.txt.
 midilib may be freely copied in its entirety providing this notice, all
 source code, all documentation, and all other files are included.
 
-midilib is Copyright (c) 2003-2009 by Jim Menard.
+midilib is Copyright (c) 2003-2010 by Jim Menard.
 
 The song "No Fences" contained in the MIDI file examples/NoFences.mid is
 Copyright (c) 1992 by Jim Menard (jimm@io.com). It may be freely used for
@@ -352,7 +352,15 @@ MIDI::NoteOff. The old names will still work for a while.
 
 The MIDI::Event boolean methods like meta? and note? have been removed. Use
 the event classes themselves (for example, MIDI::MetaEvent === my_event or
-my_event.kind_of?(MIDI::MetaEvent)).
+my_event.kind_of?(MIDI::MetaEvent)). Case statements that use classes work,
+too:
+
+  case my_event
+  when MIDI::NoteOn
+    do_this()
+  when MIDI::NoteOff
+    do_that()
+  end
 
 Introduced Adam Murray's stable sorting code for
 MIDI::Track#recalc_delta_from_times. See
@@ -471,9 +479,3 @@ The midilib code is now hosted at Github (http://github.com/jimm/midilib).
 This software is provided "as is" and without any express or implied
 warranties, including, without limitation, the implied warranties of
 merchantability and fitness for a particular purpose.
-
---
-# Local Variables:
-# mode:rdoc
-# End:
-++
