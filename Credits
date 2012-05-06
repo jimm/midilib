@@ -40,3 +40,7 @@ Adam Murray (adamjmurray on Github)
 
     Found problem with Track#recalc_delta_from_times sorting, and wrote the
     fix that is incorporated there.
+
+Shai Rosenfeld (shaiguitar on Github)
+
+    Corrected missing block arg in README.

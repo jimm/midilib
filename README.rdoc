@@ -149,11 +149,11 @@ examples directory, which are described below.
 To read a MIDI file, create a MIDI::Sequence object and call its #read method,
 passing in an IO object.
 
-The #read method takes an optional block. If present, the block is called once
-after each track has finished being read. Each time, it is passed the track object, the total
-number of tracks and the number of the current track that has just been read.
-This is useful for notifying the user of progress, for example by updating a
-GUI progress bar.
+The #read method takes an optional block. If present, the block is called
+once after each track has finished being read. Each time, it is passed the
+track object, the total number of tracks and the number of the current track
+that has just been read. This is useful for notifying the user of progress,
+for example by updating a GUI progress bar.
 
  require 'midilib/io/seqreader'
 
