@@ -150,7 +150,7 @@ To read a MIDI file, create a MIDI::Sequence object and call its #read method,
 passing in an IO object.
 
 The #read method takes an optional block. If present, the block is called once
-after each track has finished being read. Each time, it is passed the total
+after each track has finished being read. Each time, it is passed the track object, the total
 number of tracks and the number of the current track that has just been read.
 This is useful for notifying the user of progress, for example by updating a
 GUI progress bar.
@@ -162,7 +162,7 @@ GUI progress bar.
 
  # Read the contents of a MIDI file into the sequence.
  File.open('my_midi_file.mid', 'rb') { | file |
-     seq.read(file) { | num_tracks, i |
+     seq.read(file) { | track, num_tracks, i |
          # Print something when each track is read.
          puts "read track #{i} of #{num_tracks}"
      }
@@ -203,7 +203,7 @@ pressure) on channel 5 down one octave.
 
  # Read the contents of a MIDI file into the sequence.
  File.open('my_input_file.mid', 'rb') { | file |
-     seq.read(file) { | num_tracks, i |
+     seq.read(file) { | track, num_tracks, i |
          # Print something when each track is read.
          puts "read track #{i} of #{num_tracks}"
      }
