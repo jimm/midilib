@@ -44,3 +44,8 @@ Adam Murray (adamjmurray on Github)
 Shai Rosenfeld (shaiguitar on Github)
 
     Corrected missing block arg in README.
+
+J (dark-panda on Github)
+
+    Instead of monkeypatching ::Array, put sorting methods into new
+    MIDI::Array subclass to avoid clashes with Rails app.
