@@ -72,6 +72,7 @@ Rake::RDocTask.new do | rd |
     rd.rdoc_files.include('README.rdoc', 'TODO.rdoc', 'lib/**/*.rb')
 end
 
+desc "Publish gem"
 task :publish => [:rdoc, :package] do
   system "gem push"
 end
