@@ -1,8 +1,14 @@
 require 'rubygems'
 require 'rake'
+if RUBY_VERSION >= '1.9'
+  require 'rdoc/task'
+  require 'rubygems/package_task'
+  require 'rake/testtask'
+else
 require 'rake/rdoctask'
-require 'rake/gempackagetask'
-require 'rake/runtest'
+  require 'rake/gempackagetask'
+  require 'rake/runtest'
+end
 
 PROJECT_NAME = 'midilib'
 RDOC_DIR = 'html'
@@ -43,11 +49,20 @@ writing standard MIDI files and manipulating MIDI event data.
 EOF
 end
 
-# Creates a :package task (also named :gem). Also useful are :clobber_package
-# and :repackage.
-Rake::GemPackageTask.new(spec) do |pkg|
+if RUBY_VERSION >= '1.9'
+  # Creates a :package task (also named :gem). Also useful are
+  # :clobber_package and :repackage.
+  Gem::PackageTask.new(spec) do |pkg|
     pkg.need_zip = true
     pkg.need_tar = true
+  end
+else
+  # Creates a :package task (also named :gem). Also useful are
+  # :clobber_package and :repackage.
+  Rake::GemPackageTask.new(spec) do |pkg|
+    pkg.need_zip = true
+    pkg.need_tar = true
+  end
 end
 
 # creates an "rdoc" task
@@ -61,8 +76,17 @@ task :publish => [:rdoc, :package] do
   system "gem push"
 end
 
-task :test do
+if RUBY_VERSION >= '1.9'
+  Rake::TestTask.new do |t|
+    t.libs << File.join(File.dirname(__FILE__), 'test')
+    t.libs << File.join(File.dirname(__FILE__), 'lib')
+    t.ruby_opts << '-rubygems'
+    t.pattern = "test/**/test_*.rb"
+  end
+else
+  task :test do
     Rake::run_tests
+  end
 end
 
 task :clean => [:clobber_rdoc, :clobber_package]

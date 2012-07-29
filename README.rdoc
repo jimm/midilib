@@ -309,15 +309,15 @@ the format of MIDI commands.
 * Visit the forums, bug list, and mailing list pages at
   http://rubyforge.org/projects/midilib
 
-* Send email to Jim Menard at mailto:jimm@io.com
+* Send email to Jim Menard at mailto:jim@jimmenard.com
 
 * Ask on the ruby-talk mailing list
 
 
 = Administrivia
 
-Author:: Jim Menard (mailto:jimm@io.com)
-Copyright:: Copyright (c) 2003-2010 Jim Menard
+Author:: Jim Menard (mailto:jim@jimmenard.com)
+Copyright:: Copyright (c) 2003-2012 Jim Menard
 License:: Distributed under the same license as Ruby.
 
 
@@ -330,11 +330,11 @@ http://www.ruby-lang.org/en/LICENSE.txt.
 midilib may be freely copied in its entirety providing this notice, all
 source code, all documentation, and all other files are included.
 
-midilib is Copyright (c) 2003-2010 by Jim Menard.
+midilib is Copyright (c) 2003-2012 by Jim Menard.
 
 The song "No Fences" contained in the MIDI file examples/NoFences.mid is
-Copyright (c) 1992 by Jim Menard (jimm@io.com). It may be freely used for
-non-commercial purposes as long as the author is given credit.
+Copyright (c) 1992 by Jim Menard (jim@jimmenard.com). It may be freely used
+for non-commercial purposes as long as the author is given credit.
 
 
 === Recent Changes
