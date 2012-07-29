@@ -74,7 +74,8 @@ end
 
 desc "Publish gem"
 task :publish => [:rdoc, :package] do
-  system "gem push"
+  version = `ruby -Ilib -e 'require "midilib/info"; puts MIDI::Version'`.strip
+  system "gem push pkg/midilib-#{version}.gem"
 end
 
 if RUBY_VERSION >= '1.9'
