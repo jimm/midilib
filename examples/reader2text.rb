@@ -152,6 +152,7 @@ class TextTranslator < MIDI::IO::MIDIFile
 
     def text(type, msg)
 	pdelta()
+	msg = MIDI::MetaEvent.bytes_as_str(msg)
 	case type
 	when MIDI::META_SEQ_NAME
 	    puts "seq or track name #{msg}"
