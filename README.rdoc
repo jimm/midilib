@@ -339,6 +339,14 @@ for non-commercial purposes as long as the author is given credit.
 
 === Recent Changes
 
+==== Changes for 2.0.3:
+
+New MIDI::Sequence.pulses_to_seconds method.
+
+==== Changes for 2.0.2:
+
+Stop monkeypatching Array in MIDI::Track.
+
 ==== Changes for 2.0.0:
 
 MIDI::NoteOnEvent and MIDI::NoteOffEvent renamed to MIDI::NoteOn and

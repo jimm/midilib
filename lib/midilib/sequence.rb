@@ -75,6 +75,13 @@ class Sequence
     alias_method :bpm, :beats_per_minute
     alias_method :tempo, :beats_per_minute
 
+    # Pulses (also called ticks) are the units of delta times and event
+    # time_from_start values. This method converts a number of pulses to a
+    # float value that is a time in seconds.
+    def pulses_to_seconds(pulses)
+      (pulses.to_f / @ppqn.to_f / beats_per_minute()) * 60.0
+    end
+
     # Given a note length name like "whole", "dotted quarter", or "8th
     # triplet", return the length of that note in quarter notes as a delta
     # time.

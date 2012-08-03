@@ -23,6 +23,17 @@ class SequenceTester < Test::Unit::TestCase
 	assert_equal(MIDI::Sequence::DEFAULT_TEMPO, @seq.bpm)
     end
 
+    def test_pulses_to_seconds
+      # At a tempo of 120 BPM 480 pulses (one quarter note) should take 0.5 seconds
+      assert_in_delta 0.5, @seq.pulses_to_seconds(480), 0.00001
+
+      # A half note should take one second
+      assert_in_delta 1.0, @seq.pulses_to_seconds(480*2), 0.00001
+
+      # An eight note should take 0.25 seconds
+      assert_in_delta 0.25, @seq.pulses_to_seconds(480/2), 0.00001
+    end
+
     def test_length_to_delta
       assert_equal(480, @seq.ppqn)
       assert_equal(480, @seq.length_to_delta(1))
