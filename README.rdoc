@@ -334,17 +334,17 @@ Copyright (c) 1992 by Jim Menard (jim@jimmenard.com). It may be freely used
 for non-commercial purposes as long as the author is given credit.
 
 
-=== Recent Changes
+== Recent Changes
 
-==== Changes for 2.0.3:
+=== Changes for 2.0.3:
 
 New MIDI::Sequence.pulses_to_seconds method.
 
-==== Changes for 2.0.2:
+=== Changes for 2.0.2:
 
 Stop monkeypatching Array in MIDI::Track.
 
-==== Changes for 2.0.0:
+=== Changes for 2.0.0:
 
 MIDI::NoteOnEvent and MIDI::NoteOffEvent renamed to MIDI::NoteOn and
 MIDI::NoteOff. The old names will still work for a while.
@@ -373,51 +373,51 @@ recalc_delta_from_times sorts the events before doing anything else.
 
 MIDI::Tempo#mpq_to_bpm now returns a float.
 
-==== Changes for 1.2.0:
+=== Changes for 1.2.0:
 
 Use byte arrays instead of strings for passing around data. All tests now pass
 for both Ruby 1.8.X and 1.9.X.
 
-==== New code repository
+=== New code repository
 
 The midilib code is now hosted at Github (http://github.com/jimm/midilib).
 
-==== Changes for 1.1.4:
+=== Changes for 1.1.4:
 
 * Fixed a bug in KeySig.data_as_bytes. Thanks to Noah Thorp for finding this
   and the bug fixed in 1.1.3.
 
-==== Changes for 1.1.3:
+=== Changes for 1.1.3:
 
 * Fixed the way midilib detects the behavior of IO.getc.
 
-==== Changes for 1.1.2:
+=== Changes for 1.1.2:
 
 * Define MIDI::IO::MIDIFile.getc differently for different Ruby versions,
   instead of checking for String.bytes every time we read a byte.
 
-==== Changes for 1.1.1:
+=== Changes for 1.1.1:
 
 * Make MIDI::IO::MIDIFile.getc do the right thing for both Ruby 1.8 and 1.9.
 
-==== Changes for 1.1.0:
+=== Changes for 1.1.0:
 
 * Added test/test.mid to list of files to be included when packaging midifile
   for distribution.
 
-==== Changes for 1.0.0:
+=== Changes for 1.0.0:
 
 * Fixed the bug in Track#recalc_delta_from_times found by Christopher Rose.
 
-==== Changes for 0.8.7:
+=== Changes for 0.8.7:
 
 * Fixed the misspelled POLY_PRESSURE constant, thanks to Mario Pehle.
 
-==== Changes for 0.8.6:
+=== Changes for 0.8.6:
 
 * Added missing test/test.mid.
 
-==== Changes for 0.8.5:
+=== Changes for 0.8.5:
 
 * Fixed bugs in MIDI::PitchBend reading and writing, thanks to Emanuel
   Borsboom.
@@ -430,7 +430,7 @@ The midilib code is now hosted at Github (http://github.com/jimm/midilib).
   quantize. However, since that method was broken already, I don't feel it's
   a burden to anybody to change the arguments.
 
-==== Changes for 0.8.4:
+=== Changes for 0.8.4:
 
 * Realtime status bytes now set @is_realtime to true and return true when
   realtime? is called.
@@ -447,7 +447,7 @@ The midilib code is now hosted at Github (http://github.com/jimm/midilib).
   MIDI::Sequence::note_to_delta.
 
 
-==== Changes for 0.8.3:
+=== Changes for 0.8.3:
 
 * Added MIDI::NoteEvent.note_to_s, which returns note name as a string like
   "C4" or "F#6".
@@ -456,7 +456,7 @@ The midilib code is now hosted at Github (http://github.com/jimm/midilib).
   @print_note_names. These are used by all Event to_s methods. See
   examples/seq2text.rb for an example.
 
-==== Changes for 0.8.2:
+=== Changes for 0.8.2:
 
 * Changed MIDI::MetaEvent.type to MIDI::MetaEvent.event_type to avoid
   runtime complaints about Object#type calls.
@@ -465,7 +465,7 @@ The midilib code is now hosted at Github (http://github.com/jimm/midilib).
 * Fixed read and write block arguments.
 * Fixed other example script bugs.
 
-==== Changes for 0.8.1:
+=== Changes for 0.8.1:
 
 * Fixed track sorting.
 * Fixed track's recalc_delta_from_times method.
