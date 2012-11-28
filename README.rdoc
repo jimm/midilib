@@ -1,9 +1,7 @@
 = midilib
 
 midilib is a pure Ruby MIDI library useful for reading and writing standard
-MIDI files and manipulating MIDI event data. Classes include MIDI::Sequence,
-MIDI::Track, MIDI::Event, and MIDI::IO::MIDIFile and its subclasses
-MIDI::IO::SeqReader and MIDI::IO::SeqWriter.
+MIDI files and manipulating MIDI event data.
 
 The GitHub project page and Web site of midilib is
 http://github.com/jimm/midilib and the RubyGems.org page is
@@ -31,11 +29,10 @@ which requires Rake (http://rake.rubyforge.org).
 To install midilib as a gem, type
 
     % gem install midilib
-or
+or, if you already have a previous version, use
     % gem update midilib
 
-if you already have a previous version. You may need root privileges to
-install or update the gem.
+You may need root privileges to install or update the gem.
 
 === Manual Installation
 
@@ -58,12 +55,12 @@ runs all of the tests in the test directory.
 
 == Overview
 
-MIDI file IO only understands MIDI file format 1, where a sequence is made up
-of multiple tracks. It doesn't yet understand format 0 (a single track
-containing all events) or format 2 (a collection of format 0 files in one
-file).
+The midilib MIDI file reader only understands MIDI file format 1, where a
+sequence is made up of multiple tracks. It doesn't yet understand format 0
+(a single track containing all events) or format 2 (a collection of format 0
+files in one file).
 
-=== MIDI::Sequence
+d=== MIDI::Sequence
 
 A sequence contains a collection of tracks and global information like the
 sequence's pulses per quarter note (ppqn) and time signature.
@@ -295,8 +292,8 @@ you to purchase a copy of the latest edition.
 A description of the MIDI file format can be found in a few places such as
 http://www.borg.com/~jglatt/tech/midifile.htm.
 
-The MIDI message reference at http://www.io.com/~jimm/midi_ref.html describes
-the format of MIDI commands.
+The MIDI message reference at http://www.jimmenard.com/midi_ref.html
+describes the format of MIDI commands.
 
 
 = To Do
