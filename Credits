@@ -49,3 +49,8 @@ J (dark-panda on Github)
 
     Instead of monkeypatching ::Array, put sorting methods into new
     MIDI::Array subclass to avoid clashes with Rails app.
+
+Lucas lfzawacki (lfzawacki on Github)
+
+    Found a bug in the MIDI::IO::SeqReader class: the pitch_bend method's
+    msb and lsb parameters were reversed.

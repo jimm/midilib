@@ -112,7 +112,7 @@ class SeqReader < MIDIFile
 	track_uses_channel(chan)
     end
 
-    def pitch_bend(chan, msb, lsb)
+    def pitch_bend(chan, lsb, msb)
 	@track.events << PitchBend.new(chan, (msb << 7) + lsb, @curr_ticks)
 	track_uses_channel(chan)
     end
