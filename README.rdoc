@@ -60,7 +60,7 @@ sequence is made up of multiple tracks. It doesn't yet understand format 0
 (a single track containing all events) or format 2 (a collection of format 0
 files in one file).
 
-d=== MIDI::Sequence
+=== MIDI::Sequence
 
 A sequence contains a collection of tracks and global information like the
 sequence's pulses per quarter note (ppqn) and time signature.
