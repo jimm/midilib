@@ -314,7 +314,7 @@ describes the format of MIDI commands.
 = Administrivia
 
 Author:: Jim Menard (mailto:jim@jimmenard.com)
-Copyright:: Copyright (c) 2003-2012 Jim Menard
+Copyright:: Copyright (c) 2003-2013 Jim Menard
 License:: Distributed under the same license as Ruby.
 
 
@@ -327,7 +327,7 @@ http://www.ruby-lang.org/en/LICENSE.txt.
 midilib may be freely copied in its entirety providing this notice, all
 source code, all documentation, and all other files are included.
 
-midilib is Copyright (c) 2003-2012 by Jim Menard.
+midilib is Copyright (c) 2003-2013 by Jim Menard.
 
 The song "No Fences" contained in the MIDI file examples/NoFences.mid is
 Copyright (c) 1992 by Jim Menard (jim@jimmenard.com). It may be freely used
