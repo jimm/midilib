@@ -21,21 +21,21 @@ DEFAULT_MIDI_TEST_FILE = 'NoFences.mid'
 # Read from MIDI file
 seq = MIDI::Sequence.new()
 
-File.open(ARGV[0] || DEFAULT_MIDI_TEST_FILE, 'rb') { | file |
-    # The block we pass in to Sequence.read is called at the end of every
-    # track read. It is optional, but is useful for progress reports.
-    seq.read(file) { | track, num_tracks, i |
-	puts "read track #{track ? track.name : ''} (#{i} of #{num_tracks})"
-    }
-}
+File.open(ARGV[0] || DEFAULT_MIDI_TEST_FILE, 'rb') do |file|
+  # The block we pass in to Sequence.read is called at the end of every
+  # track read. It is optional, but is useful for progress reports.
+  seq.read(file) do |track, num_tracks, i|
+    puts "read track #{track ? track.name : ''} (#{i} of #{num_tracks})"
+  end
+end
 
-seq.each { | track |
-    puts "*** track name \"#{track.name}\""
-    puts "instrument name \"#{track.instrument}\""
-    puts "#{track.events.length} events"
-    track.each { | e |
-	e.print_decimal_numbers = true # default = false (print hex)
-	e.print_note_names = true # default = false (print note numbers)
-	puts e
-    }
-}
+seq.each do |track|
+  puts "*** track name \"#{track.name}\""
+  puts "instrument name \"#{track.instrument}\""
+  puts "#{track.events.length} events"
+  track.each do |e|
+    e.print_decimal_numbers = true # default = false (print hex)
+    e.print_note_names = true # default = false (print note numbers)
+    puts e
+  end
+end

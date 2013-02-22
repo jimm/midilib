@@ -19,12 +19,12 @@ File.open(ARGV[0], 'rb') { | file | seq.read(file) }
 # Get all measures, so events can be mapped to measures:
 measures = seq.get_measures
 
-seq.each { | track |
-  track.each { | e |        
+seq.each { |track|
+  track.each { |e|
     if e.kind_of?(MIDI::NoteOn) then
       # Print out start of notes
       e.print_note_names = true
       puts measures.to_mbt(e) + "  ch #{e.channel}:  #{e.note_to_s}"
-    end        
-  }    
+    end
+  }
 }

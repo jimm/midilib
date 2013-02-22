@@ -40,10 +40,10 @@ track.events << Controller.new(0, CC_VOLUME, 127)
 # delta time length of a single quarter note.
 track.events << ProgramChange.new(0, 1, 0)
 quarter_note_length = seq.note_to_delta('quarter')
-[0, 2, 4, 5, 7, 9, 11, 12].each { | offset |
+[0, 2, 4, 5, 7, 9, 11, 12].each do |offset|
   track.events << NoteOn.new(0, 64 + offset, 127, 0)
   track.events << NoteOff.new(0, 64 + offset, 127, quarter_note_length)
-}
+end
 
 # Calling recalc_times is not necessary, because that only sets the events'
 # start times, which are not written out to the MIDI file. The delta times are
@@ -51,6 +51,4 @@ quarter_note_length = seq.note_to_delta('quarter')
 
 # track.recalc_times
 
-File.open('from_scratch.mid', 'wb') { | file |
-	seq.write(file)
-}
+File.open('from_scratch.mid', 'wb') { |file| seq.write(file) }
