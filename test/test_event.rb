@@ -18,30 +18,6 @@ class EventTester < Test::Unit::TestCase
     assert_equal(0, e.time_from_start)
   end
 
-  def test_quantize
-    e = MIDI::NoteOn.new
-    e.quantize_to(4)
-    assert_equal(0, e.time_from_start)
-
-    # Each value in this array is the expected quantized value of
-    # its index in the array.
-
-    # Test with quantize_to(4)
-    [0, 0, 4, 4, 4, 4, 8, 8, 8, 8, 12, 12, 12, 12, 16].each_with_index do |after, before|
-      e.time_from_start = before
-      e.quantize_to(4)
-      assert_equal(after, e.time_from_start)
-    end
-
-    # Test with quantize_to(6)
-    [0, 0, 0, 6, 6, 6, 6, 6, 6, 12, 12, 12, 12, 12, 12,
-      18, 18, 18, 18, 18, 18, 24].each_with_index do |after, before|
-      e.time_from_start = before
-      e.quantize_to(6)
-      assert_equal(after, e.time_from_start)
-    end
-  end
-
   def test_to_s
     e = MIDI::NoteOn.new
     assert_equal("0: ch 00 on 40 40", e.to_s)
@@ -65,7 +41,31 @@ class EventTester < Test::Unit::TestCase
     assert_equal(3, b[2])	# msb, 7 bits
   end
 
-  def test_quantize
+  def test_quantize_1
+    e = MIDI::NoteOn.new
+    e.quantize_to(4)
+    assert_equal(0, e.time_from_start)
+
+    # Each value in this array is the expected quantized value of
+    # its index in the array.
+
+    # Test with quantize_to(4)
+    [0, 0, 4, 4, 4, 4, 8, 8, 8, 8, 12, 12, 12, 12, 16].each_with_index do |after, before|
+      e.time_from_start = before
+      e.quantize_to(4)
+      assert_equal(after, e.time_from_start)
+    end
+
+    # Test with quantize_to(6)
+    [0, 0, 0, 6, 6, 6, 6, 6, 6, 12, 12, 12, 12, 12, 12,
+      18, 18, 18, 18, 18, 18, 24].each_with_index do |after, before|
+      e.time_from_start = before
+      e.quantize_to(6)
+      assert_equal(after, e.time_from_start)
+    end
+  end
+
+  def test_quantize_2
     e = MIDI::NoteOn.new(0, 64, 64, 0)
     e.quantize_to(80)
     assert_equal(0, e.time_from_start)
