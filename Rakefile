@@ -79,12 +79,7 @@ task :publish => [:rdoc, :package] do
 end
 
 if RUBY_VERSION >= '1.9'
-  Rake::TestTask.new do |t|
-    t.libs << File.join(File.dirname(__FILE__), 'test')
-    t.libs << File.join(File.dirname(__FILE__), 'lib')
-    t.ruby_opts << '-rubygems'
-    t.pattern = "test/**/test_*.rb"
-  end
+  Rake::TestTask.new
 else
   task :test do
     Rake::run_tests
