@@ -4,6 +4,6 @@ module MIDI
   VERSION_MINOR = 0
   VERSION_TWEAK = 4
   Version = "#{VERSION_MAJOR}.#{VERSION_MINOR}.#{VERSION_TWEAK}"
-  Copyright = 'Copyright (c) 2003-2013 by Jim Menard <jim@jimmenard.com>'
+  Copyright = 'Copyright (c) 2003-2015 by Jim Menard <jim@jimmenard.com>'
 
 end

@@ -10,8 +10,20 @@
 #
 
 require 'getoptlong'
-require 'ftools'
 require 'find'
+begin
+  require 'ftools'
+  def mkdirs(dir); File.makedirs(dir); end
+  def install(*args); File.install(*args); end
+rescue LoadError
+  require 'fileutils'
+  def mkdirs(dir); FileUtils.mkdir_p(dir); end
+  def install(*args)
+    args[2] = {mode: args[2], verbose: args[3]}
+    args.pop
+    FileUtils.install(*args)
+  end
+end
 
 SOURCE_DIR = 'lib'
 LIB_DIR = 'midilib'
@@ -51,6 +63,6 @@ files = Dir.chdir('lib') { Dir['**/*.rb'] }
 files.each do |f|
   dir = File.dirname(f)
   target_dir = File.join(INSTALL_DIR, dir)
-  File.makedirs(target_dir) unless File.exist?(target_dir)
-  File.install(File.join('lib', f), File.join(INSTALL_DIR, f), 0644, true)
+  mkdirs(target_dir) unless File.exist?(target_dir)
+  install(File.join('lib', f), File.join(INSTALL_DIR, f), 0644, true)
 end

@@ -336,6 +336,11 @@ for non-commercial purposes as long as the author is given credit.
 
 == Recent Changes
 
+=== Changes for 2.0.4:
+
+Updated +install.rb+ to work with newer versions of Ruby by using
++fileutils+ instead of +ftools+.
+
 === Changes for 2.0.3:
 
 New MIDI::Sequence.pulses_to_seconds method.
