@@ -29,7 +29,7 @@ Jari Williamsson <jari.williamsson@mailbox.swipnet.se>
 Noah Thorp
 
     Found a bug in the code intended to make midilib work under Ruby 1.9.
-    Found another bug in KeySing.data_as_bytes.
+    Found another bug in KeySig.data_as_bytes.
 
 Zach Chadwick (zachad on Github)
 
@@ -48,9 +48,14 @@ Shai Rosenfeld (shaiguitar on Github)
 J (dark-panda on Github)
 
     Instead of monkeypatching ::Array, put sorting methods into new
-    MIDI::Array subclass to avoid clashes with Rails app.
+    MIDI::Array subclass to avoid clashes with Rails apps.
 
 Lucas lfzawacki (lfzawacki on Github)
 
     Found a bug in the MIDI::IO::SeqReader class: the pitch_bend method's
     msb and lsb parameters were reversed.
+
+Parki <parki06780678@gmail.com>
+
+    Reported failure of install.rb with newer versions of Ruby due to use of
+    old 'ftools' standard library component.
