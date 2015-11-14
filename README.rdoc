@@ -290,7 +290,7 @@ information. Though the first edition book is available online, I encourage
 you to purchase a copy of the latest edition.
 
 A description of the MIDI file format can be found in a few places such as
-http://www.borg.com/~jglatt/tech/midifile.htm.
+https://www.csie.ntu.edu.tw/~r92092/ref/midi/.
 
 The MIDI message reference at http://www.jimmenard.com/midi_ref.html
 describes the format of MIDI commands.
