@@ -59,3 +59,7 @@ Parki <parki06780678@gmail.com>
 
     Reported failure of install.rb with newer versions of Ruby due to use of
     old 'ftools' standard library component.
+
+Adam Murray <https://github.com/adamjmurray>
+
+    Submitted a patch that avoids writing empty data when writing tracks.
