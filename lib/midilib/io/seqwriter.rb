@@ -112,12 +112,12 @@ module MIDI
       end
 
       def write_instrument(instrument)
-        unless instrument.nil?
-          event = MetaEvent.new(META_INSTRUMENT, instrument)
-          write_var_len(0)
-          data = event.data_as_bytes()
-          @bytes_written += write_bytes(data)
-        end
+        return if instrument.nil?
+
+        event = MetaEvent.new(META_INSTRUMENT, instrument)
+        write_var_len(0)
+        data = event.data_as_bytes()
+        @bytes_written += write_bytes(data)
       end
 
       def write_var_len(val)
