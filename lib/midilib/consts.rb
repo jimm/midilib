@@ -75,8 +75,8 @@ module MIDI
   SYSTEM_RESET = 0xFF
 
   # Controller numbers
-  # = 0 - 31 = continuous, LSB
-  # = 32 - 63 = continuous, MSB
+  # = 0 - 31 = continuous, MSB
+  # = 32 - 63 = continuous, LSB
   # = 64 - 97 = switches
   CC_MOD_WHEEL = 1
   CC_BREATH_CONTROLLER = 2
