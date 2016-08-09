@@ -63,3 +63,7 @@ Parki <parki06780678@gmail.com>
 Adam Murray (adamjmurray on Github)
 
     Submitted a patch that avoids writing empty data when writing tracks.
+
+@dylee on Github
+
+    Submitted a patch that improves key signature event code and to_s.
