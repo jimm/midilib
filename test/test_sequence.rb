@@ -17,10 +17,25 @@ class SequenceTester < Test::Unit::TestCase
   end
 
   def test_basics
+    assert_equal(1, @seq.format)
     assert_equal(120, @seq.beats_per_minute)
     assert_equal(1, @seq.tracks.length)
     assert_equal(MIDI::Track::UNNAMED, @seq.name)
     assert_equal(MIDI::Sequence::DEFAULT_TEMPO, @seq.bpm)
+  end
+
+  def test_setting_format
+    assert_equal(MIDI::Sequence.new(0).format, 0)
+  end
+
+  def test_setting_an_invalid_format
+    assert_raise ArgumentError, 'format should be 0, 1 or 2' do
+        MIDI::Sequence.new(3)
+    end
+
+    assert_raise ArgumentError, 'format should be 0, 1 or 2' do
+        MIDI::Sequence.new(-1)
+    end
   end
 
   def test_pulses_to_seconds

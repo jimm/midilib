@@ -29,7 +29,7 @@ module MIDI
       def write_header
           @io.print 'MThd'
           write32(6)
-          write16(1)    # Ignore sequence format; write as format 1
+          write16(@seq.format)
           write16(@seq.tracks.length)
           write16(@seq.ppqn)
       end

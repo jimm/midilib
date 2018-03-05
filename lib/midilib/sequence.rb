@@ -42,7 +42,7 @@ module MIDI
     # MIDI::IO::SeqWriter. You can change this at any time.
     attr_accessor :writer_class
 
-    def initialize
+    def initialize(format = 1)
       @tracks = Array.new()
       @ppqn = 480
 
@@ -51,6 +51,10 @@ module MIDI
       @denom = 2
       @clocks = 24    # Bug fix  Nov 11, 2007 - this is not the same as ppqn!
       @qnotes = 8
+      if format > 2 or format < 0
+          raise ArgumentError, 'format should be 0, 1 or 2'
+      end
+      @format = format
 
       @reader_class = IO::SeqReader
       @writer_class = IO::SeqWriter
