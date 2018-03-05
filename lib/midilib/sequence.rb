@@ -21,8 +21,37 @@ module MIDI
     end
   end
 
+  class Format1Sequence
+    def initialize()
+      @seq = Sequence.new(1)
+    end
+
+    def add_track()
+      track = Track.new(@seq)
+      @seq.tracks.append(track)
+      track
+    end
+
+    def track(n)
+      @seq.tracks[n]
+    end
+
+    def write(io, proc = nil)	# :yields: track, num_tracks, index
+      @seq.write(io, proc)
+    end
+  end
+
   # A MIDI::Sequence contains MIDI::Track objects.
   class Sequence
+
+    def Sequence.from_format(format)
+      if format == 0
+        return Format0Sequence.new()
+      elsif format == 1
+        return Format1Sequence
+      end
+      raise ArgumentError, "format #{format} not supported"
+    end
 
     include Enumerable
 
