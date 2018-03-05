@@ -1,3 +1,4 @@
 html
 pkg
 .rbenv-version
+*.swp

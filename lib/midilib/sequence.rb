@@ -4,6 +4,23 @@ require 'midilib/measure.rb'
 
 module MIDI
 
+  class Format0Sequence
+    attr_accessor :track, :seq
+    def initialize()
+      @seq = Sequence.new(0)
+      @track = MIDI::Track.new(@seq)
+      @seq.tracks << @track
+    end
+
+    def track
+      @seq.tracks[0]
+    end
+
+    def write(io, proc = nil)	# :yields: track, num_tracks, index
+      @seq.write(io, proc)
+    end
+  end
+
   # A MIDI::Sequence contains MIDI::Track objects.
   class Sequence
 
