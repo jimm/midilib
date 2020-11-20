@@ -32,6 +32,9 @@ module MIDI
       @status = status
       @delta_time = delta_time
       @time_from_start = 0	# maintained by tracks
+      @print_note_names = false
+      @print_decimal_numbers = false
+      @print_channel_numbers_from_one = false
     end
     protected :initialize
 

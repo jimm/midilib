@@ -42,7 +42,6 @@ module MIDI
 
 	write_instrument(track.instrument)
 
-	prev_event = nil
 	prev_status = 0
 	track.events.each do |event|
           if !event.kind_of?(Realtime)
@@ -57,7 +56,6 @@ module MIDI
 
           @bytes_written += write_bytes(data)
 
-          prev_event = event
           prev_status = status
 	end
 
@@ -128,7 +126,6 @@ module MIDI
       def write16(val)
 	val = (-val | 0x8000) if val < 0
 
-	buffer = []
 	@io.putc((val >> 8) & 0xff)
 	@io.putc(val & 0xff)
 	@bytes_written += 2
