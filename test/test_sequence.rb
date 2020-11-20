@@ -43,7 +43,9 @@ class SequenceTester < Test::Unit::TestCase
     assert_equal(12, @seq.ppqn)
     assert_equal(12, @seq.length_to_delta(1))
     assert_equal(6, @seq.length_to_delta(0.5))
-    assert_equal(5, @seq.length_to_delta(0.49))
+    # rounding tests
+    assert_equal(6, @seq.length_to_delta(0.49))
+    assert_equal(5, @seq.length_to_delta(0.45))
   end
 
   def test_note_to_length

@@ -67,3 +67,8 @@ Adam Murray (adamjmurray on Github)
 @dylee on Github
 
     Submitted a patch that improves key signature event code and to_s.
+
+@willm on Github
+
+    Suggested that Sequence.length_to_delta round the result instead of
+    truncating it.

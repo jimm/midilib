@@ -113,11 +113,12 @@ module MIDI
     # For example, 1 is a quarter note, 1.0/32.0 is a 32nd note, 1.5 is a
     # dotted quarter, etc. Be aware when using division; 1/32 is zero due to
     # integer mathematics and rounding. Use floating-point numbers like 1.0
-    # and 32.0. This method always returns an integer.
+    # and 32.0. This method always returns an integer by calling `.round` on
+    # the floating-point result.
     #
     # See also note_to_delta and note_to_length.
     def length_to_delta(length)
-      return (@ppqn * length).to_i
+      return (@ppqn * length).round
     end
 
     # Returns the name of the first track (track zero). If there are no
