@@ -72,3 +72,9 @@ Adam Murray (adamjmurray on Github)
 
     Suggested that Sequence.length_to_delta round the result instead of
     truncating it.
+
+@kaorukobo on Github
+
+    Fixed a bug where the delta offset of META_SEQ_NAME and META_COPYRIGHT
+    events were incorrectly always set to 0. The delta time may be any
+    value (although META_COPYRIGHT should normally be 0).

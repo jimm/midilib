@@ -33,7 +33,6 @@ spec = Gem::Specification.new do |s|
 
     s.files = PKG_FILES.to_a
 
-    s.has_rdoc = true
     s.rdoc_options << '--main' << 'README.rdoc'
     s.extra_rdoc_files = ['README.rdoc', 'TODO.rdoc']
 

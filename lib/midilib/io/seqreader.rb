@@ -145,10 +145,8 @@ module MIDI
 
       def text(type, msg)
 	case type
-        when META_TEXT, META_LYRIC, META_CUE
+        when META_TEXT, META_LYRIC, META_CUE, META_SEQ_NAME, META_COPYRIGHT
           @track.events << MetaEvent.new(type, msg, @curr_ticks)
-	when META_SEQ_NAME, META_COPYRIGHT
-          @track.events << MetaEvent.new(type, msg, 0)
 	when META_INSTRUMENT
           @track.instrument = msg
 	when META_MARKER

@@ -7,12 +7,14 @@ $LOAD_PATH[0, 0] = File.dirname(__FILE__)
 
 require 'test/unit'
 require 'midilib'
+require 'midilib/consts'
 require 'event_equality'
 
 class IOTester < Test::Unit::TestCase
 
   SEQ_TEST_FILE = File.join(File.dirname(__FILE__), 'test.mid')
   OUTPUT_FILE = 'testout.mid'
+  TEMPFILE = '/tmp/midilib_test.mid'
 
   def compare_tracks(t0, t1)
     assert_equal(t0.name, t1.name, 'track names differ')
@@ -47,4 +49,30 @@ class IOTester < Test::Unit::TestCase
     assert_equal(MIDI::GM_PATCH_NAMES[0], seq.tracks[1].instrument)
   end
 
+  def test_preserve_meta_deltas
+    out_seq = MIDI::Sequence.new()
+    out_track = MIDI::Track.new(out_seq)
+    out_seq.tracks << out_track
+    out_track.events << MIDI::Tempo.new(MIDI::Tempo.bpm_to_mpq(120))
+    # Normally copyright and sequence name events are at time 0, but non-zero
+    # start times are allowed.
+    out_track.events << MIDI::MetaEvent.new(MIDI::META_COPYRIGHT, '(C) 1950 Donald Duck', 100)
+    out_track.events << MIDI::MetaEvent.new(MIDI::META_SEQ_NAME, 'Quack, Track 1', 200)
+    out_track.events << MIDI::NoteOn.new(0, 64, 127, 0)
+    out_track.events << MIDI::NoteOff.new(0, 64, 127, 100)
+    File.open('/tmp/midilib_test.mid', 'wb') { |file| out_seq.write(file) }
+
+    # Although start times are not written out to the MIDI file, we
+    # calculate them because we are about to compare the out events with the
+    # newly-read events which will have their start times set.
+    out_track.recalc_times
+
+    in_seq = MIDI::Sequence.new()
+    File.open(TEMPFILE, 'rb') { |file| in_seq.read(file) }
+    in_track = in_seq.tracks[0]
+    assert_equal(out_track.events.length, in_track.events.length)
+    out_track.events.each_with_index do |event, i|
+      assert_equal(event, in_track.events[i])
+    end
+  end
 end

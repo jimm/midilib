@@ -67,6 +67,7 @@ module MIDI
       # Bitmask of all channels used. Set when track is read in from
       # a MIDI file.
       @channels_used = 0
+      @instrument = nil
     end
 
     # Return track name. If there is no name, return UNNAMED.
