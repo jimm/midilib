@@ -2,6 +2,8 @@
 
 require 'midilib/event'
 require 'midilib/utils'
+require 'midilib/sequence'
+require 'midilib/track'
 
 module MIDI
 
@@ -9,8 +11,9 @@ module MIDI
 
     class SeqWriter
 
-      def initialize(seq, proc = nil) # :yields: num_tracks, index
+      def initialize(seq, proc = nil, midi_format = 1) # :yields: num_tracks, index
 	@seq = seq
+  @midi_format = midi_format
 	@update_block = block_given?() ? Proc.new() : proc
       end
 
@@ -20,6 +23,17 @@ module MIDI
 	@bytes_written = 0
 	write_header()
 	@update_block.call(nil, @seq.tracks.length, 0) if @update_block
+
+  if @midi_format == 0
+    # merge tracks before writing
+    merged_seq = Sequence.new()
+    merged_track = Track.new(merged_seq)
+    @seq.each do |track|
+      merged_track.merge(track.events)
+    end
+    @seq = merged_seq #replace
+  end
+
 	@seq.tracks.each_with_index do |track, i|
           write_track(track)
           @update_block.call(track, @seq.tracks.length, i) if @update_block
@@ -29,7 +43,7 @@ module MIDI
       def write_header
 	@io.print 'MThd'
 	write32(6)
-	write16(1)		# Ignore sequence format; write as format 1
+	write16(@midi_format)		# Ignore sequence format; write as format 1 or 0, default 1
 	write16(@seq.tracks.length)
 	write16(@seq.ppqn)
       end
