@@ -2,7 +2,7 @@
 
 require 'midilib/event'
 require 'midilib/utils'
-require 'midilib/sequence'
+# require 'midilib/sequence'
 require 'midilib/track'
 
 module MIDI
@@ -14,6 +14,7 @@ module MIDI
       def initialize(seq, midi_format = 1, proc = nil) # :yields: num_tracks, index
 	@seq = seq
         @midi_format = midi_format
+        @midi_format = 1 if @midi_format.nil? #default param isnt working?
 	@update_block = block_given?() ? Proc.new() : proc
       end
 

@@ -42,6 +42,17 @@ class IOTester < Test::Unit::TestCase
     File.delete(OUTPUT_FILE) if File.exist?(OUTPUT_FILE)
   end
 
+  def test_read_and_write_format_0
+    seq0 = MIDI::Sequence.new()
+    File.open(SEQ_TEST_FILE, 'rb') { |f| seq0.read(f) }
+    File.open(OUTPUT_FILE, 'wb') { |f| seq0.write(f, 0) }
+    seq1 = MIDI::Sequence.new()
+    File.open(OUTPUT_FILE, 'rb') { |f| seq1.read(f) }
+    compare_sequences(seq0, seq1)
+  ensure
+    File.delete(OUTPUT_FILE) if File.exist?(OUTPUT_FILE)
+  end
+
   def test_read_strings
     seq = MIDI::Sequence.new
     File.open(SEQ_TEST_FILE, 'rb') { |f| seq.read(f) }
