@@ -11,9 +11,9 @@ module MIDI
 
     class SeqWriter
 
-      def initialize(seq, proc = nil, midi_format = 1) # :yields: num_tracks, index
+      def initialize(seq, midi_format = 1, proc = nil) # :yields: num_tracks, index
 	@seq = seq
-  @midi_format = midi_format
+        @midi_format = midi_format
 	@update_block = block_given?() ? Proc.new() : proc
       end
 
@@ -24,15 +24,15 @@ module MIDI
 	write_header()
 	@update_block.call(nil, @seq.tracks.length, 0) if @update_block
 
-  if @midi_format == 0
-    # merge tracks before writing
-    merged_seq = Sequence.new()
-    merged_track = Track.new(merged_seq)
-    @seq.each do |track|
-      merged_track.merge(track.events)
-    end
-    @seq = merged_seq #replace
-  end
+        if @midi_format == 0
+            # merge tracks before writing
+            merged_seq = Sequence.new()
+            merged_track = Track.new(merged_seq)
+            @seq.each do |track|
+                merged_track.merge(track.events)
+            end
+            @seq = merged_seq #replace
+        end
 
 	@seq.tracks.each_with_index do |track, i|
           write_track(track)
