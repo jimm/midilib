@@ -13,7 +13,7 @@ module MIDI
 
       def initialize(seq, midi_format = 1, proc = nil) # :yields: num_tracks, index
 	@seq = seq
-        @midi_format = @midi_format.nil? ? 1 : midi_format
+        @midi_format = midi_format || 1
 	@update_block = block_given?() ? Proc.new() : proc
       end
 
