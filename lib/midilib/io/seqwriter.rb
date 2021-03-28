@@ -9,13 +9,26 @@ module MIDI
 
     class SeqWriter
 
-      def initialize(seq, proc = nil) # :yields: num_tracks, index
+      def initialize(seq, midi_format = 1, proc = nil) # :yields: num_tracks, index
 	@seq = seq
+        @midi_format = midi_format || 1
 	@update_block = block_given?() ? Proc.new() : proc
       end
 
       # Writes a MIDI format 1 file.
       def write_to(io)
+	      
+	if @midi_format == 0
+          # merge tracks before writing
+          merged_seq = Sequence.new()
+          merged_track = Track.new(merged_seq)
+          merged_seq.tracks << merged_track
+          @seq.each do |track|
+            merged_track.merge(track.events)
+          end
+          @seq = merged_seq #replace
+        end
+	      
 	@io = io
 	@bytes_written = 0
 	write_header()
@@ -29,7 +42,7 @@ module MIDI
       def write_header
 	@io.print 'MThd'
 	write32(6)
-	write16(1)		# Ignore sequence format; write as format 1
+	write16(@midi_format)		# Ignore sequence format; write as format 1 or 0, default 1
 	write16(@seq.tracks.length)
 	write16(@seq.ppqn)
       end
