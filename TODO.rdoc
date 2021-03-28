@@ -26,8 +26,6 @@ public methods like +beats_per_minute_at_seconds+ and
 
 * Implement key signature in SeqReader.
 
-* Format 0 files.
-
 * Format 2 files(?).
 
 == Documentation

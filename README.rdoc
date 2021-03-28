@@ -55,10 +55,9 @@ runs all of the tests in the test directory.
 
 == Overview
 
-The midilib MIDI file reader only understands MIDI file format 1, where a
-sequence is made up of multiple tracks. It doesn't yet understand format 0
-(a single track containing all events) or format 2 (a collection of format 0
-files in one file).
+midilib can read and write MIDI file formats 0 (one single track) or 1
+multiple tracks. By default, it writes format 1 which is the most common
+format. MIDI file format 2 is not yet supported.
 
 === MIDI::Sequence
 

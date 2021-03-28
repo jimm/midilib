@@ -140,9 +140,9 @@ module MIDI
       reader.read_from(io)
     end
 
-    # Writes to a MIDI stream.
-    def write(io, proc = nil)	# :yields: track, num_tracks, index
-      writer = @writer_class.new(self, block_given?() ? Proc.new() : proc)
+    # Writes to a MIDI stream. +midi_format+ defaults to 1.
+    def write(io, midi_format = 1, proc = nil) # :yields: track, num_tracks, index
+      writer = @writer_class.new(self, midi_format, block_given?() ? Proc.new() : proc)
       writer.write_to(io)
     end
 

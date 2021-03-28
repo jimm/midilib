@@ -78,3 +78,7 @@ Adam Murray (adamjmurray on Github)
     Fixed a bug where the delta offset of META_SEQ_NAME and META_COPYRIGHT
     events were incorrectly always set to 0. The delta time may be any
     value (although META_COPYRIGHT should normally be 0).
+
+@rhelsing on Github
+
+    Added the ability to save MIDI format 0 files.
