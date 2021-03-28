@@ -31,11 +31,11 @@ class IOTester < Test::Unit::TestCase
     s0.each_with_index { |track0, i| compare_tracks(track0, s1.tracks[i]) }
   end
   
-  def compare_sequences_format_0(s0, s1)
-    assert_equal(s0.name, s1.name, 'sequence names differ')
-    assert_equal(1, s1.tracks.length, 'number of tracks differ')
-    format_1_count = format_1_sequence.tracks.map{|t| t.events.count }.reduce(:+)
-    format_0_count = format_0_sequence.tracks.map{|t| t.events.count }.reduce(:+)
+  def compare_sequences_format_0(multitrack_seq, format0_seq)
+    assert_equal(multitrack_seq.name, format0_seq.name, 'sequence names differ')
+    assert_equal(1, format0_seq.tracks.length, 'number of tracks differ')
+    format_1_count = multitrack_seq.tracks.map{|t| t.events.count }.reduce(:+)
+    format_0_count = format0_seq.tracks.map{|t| t.events.count }.reduce(:+)
     assert_equal(format_1_count, format_0_count, 'same number of total events')
   end
 
