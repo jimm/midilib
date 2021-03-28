@@ -2,8 +2,6 @@
 
 require 'midilib/event'
 require 'midilib/utils'
-# require 'midilib/sequence'
-require 'midilib/track'
 
 module MIDI
 
