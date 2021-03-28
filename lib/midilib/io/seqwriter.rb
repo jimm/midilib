@@ -19,21 +19,22 @@ module MIDI
 
       # Writes a MIDI format 1 file.
       def write_to(io)
-	@io = io
-	@bytes_written = 0
-	write_header()
-	@update_block.call(nil, @seq.tracks.length, 0) if @update_block
-
-        if @midi_format == 0
+	      
+	if @midi_format == 0
             # merge tracks before writing
             merged_seq = Sequence.new()
             merged_track = Track.new(merged_seq)
+            merged_seq.tracks << merged_track
             @seq.each do |track|
                 merged_track.merge(track.events)
             end
             @seq = merged_seq #replace
         end
-
+	      
+	@io = io
+	@bytes_written = 0
+	write_header()
+	@update_block.call(nil, @seq.tracks.length, 0) if @update_block
 	@seq.tracks.each_with_index do |track, i|
           write_track(track)
           @update_block.call(track, @seq.tracks.length, i) if @update_block
