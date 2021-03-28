@@ -32,13 +32,13 @@ class EventTester < Test::Unit::TestCase
   def test_pitch_bend
     e = MIDI::PitchBend.new(0, 128)
     b = e.data_as_bytes
-    assert_equal(0, b[1])	# lsb, 7 bits
-    assert_equal(1, b[2])	# msb, 7 bits
+    assert_equal(0, b[1])       # lsb, 7 bits
+    assert_equal(1, b[2])       # msb, 7 bits
 
     e.value = (3 << 7) + 42
     b = e.data_as_bytes
-    assert_equal(42, b[1])	# lsb, 7 bits
-    assert_equal(3, b[2])	# msb, 7 bits
+    assert_equal(42, b[1])      # lsb, 7 bits
+    assert_equal(3, b[2])       # msb, 7 bits
   end
 
   def test_quantize_1

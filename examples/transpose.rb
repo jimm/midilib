@@ -33,7 +33,7 @@ transpose = 12
 channel = 0
 
 g = GetoptLong.new(['--transpose', '-t', GetoptLong::REQUIRED_ARGUMENT],
-		   ['--channel', '-c', GetoptLong::REQUIRED_ARGUMENT])
+                   ['--channel', '-c', GetoptLong::REQUIRED_ARGUMENT])
 g.each do |name, arg|
   case name
   when '--transpose'

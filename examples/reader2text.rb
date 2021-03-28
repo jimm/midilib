@@ -43,7 +43,7 @@ class TextTranslator < MIDI::IO::MIDIFile
 
   def header(format, ntrks, division)
     puts "header: format = #{format}, ntrks = #{ntrks}," +
-      " division = #{division}"
+         " division = #{division}"
 
     @ntrks = ntrks
     @update_block.call(nil, @ntrks, 0) if @update_block
@@ -63,7 +63,7 @@ class TextTranslator < MIDI::IO::MIDIFile
     # Write message for any pending note on messages
     @pending.each_with_index do |num, chan|
       puts "pending note off missing for chan #{num >> 8}," +
-      " note #{num & 0xff}" if note_obj
+           " note #{num & 0xff}" if note_obj
     end
     @pending = nil
 
@@ -97,7 +97,7 @@ class TextTranslator < MIDI::IO::MIDIFile
       end
     end
     puts "note off with no earlier note on (ch #{chan}, note" +
-      " #{note}, vel #{vel})"
+         " #{note}, vel #{vel})"
   end
 
   def pressure(chan, note, press)
@@ -173,7 +173,7 @@ class TextTranslator < MIDI::IO::MIDIFile
   def time_signature(numer, denom, clocks, qnotes)
     pdelta()
     puts "time sig numer #{numer}, denom #{denom}, clocks #{clocks}," +
-      " qnotes #{qnotes}"
+         " qnotes #{qnotes}"
   end
 
   def smpte(hour, min, sec, frame, fract)
@@ -183,9 +183,9 @@ class TextTranslator < MIDI::IO::MIDIFile
 
   def tempo(microsecs)
     pdelta()
-    bpm = 1.0 / microsecs	# quarter notes per microsecond
-    bpm *= 1000000.0	# quarter notes per second
-    bpm *= 60.0		# quarter notes per minute
+    bpm = 1.0 / microsecs       # quarter notes per microsecond
+    bpm *= 1000000.0            # quarter notes per second
+    bpm *= 60.0                 # quarter notes per minute
     puts "tempo microsecs pqn = #{microsecs} (#{bpm} bpm)"
   end
 

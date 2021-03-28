@@ -124,8 +124,8 @@ class TrackTester < Test::Unit::TestCase
   def test_quantize
     @seq.ppqn = 80
 
-    @track.quantize(1)	# Quantize to a quarter note
-    assert_equal(80, @track.events[0].time_from_start) # was 100
+    @track.quantize(1)          # Quantize to a quarter note
+    assert_equal(80, @track.events[0].time_from_start)  # was 100
     assert_equal(240, @track.events[1].time_from_start) # was 200
     assert_equal(320, @track.events[2].time_from_start) # was 300
   end

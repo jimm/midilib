@@ -282,7 +282,7 @@ module MIDI
     #--
     # Reeds
     #++
-    "Soprano Sax",		# 64
+    "Soprano Sax",              # 64
     "Alto Sax",
     "Tenor Sax",
     "Baritone Sax",
@@ -374,53 +374,52 @@ module MIDI
   GM_DRUM_NOTE_LOWEST = 35
   # General MIDI drum channel note names.
   GM_DRUM_NOTE_NAMES = [
-    "Acoustic Bass Drum",	# 35, C
-    "Bass Drum 1",		# 36, C#
-    "Side Stick",		# 37, D
+    "Acoustic Bass Drum",       # 35, C
+    "Bass Drum 1",              # 36, C#
+    "Side Stick",               # 37, D
     "Acoustic Snare",           # 38, D#
-    "Hand Clap",		# 39, E
+    "Hand Clap",                # 39, E
     "Electric Snare",           # 40, F
     "Low Floor Tom",            # 41, F#
     "Closed Hi Hat",            # 42, G
     "High Floor Tom",           # 43, G#
-    "Pedal Hi-Hat",		# 44, A
+    "Pedal Hi-Hat",             # 44, A
     "Low Tom",                  # 45, A#
-    "Open Hi-Hat",		# 46, B
-    "Low-Mid Tom",		# 47, C
-    "Hi Mid Tom",		# 48, C#
+    "Open Hi-Hat",              # 46, B
+    "Low-Mid Tom",              # 47, C
+    "Hi Mid Tom",               # 48, C#
     "Crash Cymbal 1",           # 49, D
     "High Tom",                 # 50, D#
     "Ride Cymbal 1",            # 51, E
     "Chinese Cymbal",           # 52, F
-    "Ride Bell",		# 53, F#
-    "Tambourine",		# 54, G
+    "Ride Bell",                # 53, F#
+    "Tambourine",               # 54, G
     "Splash Cymbal",            # 55, G#
     "Cowbell",                  # 56, A
     "Crash Cymbal 2",           # 57, A#
-    "Vibraslap",		# 58, B
+    "Vibraslap",                # 58, B
     "Ride Cymbal 2",            # 59, C
     "Hi Bongo",                 # 60, C#
-    "Low Bongo",		# 61, D
+    "Low Bongo",                # 61, D
     "Mute Hi Conga",            # 62, D#
     "Open Hi Conga",            # 63, E
-    "Low Conga",		# 64, F
-    "High Timbale",		# 65, F#
-    "Low Timbale",		# 66, G
-    "High Agogo",		# 67, G#
-    "Low Agogo",		# 68, A
+    "Low Conga",                # 64, F
+    "High Timbale",             # 65, F#
+    "Low Timbale",              # 66, G
+    "High Agogo",               # 67, G#
+    "Low Agogo",                # 68, A
     "Cabasa",                   # 69, A#
     "Maracas",                  # 70, B
     "Short Whistle",            # 71, C
-    "Long Whistle",		# 72, C#
-    "Short Guiro",		# 73, D
-    "Long Guiro",		# 74, D#
+    "Long Whistle",             # 72, C#
+    "Short Guiro",              # 73, D
+    "Long Guiro",               # 74, D#
     "Claves",                   # 75, E
     "Hi Wood Block",            # 76, F
     "Low Wood Block",           # 77, F#
-    "Mute Cuica",		# 78, G
-    "Open Cuica",		# 79, G#
+    "Mute Cuica",               # 78, G
+    "Open Cuica",               # 79, G#
     "Mute Triangle",            # 80, A
-    "Open Triangle"		# 81, A#
+    "Open Triangle"             # 81, A#
   ]
-
 end

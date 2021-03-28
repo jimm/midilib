@@ -31,7 +31,7 @@ module MIDI
     def initialize(status = 0, delta_time = 0)
       @status = status
       @delta_time = delta_time
-      @time_from_start = 0	# maintained by tracks
+      @time_from_start = 0      # maintained by tracks
       @print_note_names = false
       @print_decimal_numbers = false
       @print_channel_numbers_from_one = false
@@ -142,7 +142,7 @@ module MIDI
 
     def to_s
       return super <<
-        "on #{note_to_s} #{number_to_s(@velocity)}"
+             "on #{note_to_s} #{number_to_s(@velocity)}"
     end
   end
 
@@ -157,7 +157,7 @@ module MIDI
 
     def to_s
       return super <<
-        "off #{note_to_s} #{number_to_s(@velocity)}"
+             "off #{note_to_s} #{number_to_s(@velocity)}"
     end
   end
 
@@ -177,7 +177,7 @@ module MIDI
     end
     def to_s
       return super <<
-        "poly press #{channel_to_s(@channel)} #{note_to_s} #{number_to_s(@velocity)}"
+             "poly press #{channel_to_s(@channel)} #{note_to_s} #{number_to_s(@velocity)}"
     end
   end
 
@@ -644,22 +644,22 @@ module MIDI
     private
     def majorkeys
       @majorkeys ||= ['C flat', 'G flat', 'D flat', 'A flat', 'E flat', 'B flat', 'F',
-        'C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#']
+                      'C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#']
     end
     
     def minorkeys
       @minorkeys ||= ['a flat', 'e flat', 'b flat', 'f', 'c', 'g', 'd',
-        'a', 'e', 'b', 'f#', 'c#', 'g#', 'd#', 'a#']
+                      'a', 'e', 'b', 'f#', 'c#', 'g#', 'd#', 'a#']
     end
 
     def majorkey_codes
       @majorkeys_codes ||= ['Cb', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F',
-        'C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#']
+                            'C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#']
     end
     
     def minorkey_codes
       @minorkeys_codes ||= ['Abm', 'Ebm', 'Bbm', 'Fm', 'Cm', 'Gm', 'Dm',
-        'Am', 'Em', 'Bm', 'F#m', 'C#m', 'G#m', 'D#m', 'A#m']
+                            'Am', 'Em', 'Bm', 'F#m', 'C#m', 'G#m', 'D#m', 'A#m']
     end
   end
 

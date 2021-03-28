@@ -47,9 +47,9 @@ module MIDI
       @ppqn = 480
 
       # Time signature
-      @numer = 4		# Numer + denom = 4/4 time default
+      @numer = 4                # Numer + denom = 4/4 time default
       @denom = 2
-      @clocks = 24    # Bug fix  Nov 11, 2007 - this is not the same as ppqn!
+      @clocks = 24   # Bug fix  Nov 11, 2007 - this is not the same as ppqn!
       @qnotes = 8
 
       @reader_class = IO::SeqReader
@@ -135,7 +135,7 @@ module MIDI
     end
 
     # Reads a MIDI stream.
-    def read(io, proc = nil)	# :yields: track, num_tracks, index
+    def read(io, proc = nil)    # :yields: track, num_tracks, index
       reader = @reader_class.new(self, block_given?() ? Proc.new() : proc)
       reader.read_from(io)
     end
@@ -147,7 +147,7 @@ module MIDI
     end
 
     # Iterates over the tracks.
-    def each			# :yields: track
+    def each                    # :yields: track
       @tracks.each { |track| yield track }
     end
 

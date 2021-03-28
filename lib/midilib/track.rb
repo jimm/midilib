@@ -124,7 +124,7 @@ module MIDI
     end
 
     # Iterate over events.
-    def each			# :yields: event
+    def each                    # :yields: event
       @events.each { |event| yield event }
     end
 
