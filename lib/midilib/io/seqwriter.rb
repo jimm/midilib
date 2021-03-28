@@ -19,14 +19,14 @@ module MIDI
       def write_to(io)
 	      
 	if @midi_format == 0
-            # merge tracks before writing
-            merged_seq = Sequence.new()
-            merged_track = Track.new(merged_seq)
-            merged_seq.tracks << merged_track
-            @seq.each do |track|
-                merged_track.merge(track.events)
-            end
-            @seq = merged_seq #replace
+          # merge tracks before writing
+          merged_seq = Sequence.new()
+          merged_track = Track.new(merged_seq)
+          merged_seq.tracks << merged_track
+          @seq.each do |track|
+            merged_track.merge(track.events)
+          end
+          @seq = merged_seq #replace
         end
 	      
 	@io = io
