@@ -30,6 +30,11 @@ class IOTester < Test::Unit::TestCase
                  'number of tracks differ')
     s0.each_with_index { |track0, i| compare_tracks(track0, s1.tracks[i]) }
   end
+  
+  def compare_sequences_format_0(s0, s1)
+    assert_equal(s0.name, s1.name, 'sequence names differ')
+    assert_equal(1, s1.tracks.length, 'number of tracks differ')
+  end
 
   def test_read_and_write
     seq0 = MIDI::Sequence.new()
@@ -48,7 +53,7 @@ class IOTester < Test::Unit::TestCase
     File.open(OUTPUT_FILE, 'wb') { |f| seq0.write(f, 0) }
     seq1 = MIDI::Sequence.new()
     File.open(OUTPUT_FILE, 'rb') { |f| seq1.read(f) }
-    compare_sequences(seq0, seq1)
+    compare_sequences_format_0(seq0, seq1)
   ensure
     File.delete(OUTPUT_FILE) if File.exist?(OUTPUT_FILE)
   end
