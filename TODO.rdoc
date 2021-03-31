@@ -26,6 +26,8 @@ public methods like +beats_per_minute_at_seconds+ and
 
 * Implement key signature in SeqReader.
 
+* Ignore unknown chunks in MIDI files. See the MIDI file spec.
+
 * Format 2 files(?).
 
 == Documentation
