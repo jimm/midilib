@@ -19,7 +19,7 @@ and later and can also be found in the Ruby Application Archive
 (http://raa.ruby-lang.org).
 
 To rebuild the gem or RDocs or run the tests easily, you can use the Rakefile
-which requires Rake (http://rake.rubyforge.org).
+which requires Rake (https://github.com/ruby/rake).
 
 
 == Installation
