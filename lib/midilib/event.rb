@@ -1,5 +1,5 @@
-require 'midilib/consts'
-require 'midilib/utils'
+require_relative 'consts'
+require_relative 'utils'
 
 module MIDI
 
@@ -633,20 +633,20 @@ module MIDI
       minor_key? ? "key sig #{minorkeys[sharpflat + 7]} minor" :
         "key sig #{majorkeys[sharpflat + 7]} major"
     end
-    
+
     # Returns the key signature as a code.
     # Example: "Ab" for "key sig A flat major"
     def to_code
       minor_key? ? minorkey_codes[sharpflat + 7] :
         majorkey_codes[sharpflat + 7]
     end
-    
+
     private
     def majorkeys
       @majorkeys ||= ['C flat', 'G flat', 'D flat', 'A flat', 'E flat', 'B flat', 'F',
                       'C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#']
     end
-    
+
     def minorkeys
       @minorkeys ||= ['a flat', 'e flat', 'b flat', 'f', 'c', 'g', 'd',
                       'a', 'e', 'b', 'f#', 'c#', 'g#', 'd#', 'a#']
@@ -656,7 +656,7 @@ module MIDI
       @majorkeys_codes ||= ['Cb', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F',
                             'C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#']
     end
-    
+
     def minorkey_codes
       @minorkeys_codes ||= ['Abm', 'Ebm', 'Bbm', 'Fm', 'Cm', 'Gm', 'Dm',
                             'Am', 'Em', 'Bm', 'F#m', 'C#m', 'G#m', 'D#m', 'A#m']

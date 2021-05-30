@@ -1,5 +1,5 @@
-require 'midilib/event'
-require 'midilib/mergesort'
+require_relative 'event'
+require_relative  'mergesort'
 
 
 module MIDI

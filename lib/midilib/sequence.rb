@@ -1,6 +1,6 @@
-require 'midilib/io/seqreader'
-require 'midilib/io/seqwriter'
-require 'midilib/measure.rb'
+require_relative 'io/seqreader'
+require_relative 'io/seqwriter'
+require_relative 'measure.rb'
 
 module MIDI
 
@@ -135,14 +135,14 @@ module MIDI
     end
 
     # Reads a MIDI stream.
-    def read(io, proc = nil)    # :yields: track, num_tracks, index
-      reader = @reader_class.new(self, block_given?() ? Proc.new() : proc)
+    def read(io, &block)    # :yields: track, num_tracks, index
+      reader = @reader_class.new(self, &block)
       reader.read_from(io)
     end
 
     # Writes to a MIDI stream. +midi_format+ defaults to 1.
-    def write(io, midi_format = 1, proc = nil) # :yields: track, num_tracks, index
-      writer = @writer_class.new(self, midi_format, block_given?() ? Proc.new() : proc)
+    def write(io, midi_format = 1, &block) # :yields: track, num_tracks, index
+      writer = @writer_class.new(self, midi_format, &block)
       writer.write_to(io)
     end
 

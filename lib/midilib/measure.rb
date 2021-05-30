@@ -1,4 +1,4 @@
-require 'midilib/consts'
+require_relative 'consts'
 
 module MIDI
 
