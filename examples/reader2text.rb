@@ -21,11 +21,11 @@ DEFAULT_MIDI_TEST_FILE = 'NoFences.mid'
 
 class TextTranslator < MIDI::IO::MIDIFile
 
-  def initialize(seq, proc = nil)
+  def initialize(seq, &block)
     super()
     @seq = seq
     @track = nil
-    @update_block = block_given?() ? Proc.new() : proc
+    @update_block = block
   end
 
   # Generate a unique number for a channel/note combination. This is used

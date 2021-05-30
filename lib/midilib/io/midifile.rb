@@ -1,4 +1,4 @@
-require 'midilib/consts'
+require_relative '../consts'
 
 if RUBY_VERSION < '1.9'
   class IO

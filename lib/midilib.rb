@@ -5,11 +5,11 @@
 #
 # See the README.rdoc file or http://midilib.rubyforge.org for details.
 
-require 'midilib/info'
-require 'midilib/sequence'
-require 'midilib/track'
-require 'midilib/io/seqreader'
-require 'midilib/io/seqwriter'
+require_relative 'midilib/info'
+require_relative 'midilib/sequence'
+require_relative 'midilib/track'
+require_relative 'midilib/io/seqreader'
+require_relative 'midilib/io/seqwriter'
 
 # --
 # consts.rb, utils.rb, and event.rb are included by these files.
