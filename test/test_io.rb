@@ -11,7 +11,6 @@ require 'midilib/consts'
 require 'event_equality'
 
 class IOTester < Test::Unit::TestCase
-
   SEQ_TEST_FILE = File.join(File.dirname(__FILE__), 'test.mid')
   OUTPUT_FILE = 'testout.mid'
   TEMPFILE = '/tmp/midilib_test.mid'
@@ -30,20 +29,20 @@ class IOTester < Test::Unit::TestCase
                  'number of tracks differ')
     s0.each_with_index { |track0, i| compare_tracks(track0, s1.tracks[i]) }
   end
-  
+
   def compare_sequences_format_0(multitrack_seq, format0_seq)
     assert_equal(multitrack_seq.name, format0_seq.name, 'sequence names differ')
     assert_equal(1, format0_seq.tracks.length, 'number of tracks differ')
-    format_1_count = multitrack_seq.tracks.map{|t| t.events.count }.reduce(:+)
-    format_0_count = format0_seq.tracks.map{|t| t.events.count }.reduce(:+)
+    format_1_count = multitrack_seq.tracks.map { |t| t.events.count }.reduce(:+)
+    format_0_count = format0_seq.tracks.map { |t| t.events.count }.reduce(:+)
     assert_equal(format_1_count, format_0_count, 'same number of total events')
   end
 
   def test_read_and_write
-    seq0 = MIDI::Sequence.new()
+    seq0 = MIDI::Sequence.new
     File.open(SEQ_TEST_FILE, 'rb') { |f| seq0.read(f) }
     File.open(OUTPUT_FILE, 'wb') { |f| seq0.write(f) }
-    seq1 = MIDI::Sequence.new()
+    seq1 = MIDI::Sequence.new
     File.open(OUTPUT_FILE, 'rb') { |f| seq1.read(f) }
     compare_sequences(seq0, seq1)
   ensure
@@ -51,12 +50,46 @@ class IOTester < Test::Unit::TestCase
   end
 
   def test_read_and_write_format_0
-    seq0 = MIDI::Sequence.new()
+    seq0 = MIDI::Sequence.new
     File.open(SEQ_TEST_FILE, 'rb') { |f| seq0.read(f) }
     File.open(OUTPUT_FILE, 'wb') { |f| seq0.write(f, 0) }
-    seq1 = MIDI::Sequence.new()
+    seq1 = MIDI::Sequence.new
     File.open(OUTPUT_FILE, 'rb') { |f| seq1.read(f) }
     compare_sequences_format_0(seq0, seq1)
+  ensure
+    File.delete(OUTPUT_FILE) if File.exist?(OUTPUT_FILE)
+  end
+
+  def test_read_callback
+    seq = MIDI::Sequence.new
+    names = []
+    num_tracks = -1
+    File.open(SEQ_TEST_FILE, 'rb') do |f|
+      seq.read(f) do |track, ntracks, i|
+        names << (track ? track.name : nil)
+        num_tracks = ntracks
+      end
+    end
+    assert_equal(names, [nil, 'Sequence Name', 'My New Track'])
+    assert_equal(num_tracks, 2)
+  ensure
+    File.delete(OUTPUT_FILE) if File.exist?(OUTPUT_FILE)
+  end
+
+  def test_write_callback
+    seq = MIDI::Sequence.new
+    File.open(SEQ_TEST_FILE, 'rb') { |f| seq.read(f) }
+
+    names = []
+    num_tracks = -1
+    File.open(OUTPUT_FILE, 'wb') do |f|
+      seq.write(f) do |track, ntracks, i|
+        names << (track ? track.name : nil)
+        num_tracks = ntracks
+      end
+    end
+    assert_equal(names, [nil, 'Sequence Name', 'My New Track'])
+    assert_equal(num_tracks, 2)
   ensure
     File.delete(OUTPUT_FILE) if File.exist?(OUTPUT_FILE)
   end
@@ -69,7 +102,7 @@ class IOTester < Test::Unit::TestCase
   end
 
   def test_preserve_meta_deltas
-    out_seq = MIDI::Sequence.new()
+    out_seq = MIDI::Sequence.new
     out_track = MIDI::Track.new(out_seq)
     out_seq.tracks << out_track
     out_track.events << MIDI::Tempo.new(MIDI::Tempo.bpm_to_mpq(120))
@@ -86,7 +119,7 @@ class IOTester < Test::Unit::TestCase
     # newly-read events which will have their start times set.
     out_track.recalc_times
 
-    in_seq = MIDI::Sequence.new()
+    in_seq = MIDI::Sequence.new
     File.open(TEMPFILE, 'rb') { |file| in_seq.read(file) }
     in_track = in_seq.tracks[0]
     assert_equal(out_track.events.length, in_track.events.length)
