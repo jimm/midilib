@@ -4,11 +4,8 @@ require_relative '../event'
 require_relative '../utils'
 
 module MIDI
-
   module IO
-
     class SeqWriter
-
       def initialize(seq, midi_format = 1, &block) # :yields: num_tracks, index
         @seq = seq
         @midi_format = midi_format || 1
@@ -19,18 +16,18 @@ module MIDI
       def write_to(io)
         if @midi_format == 0
           # merge tracks before writing
-          merged_seq = Sequence.new()
+          merged_seq = Sequence.new
           merged_track = Track.new(merged_seq)
           merged_seq.tracks << merged_track
           @seq.each do |track|
             merged_track.merge(track.events)
           end
-          @seq = merged_seq #replace
+          @seq = merged_seq # replace
         end
 
         @io = io
         @bytes_written = 0
-        write_header()
+        write_header
         @update_block.call(nil, @seq.tracks.length, 0) if @update_block
         @seq.tracks.each_with_index do |track, i|
           write_track(track)
@@ -41,14 +38,14 @@ module MIDI
       def write_header
         @io.print 'MThd'
         write32(6)
-        write16(@midi_format)                # Ignore sequence format; write as format 1 or 0, default 1
+        write16(@midi_format) # Ignore sequence format; write as format 1 or 0, default 1
         write16(@seq.tracks.length)
         write16(@seq.ppqn)
       end
 
       def write_track(track)
         @io.print 'MTrk'
-        track_size_file_pos = @io.tell()
+        track_size_file_pos = @io.tell
         write32(0)                # Dummy byte count; overwritten later
         @bytes_written = 0        # Reset after previous write
 
@@ -56,11 +53,9 @@ module MIDI
 
         prev_status = 0
         track.events.each do |event|
-          if !event.kind_of?(Realtime)
-            write_var_len(event.delta_time)
-          end
+          write_var_len(event.delta_time) unless event.is_a?(Realtime)
 
-          data = event.data_as_bytes()
+          data = event.data_as_bytes
           status = data[0] # status byte plus channel number, if any
 
           # running status byte
@@ -74,7 +69,7 @@ module MIDI
         # Write track end event.
         event = MetaEvent.new(META_TRACK_END)
         write_var_len(0)
-        @bytes_written += write_bytes(event.data_as_bytes())
+        @bytes_written += write_bytes(event.data_as_bytes)
 
         # Go back to beginning of track data and write number of bytes,
         # then come back here to end of file.
@@ -100,24 +95,24 @@ module MIDI
         # exactly the same, the rest is trivial. If it's note on/note off,
         # we can combine those further.
         if status == prev_status
-          data[0,1] = []        # delete status byte from data
-          return status + chan
+          data[0, 1] = [] # delete status byte from data
+          status + chan
         elsif status == NOTE_OFF && data[2] == 64
           # If we see a note off and the velocity is 64, we can store
           # a note on with a velocity of 0. If the velocity isn't 64
           # then storing a note on would be bad because the would be
           # changed to 64 when reading the file back in.
-          data[2] = 0                # set vel to 0; do before possible shrinking
+          data[2] = 0 # set vel to 0; do before possible shrinking
           status = NOTE_ON + chan
           if prev_status == NOTE_ON
-            data[0,1] = []        # delete status byte
+            data[0, 1] = [] # delete status byte
           else
             data[0] = status
           end
-          return status
+          status
         else
           # Can't compress data
-          return status + chan
+          status + chan
         end
       end
 
@@ -126,7 +121,7 @@ module MIDI
 
         event = MetaEvent.new(META_INSTRUMENT, instrument)
         write_var_len(0)
-        data = event.data_as_bytes()
+        data = event.data_as_bytes
         @bytes_written += write_bytes(data)
       end
 
@@ -158,6 +153,5 @@ module MIDI
         bytes.length
       end
     end
-
   end
 end

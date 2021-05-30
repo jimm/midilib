@@ -27,7 +27,7 @@ if filename == '-x'
 end
 
 # Read from MIDI file
-seq = MIDI::Sequence.new()
+seq = MIDI::Sequence.new
 
 File.open(filename || DEFAULT_MIDI_TEST_FILE, 'rb') do |file|
   # The block we pass in to Sequence.read is called at the end of every
@@ -41,12 +41,13 @@ t0 = seq.tracks[0]
 unless include_tempo_track
   s = MIDI::Sequence.new
   s.tracks << t0
-  File.open("tempo_track.mid", 'wb') { | file | s.write(file) }
+  File.open('tempo_track.mid', 'wb') { |file| s.write(file) }
 end
 seq.each_with_index do |track, i|
   next unless i > 0
+
   s = MIDI::Sequence.new
   s.tracks << t0 if include_tempo_track
   s.tracks << track
-  File.open("#{track.name}.mid", 'wb') { | file | s.write(file) }
+  File.open("#{track.name}.mid", 'wb') { |file| s.write(file) }
 end

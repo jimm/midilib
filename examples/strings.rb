@@ -15,7 +15,7 @@ require 'midilib/consts'
 
 DEFAULT_MIDI_TEST_FILE = 'NoFences.mid'
 
-seq = MIDI::Sequence.new()
+seq = MIDI::Sequence.new
 File.open(ARGV[0] || DEFAULT_MIDI_TEST_FILE, 'rb') do |file|
   # The block we pass in to Sequence.read is called at the end of every
   # track read. It is optional, but is useful for progress reports.
@@ -27,8 +27,8 @@ end
 include MIDI
 seq.each do |track|
   track.each do |event|
-    puts event.data if event.kind_of?(MIDI::MetaEvent) &&
-    [META_TEXT, META_COPYRIGHT, META_SEQ_NAME, META_INSTRUMENT,
-      META_LYRIC, META_CUE, META_MARKER].include?(event.meta_type)
+    puts event.data if event.is_a?(MIDI::MetaEvent) &&
+                       [META_TEXT, META_COPYRIGHT, META_SEQ_NAME, META_INSTRUMENT,
+                        META_LYRIC, META_CUE, META_MARKER].include?(event.meta_type)
   end
 end

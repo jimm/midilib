@@ -14,7 +14,7 @@ require 'midilib/sequence'
 require 'midilib/consts'
 include MIDI
 
-seq = Sequence.new()
+seq = Sequence.new
 
 # Create a first track for the sequence. This holds tempo events and stuff
 # like that.

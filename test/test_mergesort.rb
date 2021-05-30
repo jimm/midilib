@@ -28,7 +28,7 @@ class MergesortTester < Test::Unit::TestCase
     # Recalc sorts. Make sure note off/note on pair at t 100 are in the
     # correct order.
     track.recalc_delta_from_times
-    
+
     # These tests would fail before we moved to mergesort.
     assert_equal(e1, track.events[0])
     assert_equal(e2, track.events[1])

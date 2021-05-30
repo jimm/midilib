@@ -12,9 +12,7 @@
 #
 # This code borrowed from 'Moser' http://codesnippets.joyent.com/posts/show/1699
 def mergesort(arr, &cmp)
-  if cmp == nil
-    cmp = lambda { |a, b| a <=> b }
-  end
+  cmp = ->(a, b) { a <=> b } if cmp.nil?
   if arr.size <= 1
     arr.dup
   else
@@ -25,17 +23,17 @@ end
 
 def mergesort_split(arr)
   n = (arr.length / 2).floor - 1
-  [arr[0..n], arr[n+1..-1]]
+  [arr[0..n], arr[n + 1..-1]]
 end
 
 def mergesort_merge(first, second, &predicate)
   result = []
   until first.empty? || second.empty?
-    if predicate.call(first.first, second.first) <= 0
-      result << first.shift
-    else
-      result << second.shift
-    end
+    result << if predicate.call(first.first, second.first) <= 0
+                first.shift
+              else
+                second.shift
+              end
   end
   result.concat(first).concat(second)
 end

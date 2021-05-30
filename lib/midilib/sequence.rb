@@ -1,12 +1,10 @@
 require_relative 'io/seqreader'
 require_relative 'io/seqwriter'
-require_relative 'measure.rb'
+require_relative 'measure'
 
 module MIDI
-
   # A MIDI::Sequence contains MIDI::Track objects.
   class Sequence
-
     include Enumerable
 
     UNNAMED = 'Unnamed Sequence'
@@ -43,13 +41,13 @@ module MIDI
     attr_accessor :writer_class
 
     def initialize
-      @tracks = Array.new()
+      @tracks = []
       @ppqn = 480
 
       # Time signature
-      @numer = 4                # Numer + denom = 4/4 time default
+      @numer = 4 # Numer + denom = 4/4 time default
       @denom = 2
-      @clocks = 24   # Bug fix  Nov 11, 2007 - this is not the same as ppqn!
+      @clocks = 24 # Bug fix  Nov 11, 2007 - this is not the same as ppqn!
       @qnotes = 8
 
       @reader_class = IO::SeqReader
@@ -67,24 +65,25 @@ module MIDI
     # Returns the song tempo in beats per minute.
     def beats_per_minute
       return DEFAULT_TEMPO if @tracks.nil? || @tracks.empty?
-      event = @tracks.first.events.detect { |e| e.kind_of?(MIDI::Tempo) }
-      return event ? (Tempo.mpq_to_bpm(event.tempo)) : DEFAULT_TEMPO
+
+      event = @tracks.first.events.detect { |e| e.is_a?(MIDI::Tempo) }
+      event ? Tempo.mpq_to_bpm(event.tempo) : DEFAULT_TEMPO
     end
-    alias_method :bpm, :beats_per_minute
-    alias_method :tempo, :beats_per_minute
+    alias bpm beats_per_minute
+    alias tempo beats_per_minute
 
     # Pulses (also called ticks) are the units of delta times and event
     # time_from_start values. This method converts a number of pulses to a
     # float value that is a time in seconds.
     def pulses_to_seconds(pulses)
-      (pulses.to_f / @ppqn.to_f / beats_per_minute()) * 60.0
+      (pulses.to_f / @ppqn.to_f / beats_per_minute) * 60.0
     end
 
     # Given a note length name like "whole", "dotted quarter", or "8th
     # triplet", return the length of that note in quarter notes as a delta
     # time.
     def note_to_delta(name)
-      return length_to_delta(note_to_length(name))
+      length_to_delta(note_to_length(name))
     end
 
     # Given a note length name like "whole", "dotted quarter", or "8th
@@ -99,14 +98,17 @@ module MIDI
     def note_to_length(name)
       name.strip!
       name =~ /^(dotted)?(.*?)(triplet)?$/
-      dotted, note_name, triplet = $1, $2, $3
+      dotted = Regexp.last_match(1)
+      note_name = Regexp.last_match(2)
+      triplet = Regexp.last_match(3)
       note_name.strip!
       mult = 1.0
       mult = 1.5 if dotted
       mult /= 3.0 if triplet
       len = NOTE_TO_LENGTH[note_name]
       raise "Sequence.note_to_length: \"#{note_name}\" not understood in \"#{name}\"" unless len
-      return len * mult
+
+      len * mult
     end
 
     # Translates +length+ (a multiple of a quarter note) into a delta time.
@@ -118,24 +120,26 @@ module MIDI
     #
     # See also note_to_delta and note_to_length.
     def length_to_delta(length)
-      return (@ppqn * length).round
+      (@ppqn * length).round
     end
 
     # Returns the name of the first track (track zero). If there are no
     # tracks, returns UNNAMED.
     def name
       return UNNAMED if @tracks.empty?
-      return @tracks.first.name()
+
+      @tracks.first.name
     end
 
     # Hands the name to the first track. Does nothing if there are no tracks.
     def name=(name)
       return if @tracks.empty?
+
       @tracks.first.name = name
     end
 
     # Reads a MIDI stream.
-    def read(io, &block)    # :yields: track, num_tracks, index
+    def read(io, &block) # :yields: track, num_tracks, index
       reader = @reader_class.new(self, &block)
       reader.read_from(io)
     end
@@ -147,8 +151,8 @@ module MIDI
     end
 
     # Iterates over the tracks.
-    def each                    # :yields: track
-      @tracks.each { |track| yield track }
+    def each(&block) # :yields: track
+      @tracks.each(&block)
     end
 
     # Returns a Measures object, which is an array container for all measures
@@ -157,13 +161,13 @@ module MIDI
       # Collect time sig events and scan for last event time
       time_sigs = []
       max_pos = 0
-      @tracks.each  do |t|
+      @tracks.each do |t|
         t.each do |e|
-          time_sigs << e if e.kind_of?(MIDI::TimeSig)
+          time_sigs << e if e.is_a?(MIDI::TimeSig)
           max_pos = e.time_from_start if e.time_from_start > max_pos
         end
       end
-      time_sigs.sort { |x,y| x.time_from_start <=> y.time_from_start }
+      time_sigs.sort { |x, y| x.time_from_start <=> y.time_from_start }
 
       # Add a "fake" time sig event at the very last position of the sequence,
       # just to make sure the whole sequence is calculated.
@@ -173,7 +177,9 @@ module MIDI
 
       # Default to 4/4
       measure_length = @ppqn * 4
-      oldnumer, olddenom, oldbeats = 4, 2, 24
+      oldnumer = 4
+      olddenom = 2
+      oldbeats = 24
 
       measures = MIDI::Measures.new(max_pos, @ppqn)
       curr_pos = 0
@@ -187,11 +193,12 @@ module MIDI
           curr_meas_no += 1
           curr_pos += measure_length
         end
-        oldnumer, olddenom, oldbeats = te.numerator, te.denominator, te.metronome_ticks
+        oldnumer = te.numerator
+        olddenom = te.denominator
+        oldbeats = te.metronome_ticks
         measure_length = te.measure_duration(@ppqn)
       end
       measures
     end
-
   end
 end

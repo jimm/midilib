@@ -7,7 +7,6 @@ require 'test/unit'
 require 'midilib'
 
 class SequenceTester < Test::Unit::TestCase
-
   def setup
     @seq = MIDI::Sequence.new
     @track = MIDI::Track.new(@seq)
@@ -28,10 +27,10 @@ class SequenceTester < Test::Unit::TestCase
     assert_in_delta 0.5, @seq.pulses_to_seconds(480), 0.00001
 
     # A half note should take one second
-    assert_in_delta 1.0, @seq.pulses_to_seconds(480*2), 0.00001
+    assert_in_delta 1.0, @seq.pulses_to_seconds(480 * 2), 0.00001
 
     # An eight note should take 0.25 seconds
-    assert_in_delta 0.25, @seq.pulses_to_seconds(480/2), 0.00001
+    assert_in_delta 0.25, @seq.pulses_to_seconds(480 / 2), 0.00001
   end
 
   def test_length_to_delta

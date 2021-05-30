@@ -7,7 +7,6 @@ require 'test/unit'
 require 'midilib'
 
 class TrackTester < Test::Unit::TestCase
-
   def setup
     @seq = MIDI::Sequence.new
     @track = MIDI::Track.new(@seq)
@@ -20,7 +19,7 @@ class TrackTester < Test::Unit::TestCase
     assert_equal(3, @track.events.length)
     3.times do |i|
       assert_equal(100, @track.events[i].delta_time)
-      assert_equal((i+1) * 100, @track.events[i].time_from_start)
+      assert_equal((i + 1) * 100, @track.events[i].time_from_start)
     end
     assert_equal(MIDI::Track::UNNAMED, @track.name)
   end
@@ -30,7 +29,7 @@ class TrackTester < Test::Unit::TestCase
     @track.recalc_times
     assert_equal(4, @track.events.length)
     4.times do |i|
-      assert_equal((i+1) * 100, @track.events[i].time_from_start)
+      assert_equal((i + 1) * 100, @track.events[i].time_from_start)
     end
   end
 
@@ -41,17 +40,17 @@ class TrackTester < Test::Unit::TestCase
 
     3.times do |i|
       assert_equal(100, @track.events[i].delta_time)
-      assert_equal((i+1) * 100, @track.events[i].time_from_start)
+      assert_equal((i + 1) * 100, @track.events[i].time_from_start)
     end
     12.times do |i|
       assert_equal(3, @track.events[3 + i].delta_time)
-      assert_equal(300 + ((i+1) * 3),
+      assert_equal(300 + ((i + 1) * 3),
                    @track.events[3 + i].time_from_start)
     end
   end
 
   def test_insert
-    @track.events[1,0] = MIDI::NoteOn.new(0, 64, 64, 3)
+    @track.events[1, 0] = MIDI::NoteOn.new(0, 64, 64, 3)
     @track.recalc_times
     assert_equal(100, @track.events[0].time_from_start)
     assert_equal(103, @track.events[1].time_from_start)
@@ -124,7 +123,7 @@ class TrackTester < Test::Unit::TestCase
   def test_quantize
     @seq.ppqn = 80
 
-    @track.quantize(1)          # Quantize to a quarter note
+    @track.quantize(1) # Quantize to a quarter note
     assert_equal(80, @track.events[0].time_from_start)  # was 100
     assert_equal(240, @track.events[1].time_from_start) # was 200
     assert_equal(320, @track.events[2].time_from_start) # was 300
@@ -137,8 +136,8 @@ class TrackTester < Test::Unit::TestCase
 
   def test_old_note_class_names
     x = MIDI::NoteOn.new(0, 64, 64, 10)
-    assert(x.kind_of?(MIDI::NoteOnEvent))  # old name
+    assert(x.is_a?(MIDI::NoteOnEvent))  # old name
     x = MIDI::NoteOff.new(0, 64, 64, 10)
-    assert(x.kind_of?(MIDI::NoteOffEvent)) # old name
+    assert(x.is_a?(MIDI::NoteOffEvent)) # old name
   end
 end

@@ -1,6 +1,5 @@
 require_relative 'event'
-require_relative  'mergesort'
-
+require_relative 'mergesort'
 
 module MIDI
   # A Track is a list of events.
@@ -13,7 +12,6 @@ module MIDI
   # IO::SeqReader but is _not_ kept up to date by any other methods.
 
   class Track
-
     include Enumerable
 
     UNNAMED = 'Unnamed'
@@ -23,7 +21,7 @@ module MIDI
 
     def initialize(sequence)
       @sequence = sequence
-      @events = Array.new()
+      @events = []
 
       # Bitmask of all channels used. Set when track is read in from
       # a MIDI file.
@@ -33,13 +31,13 @@ module MIDI
 
     # Return track name. If there is no name, return UNNAMED.
     def name
-      event = @events.detect { |e| e.kind_of?(MetaEvent) && e.meta_type == META_SEQ_NAME }
+      event = @events.detect { |e| e.is_a?(MetaEvent) && e.meta_type == META_SEQ_NAME }
       event ? event.data_as_str : UNNAMED
     end
 
     # Set track name. Replaces or creates a name meta-event.
     def name=(name)
-      event = @events.detect { |e| e.kind_of?(MetaEvent) && e.meta_type == META_SEQ_NAME }
+      event = @events.detect { |e| e.is_a?(MetaEvent) && e.meta_type == META_SEQ_NAME }
       if event
         event.data = name
       else
@@ -74,7 +72,7 @@ module MIDI
       recalc_times(0, list2)
       list = list1 + list2
       recalc_delta_from_times(0, list)
-      return list
+      list
     end
 
     # Quantize every event. length_or_note is either a length (1 = quarter,
@@ -96,9 +94,9 @@ module MIDI
 
     # Recalculate start times for all events in +list+ from starting_at to
     # end.
-    def recalc_times(starting_at=0, list=@events)
-      t = (starting_at == 0) ? 0 : list[starting_at - 1].time_from_start
-      list[starting_at .. -1].each do |e|
+    def recalc_times(starting_at = 0, list = @events)
+      t = starting_at == 0 ? 0 : list[starting_at - 1].time_from_start
+      list[starting_at..-1].each do |e|
         t += e.delta_time
         e.time_from_start = t
       end
@@ -108,24 +106,24 @@ module MIDI
     # from each event's time_from_start. This is useful, for example, when
     # merging two event lists. As a side-effect, elements from starting_at
     # are sorted by time_from_start.
-    def recalc_delta_from_times(starting_at=0, list=@events)
+    def recalc_delta_from_times(starting_at = 0, list = @events)
       prev_time_from_start = 0
       # We need to sort the sublist. sublist.sort! does not do what we want.
       # We call mergesort instead of Array.sort because sort is not stable
       # (it can mix up the order of events that have the same start time).
       # See http://wiki.github.com/adamjmurray/cosy/midilib-notes for details.
-      list[starting_at .. -1] = mergesort(list[starting_at .. -1]) do |e1, e2|
+      list[starting_at..-1] = mergesort(list[starting_at..-1]) do |e1, e2|
         e1.time_from_start <=> e2.time_from_start
       end
-      list[starting_at .. -1].each do |e|
+      list[starting_at..-1].each do |e|
         e.delta_time = e.time_from_start - prev_time_from_start
         prev_time_from_start = e.time_from_start
       end
     end
 
     # Iterate over events.
-    def each                    # :yields: event
-      @events.each { |event| yield event }
+    def each(&block) # :yields: event
+      @events.each(&block)
     end
 
     # Sort events by their time_from_start. After sorting,
@@ -135,7 +133,6 @@ module MIDI
     # Note: this method is redundant, since recalc_delta_from_times sorts
     # the events first. This method may go away in a future release, or at
     # least be aliased to recalc_delta_from_times.
-    alias_method :sort, :recalc_delta_from_times
+    alias sort recalc_delta_from_times
   end
-
 end

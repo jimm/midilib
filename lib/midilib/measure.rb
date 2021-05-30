@@ -1,7 +1,6 @@
 require_relative 'consts'
 
 module MIDI
-
   # The Measure class contains information about a measure from the sequence.
   # The measure data is based on the time signature information from the sequence
   # and is not stored in the sequence itself
@@ -73,8 +72,7 @@ module MIDI
       m = measure_for_event(e)
       b = (e.time_from_start.to_f - m.start.to_f) / @ppqd
       b *= 24 / m.metronome_ticks
-      sprintf("%d:%02d:%03d", m.measure_number, b.to_i + 1, (b - b.to_i) * @ppqd)
+      format('%d:%02d:%03d', m.measure_number, b.to_i + 1, (b - b.to_i) * @ppqd)
     end
   end
-
 end

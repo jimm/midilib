@@ -13,13 +13,21 @@ require 'getoptlong'
 require 'find'
 begin
   require 'ftools'
-  def mkdirs(dir); File.makedirs(dir); end
-  def install(*args); File.install(*args); end
+  def mkdirs(dir)
+    File.makedirs(dir)
+  end
+
+  def install(*args)
+    File.install(*args)
+  end
 rescue LoadError
   require 'fileutils'
-  def mkdirs(dir); FileUtils.mkdir_p(dir); end
+  def mkdirs(dir)
+    FileUtils.mkdir_p(dir)
+  end
+
   def install(*args)
-    args[2] = {mode: args[2], verbose: args[3]}
+    args[2] = { mode: args[2], verbose: args[3] }
     args.pop
     FileUtils.install(*args)
   end
@@ -35,15 +43,15 @@ def instdir
     if name == '--install-dir'
       return arg
     else
-      $stderr.puts "usage: $0 [--install-dir dir]"
+      warn 'usage: $0 [--install-dir dir]'
     end
   end
 
   begin
     require 'rbconfig'
-    libdir = Config::CONFIG['sitedir'] + "/" + 
-      Config::CONFIG['MAJOR'] + "." +
-      Config::CONFIG['MINOR']
+    libdir = Config::CONFIG['sitedir'] + '/' +
+             Config::CONFIG['MAJOR'] + '.' +
+             Config::CONFIG['MINOR']
   rescue ScriptError
     $LOAD_PATH.each do |l|
       if l =~ /site_ruby/ && l =~ /\d$/ && l !~ /#{PLATFORM}/
@@ -51,18 +59,18 @@ def instdir
         break
       end
     end
-    STDERR.puts "Can't find required file `rbconfig.rb'."
-    STDERR.puts "The `midilib' files need to be installed manually in #{libdir}"
+    warn "Can't find required file `rbconfig.rb'."
+    warn "The `midilib' files need to be installed manually in #{libdir}"
   end
-  return libdir
+  libdir
 end
 
-INSTALL_DIR = instdir()
+INSTALL_DIR = instdir
 files = Dir.chdir('lib') { Dir['**/*.rb'] }
 
 files.each do |f|
   dir = File.dirname(f)
   target_dir = File.join(INSTALL_DIR, dir)
   mkdirs(target_dir) unless File.exist?(target_dir)
-  install(File.join('lib', f), File.join(INSTALL_DIR, f), 0644, true)
+  install(File.join('lib', f), File.join(INSTALL_DIR, f), 0o644, true)
 end

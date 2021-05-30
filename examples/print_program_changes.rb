@@ -9,7 +9,7 @@ require 'midilib/sequence'
 DEFAULT_MIDI_TEST_FILE = 'NoFences.mid'
 
 # Read from MIDI file
-seq = MIDI::Sequence.new()
+seq = MIDI::Sequence.new
 
 File.open(ARGV[0] || DEFAULT_MIDI_TEST_FILE, 'rb') do |file|
   # The block we pass in to Sequence.read is called at the end of every
@@ -23,6 +23,6 @@ seq.each do |track|
   track.each do |e|
     e.print_decimal_numbers = true
     e.print_channel_numbers_from_one = true
-    puts e if e.kind_of?(MIDI::ProgramChange)
+    puts e if e.is_a?(MIDI::ProgramChange)
   end
 end

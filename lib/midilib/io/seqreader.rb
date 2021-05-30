@@ -3,9 +3,7 @@ require_relative '../track'
 require_relative '../event'
 
 module MIDI
-
   module IO
-
     # Reads MIDI files. As a subclass of MIDIFile, this class implements the
     # callback methods for each MIDI event and use them to build Track and
     # Event objects and give the tracks to a Sequence.
@@ -21,7 +19,6 @@ module MIDI
     # track when it is output.
 
     class SeqReader < MIDIFile
-
       # The optional &block is called once at the start of the file and
       # again at the end of each track. There are three arguments to the
       # block: the track, the track number (1 through _n_), and the total
@@ -42,14 +39,14 @@ module MIDI
         @update_block.call(nil, @ntrks, 0) if @update_block
       end
 
-      def start_track()
+      def start_track
         @track = Track.new(@seq)
         @seq.tracks << @track
 
         @pending = []
       end
 
-      def end_track()
+      def end_track
         # Turn off any pending note on messages
         @pending.each { |on| make_note_off(on, 64) }
         @pending = nil
@@ -60,7 +57,7 @@ module MIDI
 
         # Let the track calculate event times from start of track. This is
         # in lieu of calling Track.add for each event.
-        @track.recalc_times()
+        @track.recalc_times
 
         # Store bitmask of all channels used into track
         @track.channels_used = @chan_mask
@@ -85,14 +82,16 @@ module MIDI
         # Find note on, create note off, connect the two, and remove
         # note on from pending list.
         @pending.each_with_index do |on, i|
-          if on.note == note && on.channel == chan
-            make_note_off(on, vel)
-            @pending.delete_at(i)
-            return
-          end
+          next unless on.note == note && on.channel == chan
+
+          make_note_off(on, vel)
+          @pending.delete_at(i)
+          return
         end
-        $stderr.puts "note off with no earlier note on (ch #{chan}, note" +
-                     " #{note}, vel #{vel})" if $DEBUG
+        if $DEBUG
+          warn "note off with no earlier note on (ch #{chan}, note" +
+               " #{note}, vel #{vel})"
+        end
       end
 
       def make_note_off(on, vel)
@@ -152,7 +151,7 @@ module MIDI
         when META_MARKER
           @track.events << Marker.new(msg, @curr_ticks)
         else
-          $stderr.puts "text = #{msg}, type = #{type}" if $DEBUG
+          warn "text = #{msg}, type = #{type}" if $DEBUG
         end
       end
 
@@ -191,10 +190,8 @@ module MIDI
 
       # Return true if the current track uses the specified channel.
       def track_uses_channel(chan)
-        @chan_mask = @chan_mask | (1 << chan)
+        @chan_mask |= (1 << chan)
       end
-
     end
-
   end
 end
