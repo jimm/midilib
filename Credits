@@ -82,3 +82,8 @@ Adam Murray (adamjmurray on Github)
 @rhelsing on Github
 
     Added the ability to save MIDI format 0 files.
+
+Miika Alonen (@amiika on Github)
+
+    Updated midilib for Ruby 2.7 and 3.0 by using blocks instead of Proc
+    objects and changing require to require_relative where appropriate.

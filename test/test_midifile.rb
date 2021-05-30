@@ -8,30 +8,18 @@ require 'stringio'
 require 'midilib'
 
 class MIDI::IO::MIDIFile
-  def io=(io)
-    @io = io
-  end
-end
-if RUBY_VERSION < '1.9'
-  class StringIO
-    def readbyte
-      c = getc()
-      raise 'unexpected EOF' unless c
-      c
-    end
-  end
+  attr_writer :io
 end
 
 class MIDIFileTester < Test::Unit::TestCase
-
   def setup
     @m = MIDI::IO::MIDIFile.new
   end
 
   def test_msg_io
     io = StringIO.new
-    io.write("abcdef")
-    io.rewind()
+    io.write('abcdef')
+    io.rewind
     @m.io = io
     @m.msg_init
     @m.msg_read(6)
@@ -41,9 +29,9 @@ class MIDIFileTester < Test::Unit::TestCase
   def test_read32
     io = StringIO.new
     io.write("\0\0\0\6")
-    io.rewind()
+    io.rewind
     @m.io = io
-    assert_equal 6, @m.read32()
+    assert_equal 6, @m.read32
   end
 
   def test_write32
@@ -52,8 +40,7 @@ class MIDIFileTester < Test::Unit::TestCase
     $stdout = io
     @m.write32(6)
     $stdout = old_stdout
-    io.rewind()
+    io.rewind
     assert_equal "\0\0\0\6", io.string
   end
-
 end

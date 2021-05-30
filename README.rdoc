@@ -8,7 +8,7 @@ http://github.com/jimm/midilib and the RubyGems.org page is
 http://rubygems.org/gems/midilib, where you can also find all the RDoc
 documentation.
 
-midilib is compatible with Ruby 1.8.x 1.9.x, and 2.x.
+midilib is compatible with Ruby 2.6 and higher.
 
 
 == Dependencies

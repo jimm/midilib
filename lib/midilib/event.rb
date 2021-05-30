@@ -2,10 +2,8 @@ require_relative 'consts'
 require_relative 'utils'
 
 module MIDI
-
   # The abstract superclass of all MIDI events.
   class Event
-
     # Modifying delta_time does not affect time_from_start. You need to call
     # the event's track's +recalc_time+ method.
     attr_accessor :delta_time
@@ -31,7 +29,7 @@ module MIDI
     def initialize(status = 0, delta_time = 0)
       @status = status
       @delta_time = delta_time
-      @time_from_start = 0      # maintained by tracks
+      @time_from_start = 0 # maintained by tracks
       @print_note_names = false
       @print_decimal_numbers = false
       @print_channel_numbers_from_one = false
@@ -42,7 +40,7 @@ module MIDI
     # MIDI stream. In MIDI::EVENT this raises a "subclass responsibility"
     # exception.
     def data_as_bytes
-      raise "subclass responsibility"
+      raise 'subclass responsibility'
     end
 
     # Quantize this event's time_from_start by moving it to the nearest
@@ -52,29 +50,27 @@ module MIDI
     def quantize_to(boundary)
       diff = @time_from_start % boundary
       @time_from_start -= diff
-      if diff >= boundary / 2
-        @time_from_start += boundary
-      end
+      @time_from_start += boundary if diff >= boundary / 2
     end
 
     # For sorting. Uses @time_from_start, which is maintained by this event's
     # track. I'm not sure this is necessary, since each track has to
     # maintain its events' time-from-start values anyway.
-    def <=>(an_event)
-      return @time_from_start <=> an_event.time_from_start
+    def <=>(other)
+      @time_from_start <=> other.time_from_start
     end
 
     # Returns +val+ as a decimal or hex string, depending upon the value of
     # @print_decimal_numbers.
     def number_to_s(val)
-      return @print_decimal_numbers ? val.to_s : ('%02x' % val)
+      @print_decimal_numbers ? val.to_s : ('%02x' % val)
     end
 
     # Returns +val+ as a decimal or hex string, depending upon the value of
     # @print_decimal_numbers.
     def channel_to_s(val)
       val += 1 if @print_channel_numbers_from_one
-      return number_to_s(val)
+      number_to_s(val)
     end
 
     def to_s
@@ -95,15 +91,15 @@ module MIDI
     protected :initialize
 
     def to_s
-      return super << "ch #{channel_to_s(@channel)} "
+      super << "ch #{channel_to_s(@channel)} "
     end
-
   end
 
   # The abstract superclass of all note on, and note off, and polyphonic
   # pressure events.
   class NoteEvent < ChannelEvent
     attr_accessor :note, :velocity
+
     def initialize(status, channel, note, velocity, delta_time)
       super(status, channel, delta_time)
       @note = note
@@ -111,10 +107,10 @@ module MIDI
     end
     protected :initialize
 
-    PITCHES = %w(C C# D D# E F F# G G# A A# B)
+    PITCHES = %w[C C# D D# E F F# G G# A A# B]
 
     # Returns note name as a pitch/octave string like "C4" or "F#6".
-    def pch_oct(val=@note)
+    def pch_oct(val = @note)
       pch = val % 12
       oct = (val / 12) - 1
       "#{PITCHES[pch]}#{oct}"
@@ -123,7 +119,7 @@ module MIDI
     # If @print_note_names is true, returns pch_oct(val) else returns value
     # as a number using number_to_s.
     def note_to_s
-      return @print_note_names ? pch_oct(@note) : number_to_s(@note)
+      @print_note_names ? pch_oct(@note) : number_to_s(@note)
     end
 
     def data_as_bytes
@@ -136,13 +132,14 @@ module MIDI
 
   class NoteOn < NoteEvent
     attr_accessor :off
+
     def initialize(channel = 0, note = 64, velocity = 64, delta_time = 0)
       super(NOTE_ON, channel, note, velocity, delta_time)
     end
 
     def to_s
-      return super <<
-             "on #{note_to_s} #{number_to_s(@velocity)}"
+      super <<
+        "on #{note_to_s} #{number_to_s(@velocity)}"
     end
   end
 
@@ -151,13 +148,14 @@ module MIDI
 
   class NoteOff < NoteEvent
     attr_accessor :on
+
     def initialize(channel = 0, note = 64, velocity = 64, delta_time = 0)
       super(NOTE_OFF, channel, note, velocity, delta_time)
     end
 
     def to_s
-      return super <<
-             "off #{note_to_s} #{number_to_s(@velocity)}"
+      super <<
+        "off #{note_to_s} #{number_to_s(@velocity)}"
     end
   end
 
@@ -170,14 +168,16 @@ module MIDI
     end
 
     def pressure
-      return @velocity
+      @velocity
     end
+
     def pressure=(val)
       @velocity = val
     end
+
     def to_s
-      return super <<
-             "poly press #{channel_to_s(@channel)} #{note_to_s} #{number_to_s(@velocity)}"
+      super <<
+        "poly press #{channel_to_s(@channel)} #{note_to_s} #{number_to_s(@velocity)}"
     end
   end
 
@@ -198,7 +198,7 @@ module MIDI
     end
 
     def to_s
-      return super << "cntl #{number_to_s(@controller)} #{number_to_s(@value)}"
+      super << "cntl #{number_to_s(@controller)} #{number_to_s(@value)}"
     end
   end
 
@@ -217,7 +217,7 @@ module MIDI
     end
 
     def to_s
-      return super << "prog #{number_to_s(@program)}"
+      super << "prog #{number_to_s(@program)}"
     end
   end
 
@@ -236,7 +236,7 @@ module MIDI
     end
 
     def to_s
-      return super << "chan press #{number_to_s(@pressure)}"
+      super << "chan press #{number_to_s(@pressure)}"
     end
   end
 
@@ -256,7 +256,7 @@ module MIDI
     end
 
     def to_s
-      return super << "pb #{number_to_s(@value)}"
+      super << "pb #{number_to_s(@value)}"
     end
   end
 
@@ -284,7 +284,7 @@ module MIDI
     end
 
     def to_s
-      return super << "sys ex"
+      super << 'sys ex'
     end
   end
 
@@ -304,7 +304,7 @@ module MIDI
     end
 
     def to_s
-      return super << "song ptr #{number_to_s(@pointer)}"
+      super << "song ptr #{number_to_s(@pointer)}"
     end
   end
 
@@ -323,7 +323,7 @@ module MIDI
     end
 
     def to_s
-      return super << "song sel #{number_to_s(@song)}"
+      super << "song sel #{number_to_s(@song)}"
     end
   end
 
@@ -338,7 +338,7 @@ module MIDI
     end
 
     def to_s
-      return super << "tune req"
+      super << 'tune req'
     end
   end
 
@@ -353,7 +353,7 @@ module MIDI
     end
 
     def to_s
-      return super << "realtime #{number_to_s(@status)}"
+      super << "realtime #{number_to_s(@status)}"
     end
   end
 
@@ -363,7 +363,7 @@ module MIDI
     end
 
     def to_s
-      return super << "clock"
+      super << 'clock'
     end
   end
 
@@ -371,8 +371,9 @@ module MIDI
     def initialize(delta_time = 0)
       super(START, delta_time)
     end
+
     def to_s
-      return super << "start"
+      super << 'start'
     end
   end
 
@@ -380,8 +381,9 @@ module MIDI
     def initialize(delta_time = 0)
       super(CONTINUE, delta_time)
     end
+
     def to_s
-      return super << "continue"
+      super << 'continue'
     end
   end
 
@@ -389,8 +391,9 @@ module MIDI
     def initialize(delta_time = 0)
       super(STOP, delta_time)
     end
+
     def to_s
-      return super << "stop"
+      super << 'stop'
     end
   end
 
@@ -398,8 +401,9 @@ module MIDI
     def initialize(delta_time = 0)
       super(ACTIVE_SENSE, delta_time)
     end
+
     def to_s
-      return super << "act sens"
+      super << 'act sens'
     end
   end
 
@@ -407,33 +411,27 @@ module MIDI
     def initialize(delta_time = 0)
       super(SYSTEM_RESET, delta_time)
     end
+
     def to_s
-      return super << "sys reset"
+      super << 'sys reset'
     end
   end
 
   class MetaEvent < Event
-    attr_reader :meta_type
-    attr_reader :data
+    attr_reader :meta_type, :data
 
     def self.bytes_as_str(bytes)
       bytes ? bytes.collect { |byte| byte.chr }.join : nil
     end
 
-    if RUBY_VERSION >= '1.9'
-      def self.str_as_bytes(str)
-        str.split(//).collect { |chr| chr.ord }
-      end
-    else
-      def self.str_as_bytes(str)
-        str.split(//).collect { |chr| chr[0] }
-      end
+    def self.str_as_bytes(str)
+      str.split(//).collect { |chr| chr.ord }
     end
 
     def initialize(meta_type, data = nil, delta_time = 0)
       super(META_EVENT, delta_time)
       @meta_type = meta_type
-      self.data=(data)
+      self.data = (data)
     end
 
     def data_as_bytes
@@ -451,50 +449,50 @@ module MIDI
 
     # Stores bytes. If data is a string, splits it into an array of bytes.
     def data=(data)
-      case data
-      when String
-        @data = MetaEvent.str_as_bytes(data)
-      else
-        @data = data
-      end
+      @data = case data
+              when String
+                MetaEvent.str_as_bytes(data)
+              else
+                data
+              end
     end
 
     def to_s
       str = super()
       str << "meta #{number_to_s(@meta_type)} "
       # I know, I know...this isn't OO.
-      case @meta_type
-      when META_SEQ_NUM
-        str << "sequence number"
-      when META_TEXT
-        str << "text: #{data_as_str}"
-      when META_COPYRIGHT
-        str << "copyright: #{data_as_str}"
-      when META_SEQ_NAME
-        str << "sequence or track name: #{data_as_str}"
-      when META_INSTRUMENT
-        str << "instrument name: #{data_as_str}"
-      when META_LYRIC
-        str << "lyric: #{data_as_str}"
-      when META_MARKER
-        str << "marker: #{data_as_str}"
-      when META_CUE
-        str << "cue point: #{@data}"
-      when META_TRACK_END
-        str << "track end"
-      when META_SMPTE
-        str << "smpte"
-      when META_TIME_SIG
-        str << "time signature"
-      when META_KEY_SIG
-        str << "key signature"
-      when META_SEQ_SPECIF
-        str << "sequence specific"
-      else
-        # Some other possible @meta_type values are handled by subclasses.
-        str << "(other)"
-      end
-      return str
+      str << case @meta_type
+             when META_SEQ_NUM
+               'sequence number'
+             when META_TEXT
+               "text: #{data_as_str}"
+             when META_COPYRIGHT
+               "copyright: #{data_as_str}"
+             when META_SEQ_NAME
+               "sequence or track name: #{data_as_str}"
+             when META_INSTRUMENT
+               "instrument name: #{data_as_str}"
+             when META_LYRIC
+               "lyric: #{data_as_str}"
+             when META_MARKER
+               "marker: #{data_as_str}"
+             when META_CUE
+               "cue point: #{@data}"
+             when META_TRACK_END
+               'track end'
+             when META_SMPTE
+               'smpte'
+             when META_TIME_SIG
+               'time signature'
+             when META_KEY_SIG
+               'key signature'
+             when META_SEQ_SPECIF
+               'sequence specific'
+             else
+               # Some other possible @meta_type values are handled by subclasses.
+               '(other)'
+             end
+      str
     end
   end
 
@@ -505,17 +503,16 @@ module MIDI
   end
 
   class Tempo < MetaEvent
-
     MICROSECS_PER_MINUTE = 1_000_000 * 60
 
     # Translates beats per minute to microseconds per quarter note (beat).
-    def Tempo.bpm_to_mpq(bpm)
-      return MICROSECS_PER_MINUTE / bpm
+    def self.bpm_to_mpq(bpm)
+      MICROSECS_PER_MINUTE / bpm
     end
 
     # Translates microseconds per quarter note (beat) to beats per minute.
-    def Tempo.mpq_to_bpm(mpq)
-      return MICROSECS_PER_MINUTE.to_f / mpq.to_f
+    def self.mpq_to_bpm(mpq)
+      MICROSECS_PER_MINUTE.to_f / mpq.to_f
     end
 
     def initialize(msecs_per_qnote, delta_time = 0)
@@ -523,7 +520,7 @@ module MIDI
     end
 
     def tempo
-      return @data
+      @data
     end
 
     def tempo=(val)
@@ -547,7 +544,6 @@ module MIDI
 
   # Container for time signature events
   class TimeSig < MetaEvent
-
     # Constructor
     def initialize(numer, denom, clocks, qnotes, delta_time = 0)
       super(META_TIME_SIG, [numer, denom, clocks, qnotes], delta_time)
@@ -596,7 +592,6 @@ module MIDI
 
   # Container for key signature events
   class KeySig < MetaEvent
-
     # Constructor
     def initialize(sharpflat, is_minor, delta_time = 0)
       super(META_KEY_SIG, [sharpflat, is_minor], delta_time)
@@ -630,18 +625,25 @@ module MIDI
     # Returns the key signature as a text string.
     # Example: "key sig A flat major"
     def to_s
-      minor_key? ? "key sig #{minorkeys[sharpflat + 7]} minor" :
+      if minor_key?
+        "key sig #{minorkeys[sharpflat + 7]} minor"
+      else
         "key sig #{majorkeys[sharpflat + 7]} major"
+      end
     end
 
     # Returns the key signature as a code.
     # Example: "Ab" for "key sig A flat major"
     def to_code
-      minor_key? ? minorkey_codes[sharpflat + 7] :
+      if minor_key?
+        minorkey_codes[sharpflat + 7]
+      else
         majorkey_codes[sharpflat + 7]
+      end
     end
 
     private
+
     def majorkeys
       @majorkeys ||= ['C flat', 'G flat', 'D flat', 'A flat', 'E flat', 'B flat', 'F',
                       'C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#']
@@ -662,5 +664,4 @@ module MIDI
                             'Am', 'Em', 'Bm', 'F#m', 'C#m', 'G#m', 'D#m', 'A#m']
     end
   end
-
 end

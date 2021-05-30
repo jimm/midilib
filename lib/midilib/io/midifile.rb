@@ -1,19 +1,7 @@
 require_relative '../consts'
 
-if RUBY_VERSION < '1.9'
-  class IO
-    def readbyte
-      c = getc()
-      raise 'unexpected EOF' unless c
-      c
-    end
-  end
-end
-
 module MIDI
-
   module IO
-
     # A MIDIFile parses a MIDI file and calls methods when it sees MIDI events.
     # Most of the methods are stubs. To do anything interesting with the events,
     # override these methods (those between the "The rest of these are NOPs by
@@ -22,7 +10,6 @@ module MIDI
     # See SeqReader for a subclass that uses these methods to create Event
     # objects.
     class MIDIFile
-
       MThd_BYTE_ARRAY = [77, 84, 104, 100] # "MThd"
       MTrk_BYTE_ARRAY = [77, 84, 114, 107] # "MTrk"
 
@@ -34,17 +21,10 @@ module MIDI
         2, 2, 2, 2, 1, 1, 2, 0  # 0x80 - 0xf0
       ]
 
-      attr_accessor  :curr_ticks # Current time, from delta-time in MIDI file
-      attr_accessor  :ticks_so_far     # Number of delta-time ticks so far
-      attr_accessor  :bytes_to_be_read # Counts number of bytes expected
-
-      attr_accessor  :no_merge # true means continued sysex are not collapsed
-      attr_accessor  :skip_init # true if initial garbage should be skipped
+      attr_accessor :curr_ticks, :ticks_so_far, :bytes_to_be_read, :no_merge, :skip_init, :raw_var_num_data, :raw_data # Current time, from delta-time in MIDI file     # Number of delta-time ticks so far # Counts number of bytes expected # true means continued sysex are not collapsed # true if initial garbage should be skipped
 
       # Raw data info
-      attr_accessor  :raw_time_stamp_data
-      attr_accessor  :raw_var_num_data
-      attr_accessor  :raw_data
+      attr_accessor :raw_time_stamp_data
 
       def initialize
         @no_merge = false
@@ -60,29 +40,29 @@ module MIDI
         error('must specify non-nil input stream') if io.nil?
         @io = io
 
-        ntrks = read_header()
+        ntrks = read_header
         error('No tracks!') if ntrks <= 0
 
-        ntrks.times { read_track() }
+        ntrks.times { read_track }
       end
 
       # This default getc implementation tries to read a single byte
       # from io and returns it as an integer.
       def getc
         @bytes_to_be_read -= 1
-        @io.readbyte()
+        @io.readbyte
       end
 
       # Return the next +n+ bytes from @io as an array.
       def get_bytes(n)
         buf = []
-        n.times { buf << getc() }
+        n.times { buf << getc }
         buf
       end
 
       # The default error handler.
       def error(str)
-        loc = @io.tell() - 1
+        loc = @io.tell - 1
         raise "#{self.class.name} error at byte #{loc} (0x#{'%02x' % loc}): #{str}"
       end
 
@@ -95,7 +75,7 @@ module MIDI
       def start_track(bytes_to_be_read)
       end
 
-      def end_track()
+      def end_track
       end
 
       def note_on(chan, note, vel)
@@ -134,7 +114,7 @@ module MIDI
       def text(type, msg)
       end
 
-      def eot()
+      def eot
       end
 
       def time_signature(numer, denom, clocks, qnotes)
@@ -154,7 +134,6 @@ module MIDI
 
       # End of NOPs.
 
-
       # Read through 'MThd' or 'MTrk' header string. If skip is true, attempt
       # to skip initial trash. If there is an error, #error is called.
       def read_mt_header_string(bytes, skip)
@@ -163,14 +142,12 @@ module MIDI
         while true
           data = get_bytes(bytes_to_read)
           b += data
-          if b.length < 4
-            error("unexpected EOF while trying to read header string #{s}")
-          end
+          error("unexpected EOF while trying to read header string #{s}") if b.length < 4
 
           # See if we found the bytes we're looking for
           return if b == bytes
 
-          if skip                # Try again with the next char
+          if skip # Try again with the next char
             i = b[1..-1].index(bytes[0])
             if i.nil?
               b = []
@@ -180,7 +157,7 @@ module MIDI
               bytes_to_read = 4 - i
             end
           else
-            error("header string #{bytes.collect{|b| b.chr}.join} not found")
+            error("header string #{bytes.collect { |b| b.chr }.join} not found")
           end
         end
       end
@@ -190,10 +167,10 @@ module MIDI
         @bytes_to_be_read = 0
         read_mt_header_string(MThd_BYTE_ARRAY, @skip_init) # "MThd"
 
-        @bytes_to_be_read = read32()
-        format = read16()
-        ntrks = read16()
-        division = read16()
+        @bytes_to_be_read = read32
+        format = read16
+        ntrks = read16
+        division = read16
 
         header(format, ntrks, division)
 
@@ -203,7 +180,7 @@ module MIDI
           @bytes_to_be_read = 0
         end
 
-        return ntrks
+        ntrks
       end
 
       # Read a track chunk.
@@ -216,23 +193,21 @@ module MIDI
         @bytes_to_be_read = 0
         read_mt_header_string(MTrk_BYTE_ARRAY, false)
 
-        @bytes_to_be_read = read32()
+        @bytes_to_be_read = read32
         @curr_ticks = @ticks_so_far = 0
 
-        start_track()
+        start_track
 
         while @bytes_to_be_read > 0
-          @curr_ticks = read_var_len() # Delta time
+          @curr_ticks = read_var_len # Delta time
           @ticks_so_far += @curr_ticks
 
           # Copy raw var num data into raw time stamp data
-          @raw_time_stamp_data = @raw_var_num_data.dup()
+          @raw_time_stamp_data = @raw_var_num_data.dup
 
-          c = getc()            # Read first byte
+          c = getc # Read first byte
 
-          if sysex_continue && c != EOX
-            error("didn't find expected continuation of a sysex")
-          end
+          error("didn't find expected continuation of a sysex") if sysex_continue && c != EOX
 
           if (c & 0x80).zero? # Running status?
             error('unexpected running status') if status.zero?
@@ -244,59 +219,59 @@ module MIDI
 
           needed = NUM_DATA_BYTES[(status >> 4) & 0x0f]
 
-          if needed.nonzero?    # i.e., is it a channel message?
-            c1 = running ? c : (getc() & 0x7f)
+          if needed.nonzero? # i.e., is it a channel message?
+            c1 = running ? c : (getc & 0x7f)
 
             # The "& 0x7f" here may seem unnecessary, but I've seen
             # "bad" MIDI files that had, for example, volume bytes
             # with the upper bit set. This code should not harm
             # proper data.
             chan_message(running, status, c1,
-                         (needed > 1) ? (getc() & 0x7f) : 0)
+                         needed > 1 ? (getc & 0x7f) : 0)
             next
           end
 
           case c
           when META_EVENT       # Meta event
-            type = getc()
-            msg_init()
-            msg_read(read_var_len())
+            type = getc
+            msg_init
+            msg_read(read_var_len)
             meta_event(type)
           when SYSEX            # Start of system exclusive
-            msg_init()
+            msg_init
             msg_add(SYSEX)
-            c = msg_read(read_var_len())
+            c = msg_read(read_var_len)
 
             if c == EOX || !@no_merge
-              handle_sysex(msg())
+              handle_sysex(msg)
             else
               sysex_continue = true
             end
           when EOX              # Sysex continuation or arbitrary stuff
-            msg_init() if !sysex_continue
-            c = msg_read(read_var_len())
+            msg_init unless sysex_continue
+            c = msg_read(read_var_len)
 
             if !sysex_continue
-              handle_arbitrary(msg())
+              handle_arbitrary(msg)
             elsif c == EOX
-              handle_sysex(msg())
+              handle_sysex(msg)
               sysex_continue = false
             end
           else
             bad_byte(c)
           end
         end
-        end_track()
+        end_track
       end
 
       # Handle an unexpected byte.
       def bad_byte(c)
-        error(sprintf("unexpected byte: 0x%02x", c))
+        error(format('unexpected byte: 0x%02x', c))
       end
 
       # Handle a meta event.
       def meta_event(type)
-        m = msg()               # Copy of internal message buffer
+        m = msg # Copy of internal message buffer
 
         # Create raw data array
         @raw_data = []
@@ -314,7 +289,7 @@ module MIDI
              0x0b, 0x0c, 0x0d, 0x0e, 0x0f
           text(type, m)
         when META_TRACK_END
-          eot()
+          eot
         when META_SET_TEMPO
           tempo((m[0] << 16) + (m[1] << 8) + m[2])
         when META_SMPTE
@@ -322,7 +297,7 @@ module MIDI
         when META_TIME_SIG
           time_signature(m[0], m[1], m[2], m[3])
         when META_KEY_SIG
-          key_signature(m[0], m[1] == 0 ? false : true)
+          key_signature(m[0], !(m[1] == 0))
         when META_SEQ_SPECIF
           sequencer_specific(type, m)
         else
@@ -355,53 +330,53 @@ module MIDI
         when CHANNEL_PRESSURE
           chan_pressure(chan, c1)
         else
-          error("illegal chan message 0x#{'%02x' % (status & 0xf0)}\n")
+          error("illegal chan message 0x#{format('%02x', (status & 0xf0))}\n")
         end
       end
 
       # Copy message into raw data array, then call sysex().
       def handle_sysex(msg)
-        @raw_data = msg.dup()
+        @raw_data = msg.dup
         sysex(msg)
       end
 
       # Copy message into raw data array, then call arbitrary().
       def handle_arbitrary(msg)
-        @raw_data = msg.dup()
+        @raw_data = msg.dup
         arbitrary(msg)
       end
 
       # Read and return a sixteen bit value.
       def read16
-        val = (getc() << 8) + getc()
+        val = (getc << 8) + getc
         val = -(val & 0x7fff) if (val & 0x8000).nonzero?
-        return val
+        val
       end
 
       # Read and return a 32-bit value.
       def read32
-        val = (getc() << 24) + (getc() << 16) + (getc() << 8) +
-              getc()
+        val = (getc << 24) + (getc << 16) + (getc << 8) +
+              getc
         val = -(val & 0x7fffffff) if (val & 0x80000000).nonzero?
-        return val
+        val
       end
 
       # Read a varlen value.
       def read_var_len
         @raw_var_num_data = []
-        c = getc()
+        c = getc
         @raw_var_num_data << c
         val = c
         if (val & 0x80).nonzero?
           val &= 0x7f
           while true
-            c = getc()
+            c = getc
             @raw_var_num_data << c
             val = (val << 7) + (c & 0x7f)
             break if (c & 0x80).zero?
           end
         end
-        return val
+        val
       end
 
       # Write a sixteen-bit value.
@@ -447,7 +422,7 @@ module MIDI
       def msg_read(n_bytes)
         @msg_buf += get_bytes(n_bytes)
         @msg_buf.flatten!
-        return @msg_buf[-1]
+        @msg_buf[-1]
       end
 
       # Initialize the internal message buffer.
@@ -457,10 +432,8 @@ module MIDI
 
       # Return a copy of the internal message buffer.
       def msg
-        return @msg_buf.dup()
+        @msg_buf.dup
       end
-
     end
-
   end
 end
