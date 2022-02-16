@@ -101,17 +101,30 @@ class IOTester < Test::Unit::TestCase
     assert_equal(MIDI::GM_PATCH_NAMES[0], seq.tracks[1].instrument)
   end
 
-  def test_preserve_meta_deltas
+  def test_preserve_deltas_in_some_situations
     out_seq = MIDI::Sequence.new
     out_track = MIDI::Track.new(out_seq)
     out_seq.tracks << out_track
     out_track.events << MIDI::Tempo.new(MIDI::Tempo.bpm_to_mpq(120))
+
+    # 1) The meta events with non-zero delta time
     # Normally copyright and sequence name events are at time 0, but non-zero
     # start times are allowed.
-    out_track.events << MIDI::MetaEvent.new(MIDI::META_COPYRIGHT, '(C) 1950 Donald Duck', 100)
-    out_track.events << MIDI::MetaEvent.new(MIDI::META_SEQ_NAME, 'Quack, Track 1', 200)
-    out_track.events << MIDI::NoteOn.new(0, 64, 127, 0)
-    out_track.events << MIDI::NoteOff.new(0, 64, 127, 100)
+    begin
+      out_track.events << MIDI::MetaEvent.new(MIDI::META_COPYRIGHT, '(C) 1950 Donald Duck', 100)
+      out_track.events << MIDI::MetaEvent.new(MIDI::META_SEQ_NAME, 'Quack, Track 1', 200)
+      out_track.events << MIDI::NoteOn.new(0, 64, 127, 0)
+      out_track.events << MIDI::NoteOff.new(0, 64, 127, 100)
+    end
+
+    # 2) The unusual note off event with non-zero delta time
+    begin
+      out_track.events << MIDI::NoteOff.new(0, 65, 127, 120)
+      out_track.events << MIDI::NoteOn.new(0, 65, 127, 0)
+      # Add note off (which will be complemented at #end_track if missing) for later comparison.
+      out_track.events << MIDI::NoteOff.new(0, 65, 127, 230)
+    end
+
     File.open('/tmp/midilib_test.mid', 'wb') { |file| out_seq.write(file) }
 
     # Although start times are not written out to the MIDI file, we

@@ -81,16 +81,29 @@ module MIDI
       def note_off(chan, note, vel)
         # Find note on, create note off, connect the two, and remove
         # note on from pending list.
+
+        corresp_note_on = nil
+
         @pending.each_with_index do |on, i|
           next unless on.note == note && on.channel == chan
 
-          make_note_off(on, vel)
           @pending.delete_at(i)
-          return
+          corresp_note_on = on
+          break
         end
-        if $DEBUG
-          warn "note off with no earlier note on (ch #{chan}, note" +
-               " #{note}, vel #{vel})"
+
+        if corresp_note_on
+          make_note_off(corresp_note_on, vel)
+        else
+          # When a corresponding note on is missing,
+          # keep note off as input with lefting on/off attr to nil.
+          off = NoteOff.new(chan, note, vel, @curr_ticks)
+          @track.events << off
+
+          if $DEBUG
+            warn "note off with no earlier note on (ch #{chan}, note" +
+              " #{note}, vel #{vel})"
+          end
         end
       end
 
