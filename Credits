@@ -91,3 +91,8 @@ Miika Alonen (@amiika on Github)
 @johnkolen on Github
 
     Pointed out incorrect values for CC_GEN_PURPOSE_{5,6,7,8}.
+
+@kaorukobo on Github
+
+    Found a bug caused by note offs coming right before note ons. See
+    https://github.com/jimm/midilib/pull/21 for a detailed write-up.
