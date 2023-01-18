@@ -96,3 +96,9 @@ Miika Alonen (@amiika on Github)
 
     Found a bug caused by note offs coming right before note ons. See
     https://github.com/jimm/midilib/pull/21 for a detailed write-up.
+
+@mike-bourgeous on Github
+
+    Opened an issue (https://github.com/jimm/midilib/issues/24) which led to
+    the addition of end of track meta events when reading and writing MIDI
+    files.

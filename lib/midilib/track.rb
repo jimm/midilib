@@ -59,11 +59,39 @@ module MIDI
                     end
     end
 
+    # Iterates over events, yielding each one.
+    def each(&block) # :yields: event
+      @events.each(&block)
+    end
+
+    # If `event` exists in @events, deletes it, updates the delta time of
+    # the event after it, and calls `recalc_times` by default.
+    def delete_event(event, call_recalc_times = true)
+      i = @events.index(event)
+      return unless i
+
+      @events[i + 1].delta_time += @events[i].delta_time if i != (@events.length - 1)
+      @events.delete_at(i)
+      recalc_times if call_recalc_times
+    end
+
+    # Makes sure that we have one and only one end track meta event at the
+    # end of this track. Also calls `recalc_times`.
+    def ensure_track_end_meta_event
+      track_ends = @events.select { |e| e.is_a?(MetaEvent) && e.meta_type == META_TRACK_END }
+      return if track_ends.length == 1 && @events.last == track_ends[0]
+
+      track_ends.each { |track_end| delete_event(track_end, false) }
+      @events << MetaEvent.new(META_TRACK_END, nil, 0)
+      recalc_times
+    end
+
     # Merges an array of events into our event list. After merging, the
     # events' time_from_start values are correct so you don't need to worry
     # about calling recalc_times.
     def merge(event_list)
       @events = merge_event_lists(@events, event_list)
+      ensure_track_end_meta_event
     end
 
     # Merges two event arrays together. Does not modify this track.
@@ -119,11 +147,6 @@ module MIDI
         e.delta_time = e.time_from_start - prev_time_from_start
         prev_time_from_start = e.time_from_start
       end
-    end
-
-    # Iterate over events.
-    def each(&block) # :yields: event
-      @events.each(&block)
     end
 
     # Sort events by their time_from_start. After sorting,

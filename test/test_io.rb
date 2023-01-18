@@ -35,7 +35,12 @@ class IOTester < Test::Unit::TestCase
     assert_equal(1, format0_seq.tracks.length, 'number of tracks differ')
     format_1_count = multitrack_seq.tracks.map { |t| t.events.count }.reduce(:+)
     format_0_count = format0_seq.tracks.map { |t| t.events.count }.reduce(:+)
-    assert_equal(format_1_count, format_0_count, 'same number of total events')
+
+    # The format 1 file will have one more event because there is an end of
+    # track meta event at the end of each track (the track 0 metadata track
+    # and track 1 with the notes), whereas the format 0 file only has one
+    # track, thus one end of track meta event.
+    assert_equal(format_1_count, format_0_count + 1, 'different number of total events')
   end
 
   def test_read_and_write
@@ -135,9 +140,14 @@ class IOTester < Test::Unit::TestCase
     in_seq = MIDI::Sequence.new
     File.open(TEMPFILE, 'rb') { |file| in_seq.read(file) }
     in_track = in_seq.tracks[0]
-    assert_equal(out_track.events.length, in_track.events.length)
+    assert_equal(out_track.events.length + 1, in_track.events.length) # read added end of track meta event
     out_track.events.each_with_index do |event, i|
       assert_equal(event, in_track.events[i])
     end
+
+    # Last event is a end of track meta event
+    e = in_track.events.last
+    assert(e.is_a?(MIDI::MetaEvent))
+    assert(e.meta_type == MIDI::META_TRACK_END)
   end
 end

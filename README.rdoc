@@ -91,6 +91,15 @@ This bit mask is set when the track is read from the MIDI file by a SeqReader
 but is _not_ kept up to date by any other methods. Specifically, if you add
 events to a track at any other time, the bit mask will not be updated.
 
+When a Track is read from a MIDI file, a MIDI::META_TRACK_END event is added
+to the end if there isn't one in the file already. When a Track is written
+to a MIDI file, a MIDI::META_TRACK_END event is always output even if the
+Track does not have one.
+
+The Track#merge method ensures that there is only one MIDI::META_TRACK_END
+event after the merge and that it's at its proper place at the end of the
+list of events. It does so by calling Track#ensure_track_end_meta_event.
+
 === MIDI::Measure
 
 This class contains information about a measure from the sequence. Measure
@@ -133,7 +142,7 @@ string. When assigning to a meta event's data, if you pass in a string it will
 get converted to an array of bytes.
 
 
-== How To Use
+== How To Use midilib
 
 The following examples show you how to use midilib to read, write, and
 manipulate MIDI files and modify track events. See also the files in the

@@ -1,16 +1,16 @@
 This change log is no longer maintaned. For further change descriptions,
 see the Git logs.
 
-2007-12-11  Jim Menard  <jim@iamplify.com>
+2007-12-11  Jim Menard  <jim@jimmenard.com>
 
 	* lib/midilib/io/seqreader.rb: Fixed text method and added default
 	implementation of key_signature.
 
-2007-12-09  Jim Menard  <jim@iamplify.com>
+2007-12-09  Jim Menard  <jim@jimmenard.com>
 
 	* examples/measures_mbt.rb: Added.
 
-2007-12-09  Jim Menard  <jim@iamplify.com>
+2007-12-09  Jim Menard  <jim@jimmenard.com>
 
 	* lib/midilib/event.rb: Added code that fixes bpm calculation
 	bugs, and his TimeSig and KeySig classes.
@@ -19,17 +19,17 @@ see the Git logs.
 
 	* lib/midilib/sequence.rb: Fixed clock. Added get_measures method.
 
-2007-12-09  Jim Menard  <jim@iamplify.com>
+2007-12-09  Jim Menard  <jim@jimmenard.com>
 
 	* lib/midilib/event.rb: added program_change? and
 	print_channel_numbers_from_one to Event.
 
-2007-03-17  Jim Menard  <jimm@io.com>
+2007-03-17  Jim Menard  <jim@jimmenard.com>
 
 	* Version 1.0.0 released. I will no longer be maintaining this
 	change log; the Subversion comments should be sufficient.
 
-2006-08-20  Jim Menard  <jimm@io.com>
+2006-08-20  Jim Menard  <jim@jimmenard.com>
 
 	* lib/midilib/event.rb (PolyPressure::initialize): Fixed the
 	misspelled POLY_PRESSURE cosntant, thanks to Mario Pehle
@@ -39,7 +39,7 @@ see the Git logs.
 
 	* test/test.mid: created (copied examples/from_scratch.mid).
 
-2005-03-21  Jim Menard  <jimm@io.com>
+2005-03-21  Jim Menard  <jim@jimmenard.com>
 
 	* Version 0.8.4 released.
 
@@ -48,7 +48,7 @@ see the Git logs.
 	(SystemCommon::initialize): moved @is_system = true to here
 	(SystemExclusive::initialize): ...from here.
 
-2005-03-20  Jim Menard  <jimm@io.com>
+2005-03-20  Jim Menard  <jim@jimmenard.com>
 
 	* lib/midilib/sequence.rb (Sequence::note_to_delta): created.
 	(Sequence::note_to_length): created.
@@ -56,11 +56,11 @@ see the Git logs.
 
 	* examples/from_scratch.rb: created.
 
-2004-07-16  Jim Menard  <jimm@io.com>
+2004-07-16  Jim Menard  <jim@jimmenard.com>
 
 	* Version 0.8.3 released.
 
-2004-07-10  Jim Menard  <jimm@io.com>
+2004-07-10  Jim Menard  <jim@jimmenard.com>
 
 	* lib/midilib/event.rb (NoteEvent::note_to_s): created.
 	(Event::number_to_s): created.
@@ -68,7 +68,7 @@ see the Git logs.
 	attributes.
 	(to_s all classes): use @print_note_names and @print_decimal_numbers
 
-2004-06-30  Jim Menard  <jimm@io.com>
+2004-06-30  Jim Menard  <jim@jimmenard.com>
 
 	* Version 0.8.2 released.
 
@@ -103,7 +103,7 @@ see the Git logs.
 	* lib/midilib/io/seqreader.rb (SeqReader::initialize): added block
 	rdoc comment.
 
-2004-06-27  Jim Menard  <jimm@io.com>
+2004-06-27  Jim Menard  <jim@jimmenard.com>
 
 	* Version 0.8.1 released.
 
