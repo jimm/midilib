@@ -176,4 +176,30 @@ class TrackTester < Test::Unit::TestCase
     assert_equal(1, mtes.length)
     assert(@track.events.last.is_a?(MIDI::MetaEvent) && @track.events.last.meta_type == MIDI::META_TRACK_END)
   end
+
+  def test_ensure_track_end_with_dupes_does_not_shrink_track
+    mte = MIDI::MetaEvent.new(MIDI::META_TRACK_END, nil, 123)
+    @track.events.unshift(mte.dup)
+    @track.events << mte
+    @track.recalc_times
+    start_time = @track.events.last.time_from_start
+
+    @track.ensure_track_end_meta_event
+    mtes = @track.events.select { |e| e.is_a?(MIDI::MetaEvent) && e.meta_type == MIDI::META_TRACK_END }
+    assert_equal(1, mtes.length)
+    assert_equal(mte, mtes[0])
+
+    # As a side effect, ensure_track_end_meta_event calls recalc_times which
+    # in this case will modify the start time of mte.
+    assert_equal(start_time, mte.time_from_start)
+  end
+
+  def test_ensure_track_end_adds_to_empty_track
+    t = MIDI::Track.new(@seq)
+    t.ensure_track_end_meta_event
+
+    assert_equal(1, t.events.length)
+    mte = t.events.first
+    assert(mte.is_a?(MIDI::MetaEvent) && mte.meta_type == MIDI::META_TRACK_END)
+  end
 end

@@ -79,10 +79,16 @@ module MIDI
     # end of this track. Also calls `recalc_times`.
     def ensure_track_end_meta_event
       track_ends = @events.select { |e| e.is_a?(MetaEvent) && e.meta_type == META_TRACK_END }
-      return if track_ends.length == 1 && @events.last == track_ends[0]
+      has_end = !@events.empty? && track_ends[-1] == @events.last
 
+      # If we only have one end event and it's the last one, there's nothing
+      # to do.
+      return if track_ends.length == 1 && has_end
+
+      # If we have an end of track event already, leave it alone.
+      track_ends.pop if has_end
       track_ends.each { |track_end| delete_event(track_end, false) }
-      @events << MetaEvent.new(META_TRACK_END, nil, 0)
+      @events << MetaEvent.new(META_TRACK_END, nil, 0) unless has_end
       recalc_times
     end
 
