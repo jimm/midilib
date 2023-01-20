@@ -146,14 +146,15 @@ class TrackTester < Test::Unit::TestCase
   def test_delete_event
     # Event is not in the track; nothing happens
     @track.delete_event(MIDI::Controller.new(0, 64, 64, 200))
-    assert(@track.events.length == 3)
+    assert_equal(3, @track.events.length)
 
-    # Make sure we update delta times as well
+    # Make sure we update delta times and that start times are preserved
     e = @track.events[1]
     @track.delete_event(e)
     assert_equal(2, @track.events.length)
     assert(@track.events.index(e).nil?)
     assert_equal([100, 200], @track.events.map(&:delta_time))
+    assert_equal([100, 300], @track.events.map(&:time_from_start))
   end
 
   def test_ensure_track_end_meta_event
@@ -161,8 +162,9 @@ class TrackTester < Test::Unit::TestCase
     assert_equal(4, @track.events.length)
     e = @track.events.last
     assert(e.is_a?(MIDI::MetaEvent))
-    assert(e.meta_type == MIDI::META_TRACK_END)
-    assert(e.delta_time == 0)
+    assert_equal(MIDI::META_TRACK_END, e.meta_type)
+    assert_equal(0, e.delta_time)
+    assert_equal(@track.events[-2].time_from_start, e.time_from_start)
   end
 
   def test_ensure_track_end_meta_event_removes_duplicates

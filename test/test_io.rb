@@ -106,6 +106,22 @@ class IOTester < Test::Unit::TestCase
     assert_equal(MIDI::GM_PATCH_NAMES[0], seq.tracks[1].instrument)
   end
 
+  # This is a regression test.
+  def test_read_eot_preserves_delta
+    seq = MIDI::Sequence.new
+    File.open(SEQ_TEST_FILE, 'rb') { |f| seq.read(f) }
+    track = seq.tracks.last
+    mte = MIDI::MetaEvent.new(MIDI::META_TRACK_END, nil, 123)
+    track.events << mte
+    track.recalc_times
+    File.open(OUTPUT_FILE, 'wb') { |f| seq.write(f) }
+    File.open(OUTPUT_FILE, 'rb') { |f| seq.read(f) }
+
+    assert_equal(mte, seq.tracks.last.events.last)
+  ensure
+    File.delete(OUTPUT_FILE) if File.exist?(OUTPUT_FILE)
+  end
+
   def test_preserve_deltas_in_some_situations
     out_seq = MIDI::Sequence.new
     out_track = MIDI::Track.new(out_seq)

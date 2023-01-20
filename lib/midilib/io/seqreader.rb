@@ -44,9 +44,10 @@ module MIDI
         @pending.each { |on| make_note_off(on, 64) }
         @pending = nil
 
-        # Make sure track has an end of track event. As a side effect, this
-        # calls `recalc_times`.
+        # Make sure track has an end of track event and that all of the
+        # `time_from_start` values are correct.
         @track.ensure_track_end_meta_event
+        @track.recalc_times
 
         # Store bitmask of all channels used into track
         @track.channels_used = @chan_mask
@@ -130,6 +131,10 @@ module MIDI
 
       def sysex(msg)
         @track.events << SystemExclusive.new(msg, @curr_ticks)
+      end
+
+      def eot
+        @track.events << MetaEvent.new(META_TRACK_END, nil, @curr_ticks)
       end
 
       def meta_misc(type, msg)

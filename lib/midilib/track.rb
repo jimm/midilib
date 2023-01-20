@@ -76,7 +76,7 @@ module MIDI
     end
 
     # Makes sure that we have one and only one end track meta event at the
-    # end of this track. Also calls `recalc_times`.
+    # end of this track.
     def ensure_track_end_meta_event
       track_ends = @events.select { |e| e.is_a?(MetaEvent) && e.meta_type == META_TRACK_END }
       has_end = !@events.empty? && track_ends[-1] == @events.last
@@ -88,13 +88,16 @@ module MIDI
       # If we have an end of track event already, leave it alone.
       track_ends.pop if has_end
       track_ends.each { |track_end| delete_event(track_end, false) }
-      @events << MetaEvent.new(META_TRACK_END, nil, 0) unless has_end
-      recalc_times
+      return if has_end
+
+      mte = MetaEvent.new(META_TRACK_END, nil, 0)
+      mte.time_from_start = @events.last.time_from_start + mte.delta_time if @events.last
+      @events << mte
     end
 
     # Merges an array of events into our event list. After merging, the
     # events' time_from_start values are correct so you don't need to worry
-    # about calling recalc_times.
+    # about calling #recalc_times.
     def merge(event_list)
       @events = merge_event_lists(@events, event_list)
       ensure_track_end_meta_event
