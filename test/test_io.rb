@@ -35,7 +35,12 @@ class IOTester < Test::Unit::TestCase
     assert_equal(1, format0_seq.tracks.length, 'number of tracks differ')
     format_1_count = multitrack_seq.tracks.map { |t| t.events.count }.reduce(:+)
     format_0_count = format0_seq.tracks.map { |t| t.events.count }.reduce(:+)
-    assert_equal(format_1_count, format_0_count, 'same number of total events')
+
+    # The format 1 file will have one more event because there is an end of
+    # track meta event at the end of each track (the track 0 metadata track
+    # and track 1 with the notes), whereas the format 0 file only has one
+    # track, thus one end of track meta event.
+    assert_equal(format_1_count, format_0_count + 1, 'different number of total events')
   end
 
   def test_read_and_write
@@ -101,6 +106,22 @@ class IOTester < Test::Unit::TestCase
     assert_equal(MIDI::GM_PATCH_NAMES[0], seq.tracks[1].instrument)
   end
 
+  # This is a regression test.
+  def test_read_eot_preserves_delta
+    seq = MIDI::Sequence.new
+    File.open(SEQ_TEST_FILE, 'rb') { |f| seq.read(f) }
+    track = seq.tracks.last
+    mte = MIDI::MetaEvent.new(MIDI::META_TRACK_END, nil, 123)
+    track.events << mte
+    track.recalc_times
+    File.open(OUTPUT_FILE, 'wb') { |f| seq.write(f) }
+    File.open(OUTPUT_FILE, 'rb') { |f| seq.read(f) }
+
+    assert_equal(mte, seq.tracks.last.events.last)
+  ensure
+    File.delete(OUTPUT_FILE) if File.exist?(OUTPUT_FILE)
+  end
+
   def test_preserve_deltas_in_some_situations
     out_seq = MIDI::Sequence.new
     out_track = MIDI::Track.new(out_seq)
@@ -135,9 +156,14 @@ class IOTester < Test::Unit::TestCase
     in_seq = MIDI::Sequence.new
     File.open(TEMPFILE, 'rb') { |file| in_seq.read(file) }
     in_track = in_seq.tracks[0]
-    assert_equal(out_track.events.length, in_track.events.length)
+    assert_equal(out_track.events.length + 1, in_track.events.length) # read added end of track meta event
     out_track.events.each_with_index do |event, i|
       assert_equal(event, in_track.events[i])
     end
+
+    # Last event is a end of track meta event
+    e = in_track.events.last
+    assert(e.is_a?(MIDI::MetaEvent))
+    assert(e.meta_type == MIDI::META_TRACK_END)
   end
 end

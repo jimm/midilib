@@ -61,7 +61,8 @@ class TrackTester < Test::Unit::TestCase
   def test_merge
     list = (1..12).collect { |i| MIDI::NoteOn.new(0, 64, 64, 10) }
     @track.merge(list)
-    assert_equal(15, @track.events.length)
+    # We merged 15 events, but an end of track meta event was added by merge
+    assert_equal(16, @track.events.length)
     assert_equal(10, @track.events[0].time_from_start)
     assert_equal(10, @track.events[0].delta_time)
     assert_equal(20, @track.events[1].time_from_start)
@@ -79,6 +80,7 @@ class TrackTester < Test::Unit::TestCase
     assert_equal(120, @track.events[12].time_from_start)
     assert_equal(200, @track.events[13].time_from_start)
     assert_equal(300, @track.events[14].time_from_start)
+    assert_equal(300, @track.events[15].time_from_start) # end of track meta event
   end
 
   def test_recalc_delta_from_times
@@ -139,5 +141,67 @@ class TrackTester < Test::Unit::TestCase
     assert(x.is_a?(MIDI::NoteOnEvent))  # old name
     x = MIDI::NoteOff.new(0, 64, 64, 10)
     assert(x.is_a?(MIDI::NoteOffEvent)) # old name
+  end
+
+  def test_delete_event
+    # Event is not in the track; nothing happens
+    @track.delete_event(MIDI::Controller.new(0, 64, 64, 200))
+    assert_equal(3, @track.events.length)
+
+    # Make sure we update delta times and that start times are preserved
+    e = @track.events[1]
+    @track.delete_event(e)
+    assert_equal(2, @track.events.length)
+    assert(@track.events.index(e).nil?)
+    assert_equal([100, 200], @track.events.map(&:delta_time))
+    assert_equal([100, 300], @track.events.map(&:time_from_start))
+  end
+
+  def test_ensure_track_end_meta_event
+    @track.ensure_track_end_meta_event
+    assert_equal(4, @track.events.length)
+    e = @track.events.last
+    assert(e.is_a?(MIDI::MetaEvent))
+    assert_equal(MIDI::META_TRACK_END, e.meta_type)
+    assert_equal(0, e.delta_time)
+    assert_equal(@track.events[-2].time_from_start, e.time_from_start)
+  end
+
+  def test_ensure_track_end_meta_event_removes_duplicates
+    mte = MIDI::MetaEvent.new(MIDI::META_TRACK_END, nil, 0)
+    @track.events << mte
+    @track.events.unshift(mte.dup)
+    @track.events.unshift(mte.dup)
+
+    @track.ensure_track_end_meta_event
+    mtes = @track.events.select { |e| e.is_a?(MIDI::MetaEvent) && e.meta_type == MIDI::META_TRACK_END }
+    assert_equal(1, mtes.length)
+    assert(@track.events.last.is_a?(MIDI::MetaEvent) && @track.events.last.meta_type == MIDI::META_TRACK_END)
+  end
+
+  def test_ensure_track_end_with_dupes_does_not_shrink_track
+    mte = MIDI::MetaEvent.new(MIDI::META_TRACK_END, nil, 123)
+    @track.events.unshift(mte.dup)
+    @track.events << mte
+    @track.recalc_times
+    start_time = @track.events.last.time_from_start
+
+    @track.ensure_track_end_meta_event
+    mtes = @track.events.select { |e| e.is_a?(MIDI::MetaEvent) && e.meta_type == MIDI::META_TRACK_END }
+    assert_equal(1, mtes.length)
+    assert_equal(mte, mtes[0])
+
+    # As a side effect, ensure_track_end_meta_event calls recalc_times which
+    # in this case will modify the start time of mte.
+    assert_equal(start_time, mte.time_from_start)
+  end
+
+  def test_ensure_track_end_adds_to_empty_track
+    t = MIDI::Track.new(@seq)
+    t.ensure_track_end_meta_event
+
+    assert_equal(1, t.events.length)
+    mte = t.events.first
+    assert(mte.is_a?(MIDI::MetaEvent) && mte.meta_type == MIDI::META_TRACK_END)
   end
 end

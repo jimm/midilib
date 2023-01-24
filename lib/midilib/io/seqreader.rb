@@ -8,16 +8,9 @@ module MIDI
     # callback methods for each MIDI event and use them to build Track and
     # Event objects and give the tracks to a Sequence.
     #
-    # We append new events to the end of a track's event list, bypassing a
-    # call to Track.#add. This means that we must call Track.recalc_times at
-    # the end of the track so it can update each event with its time from
-    # the track's start (see end_track below).
-    #
-    # META_TRACK_END events are not added to tracks. This way, we don't have
-    # to worry about making sure the last event is always a track end event.
-    # We rely on the SeqWriter to append a META_TRACK_END event to each
-    # track when it is output.
-
+    # Ensures that each track ends with an end of track meta event, and that
+    # Track#recalc_times is called at the end of the track so it can update
+    # each event with its time from the track's start (see end_track below).
     class SeqReader < MIDIFile
       # The optional &block is called once at the start of the file and
       # again at the end of each track. There are three arguments to the
@@ -51,12 +44,9 @@ module MIDI
         @pending.each { |on| make_note_off(on, 64) }
         @pending = nil
 
-        # Don't bother adding the META_TRACK_END event to the track.
-        # This way, we don't have to worry about making sure the
-        # last event is always a track end event.
-
-        # Let the track calculate event times from start of track. This is
-        # in lieu of calling Track.add for each event.
+        # Make sure track has an end of track event and that all of the
+        # `time_from_start` values are correct.
+        @track.ensure_track_end_meta_event
         @track.recalc_times
 
         # Store bitmask of all channels used into track
@@ -102,7 +92,7 @@ module MIDI
 
           if $DEBUG
             warn "note off with no earlier note on (ch #{chan}, note" +
-              " #{note}, vel #{vel})"
+                 " #{note}, vel #{vel})"
           end
         end
       end
@@ -143,6 +133,10 @@ module MIDI
         @track.events << SystemExclusive.new(msg, @curr_ticks)
       end
 
+      def eot
+        @track.events << MetaEvent.new(META_TRACK_END, nil, @curr_ticks)
+      end
+
       def meta_misc(type, msg)
         @track.events << MetaEvent.new(type, msg, @curr_ticks)
       end
@@ -167,16 +161,6 @@ module MIDI
           warn "text = #{msg}, type = #{type}" if $DEBUG
         end
       end
-
-      # --
-      # Don't bother adding the META_TRACK_END event to the track. This way,
-      # we don't have to worry about always making sure the last event is
-      # always a track end event. We just have to make sure to write one when
-      # the track is output back to a file.
-      #          def eot()
-      #              @track.events << MetaEvent.new(META_TRACK_END, nil, @curr_ticks)
-      #          end
-      # ++
 
       def time_signature(numer, denom, clocks, qnotes)
         @seq.time_signature(numer, denom, clocks, qnotes)

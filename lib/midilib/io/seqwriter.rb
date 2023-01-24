@@ -66,10 +66,12 @@ module MIDI
           prev_status = status
         end
 
-        # Write track end event.
-        event = MetaEvent.new(META_TRACK_END)
-        write_var_len(0)
-        @bytes_written += write_bytes(event.data_as_bytes)
+        # Write track end event if the track doesn't have one.
+        unless track.events.last.is_a?(MetaEvent) && track.events.last.meta_type == META_TRACK_END
+          event = MetaEvent.new(META_TRACK_END)
+          write_var_len(0)
+          @bytes_written += write_bytes(event.data_as_bytes)
+        end
 
         # Go back to beginning of track data and write number of bytes,
         # then come back here to end of file.

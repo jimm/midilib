@@ -1,13 +1,14 @@
 == Bugs
 
 midilib does not handle tempo changes when calculating +beats_per_minute+.
-The tempo events are correctly handled when reading/writing/moving them
-around, it's just the functions that answer questions about the current
-tempo that are wrong. See https://github.com/jimm/midilib/issues/8. The
-method +beats_per_minute+ and related methods like +pulses_to_seconds+ will
-have to take into account the possibility of more than one tempo event. They
-will probably have to take new arguments specifying where in the sequence
-the beats or pulses are being requested. For example we could have
+See https://github.com/jimm/midilib/issues/8 which describes the issue. The
+tempo events are correctly handled when reading/writing/moving them around,
+it's just the functions that answer questions about the current tempo that
+are wrong. See https://github.com/jimm/midilib/issues/8. The method
++beats_per_minute+ and related methods like +pulses_to_seconds+ will have to
+take into account the possibility of more than one tempo event. They will
+probably have to take new arguments specifying where in the sequence the
+beats or pulses are being requested. For example we could have
 +beats_per_minute(at_seconds: 0.0, at_beat: 0.0)+ (where the two keyword
 args are mutually exclusive). Perhaps there should be separately named
 public methods like +beats_per_minute_at_seconds+ and
