@@ -102,3 +102,4 @@ Miika Alonen (@amiika on Github)
     Opened an issue (https://github.com/jimm/midilib/issues/24) which led to
     the addition of end of track meta events when reading and writing MIDI
     files.
+    Found and fixed a bug in SongPointer#data_as_bytes.

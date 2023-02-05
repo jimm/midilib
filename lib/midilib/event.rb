@@ -299,8 +299,8 @@ module MIDI
     def data_as_bytes
       data = []
       data << @status
-      data << ((@pointer >> 8) & 0xff)
-      data << (@pointer & 0xff)
+      data << (@pointer & 0x7f)
+      data << ((@pointer >> 7) & 0x7f)
     end
 
     def to_s
