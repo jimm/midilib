@@ -130,4 +130,16 @@ class EventTester < Test::Unit::TestCase
     assert_equal('foobar', e.data_as_str)
     assert_equal(foobar_as_array, e.data)
   end
+
+  def test_song_pointer
+    e = MIDI::SongPointer.new(1)
+    b = e.data_as_bytes
+    assert_equal(1, b[1])       # lsb, 7 bits
+    assert_equal(0, b[2])       # msb, 7 bits
+
+    e.pointer = (3 << 7) + 42
+    b = e.data_as_bytes
+    assert_equal(42, b[1])      # lsb, 7 bits
+    assert_equal(3, b[2])       # msb, 7 bits
+  end
 end
