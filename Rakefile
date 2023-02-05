@@ -33,7 +33,6 @@ spec = Gem::Specification.new do |s|
   s.author = 'Jim Menard'
   s.email = 'jim@jimmenard.com'
   s.homepage = 'http://github.com/jimm/midilib'
-  s.rubyforge_project = PROJECT_NAME
   s.license = 'Ruby'
 
   s.summary = 'MIDI file and event manipulation library'
