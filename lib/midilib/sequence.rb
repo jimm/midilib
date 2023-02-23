@@ -69,6 +69,51 @@ module MIDI
       event = @tracks.first.events.detect { |e| e.is_a?(MIDI::Tempo) }
       event ? Tempo.mpq_to_bpm(event.tempo) : DEFAULT_TEMPO
     end
+
+    def get_tempo_parts
+      tempo_parts = {}
+      Array(@tracks).each do |track|
+        track.events.map do |e|
+          tempo_parts[e.time_from_start] = Tempo.mpq_to_bpm(e.tempo) if e.is_a?(MIDI::Tempo)
+        end
+      end
+      tempo_parts
+    end
+
+    def avg_beats_per_minute
+      return DEFAULT_TEMPO if @tracks.nil? || @tracks.empty?
+
+      bpm_min = tempo_parts.min
+      bpm_max = tempo_parts.max
+      tempo_events ? Tempo.mpq_to_bpm(event.tempo) : DEFAULT_TEMPO
+      # parts_lenght(tempo_parts.keys, self.get_measures.last.end)
+    end
+
+    def beats_per_minute_now
+
+    end
+
+    # def avg_beats_per_minute
+    #   return DEFAULT_TEMPO if @tracks.nil? || @tracks.empty?
+    #   tempo_parts = {}
+    #   Array(@tracks).each do |track|
+    #     track.events.map do |e|
+    #       tempo_parts[e.time_from_start] = Tempo.mpq_to_bpm(e.tempo) if e.is_a?(MIDI::Tempo)
+    #     end
+    #   end
+    #   # tempo_events ? Tempo.mpq_to_bpm(event.tempo) : DEFAULT_TEMPO
+    #   # parts_lenght(tempo_parts.keys, self.get_measures.last.end)
+    # end
+
+    # def parts_lenght(start_points, track_ends)
+    #   parts_lenght = []
+    #   start_points.each_with_index do |start_point, i|
+    #     start_points[i+1].nil? ? part_end = track_ends : part_end = start_points[i+1]
+    #     parts_lenght << part_end - start_point
+    #   end
+    #   parts_lenght
+    # end
+
     alias bpm beats_per_minute
     alias tempo beats_per_minute
 
