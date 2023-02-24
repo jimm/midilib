@@ -82,7 +82,7 @@ module MIDI
     end
 
     # The same with offset. Returns nil if out of range
-    def pulses_to_seconds_current(pulses, offset)
+    def pulses_to_seconds_current(pulses, offset = 0)
       unless beats_per_minute_current(offset).nil?
         (pulses.to_f / @ppqn.to_f / beats_per_minute_current(offset)) * 60.0
       end

@@ -36,6 +36,9 @@ class SequenceTester < Test::Unit::TestCase
     # At a tempo of 120 BPM 480 pulses (one quarter note) should take 0.5 seconds
     assert_in_delta 0.5, @seq.pulses_to_seconds_current(480, 1000), 0.00001
 
+    # Should use offset = 0 if offset is not present
+    assert_in_delta 0.5, @seq.pulses_to_seconds_current(480), 0.00001
+    
     # Should retun nil if offset is out of range
     assert_equal(nil, @seq.pulses_to_seconds_current(480, 1920))
   end
