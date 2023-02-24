@@ -213,7 +213,7 @@ module MIDI
     # Returns array of minimum and maximum bpm within sequence
     def beats_per_minute_min_max
       return [DEFAULT_TEMPO] if @tracks.nil? || @tracks.empty?
-      tempo_parts = get_tempo_parts.transform_values! { |bpm| bpm.round(BPM_ROUND) }
+      tempo_parts = get_tempo_parts
       return tempo_parts.values if tempo_parts.length == 1
       [tempo_parts.values.min, tempo_parts.values.max]
     end
@@ -221,7 +221,7 @@ module MIDI
     # Returns array with all tempos parts within sequence
     def beats_per_minute_all
       return [DEFAULT_TEMPO] if @tracks.nil? || @tracks.empty?
-      get_tempo_parts.values.map { |bpm| bpm.round(BPM_ROUND) }
+      get_tempo_parts.values
     end
 
     # Returns bpm value for offset, nil if offset is out of range
@@ -237,7 +237,7 @@ module MIDI
           current_bpm = part[1] if part[0] <= offset
         end
       end
-      current_bpm.round(BPM_ROUND)
+      current_bpm
     end
 
     private
@@ -252,7 +252,7 @@ module MIDI
           e.is_a?(MIDI::Tempo) ? tempo_parts[e.time_from_start] = Tempo.mpq_to_bpm(e.tempo) : tempo_parts[0] = DEFAULT_TEMPO
         end
       end
-      tempo_parts
+      tempo_parts.transform_values! { |bpm| bpm.round(BPM_ROUND) }
     end
 
   end
