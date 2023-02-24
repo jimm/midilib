@@ -226,10 +226,10 @@ module MIDI
     end
 
     # Returns bpm value for offset, nil if offset is out of range
-    def beats_per_minute_current(offset)
+    def beats_per_minute_current(offset = 0)
       return DEFAULT_TEMPO if @tracks.nil? || @tracks.empty?
       return nil if offset > self.get_measures.last.end || offset < 0
-      current_bpm = 0
+      current_bpm = DEFAULT_TEMPO
       tempo_parts = get_tempo_parts
       tempo_parts.each_with_index do |part, i|
         if !tempo_parts[i+1].nil?

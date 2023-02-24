@@ -90,6 +90,7 @@ class SequenceTester < Test::Unit::TestCase
     File.open('examples/ex2.mid', 'rb') do | file |
       @seq_bpm_diff.read(file)
       assert_equal(nil, @seq_bpm_diff.beats_per_minute_current(-1000))
+      assert_equal(120.0, @seq_bpm_diff.beats_per_minute_current)
       assert_equal(120.0, @seq_bpm_diff.beats_per_minute_current(15599))
       assert_equal(131.34, @seq_bpm_diff.beats_per_minute_current(15600))
       assert_equal(131.34, @seq_bpm_diff.beats_per_minute_current(15601))
