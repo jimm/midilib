@@ -9,6 +9,7 @@ module MIDI
 
     UNNAMED = 'Unnamed Sequence'
     DEFAULT_TEMPO = 120
+    BPM_ROUND = 3
 
     NOTE_TO_LENGTH = {
       'whole' => 4.0,
@@ -70,50 +71,6 @@ module MIDI
       event ? Tempo.mpq_to_bpm(event.tempo) : DEFAULT_TEMPO
     end
 
-    def get_tempo_parts
-      tempo_parts = {}
-      Array(@tracks).each do |track|
-        track.events.map do |e|
-          tempo_parts[e.time_from_start] = Tempo.mpq_to_bpm(e.tempo) if e.is_a?(MIDI::Tempo)
-        end
-      end
-      tempo_parts
-    end
-
-    def avg_beats_per_minute
-      return DEFAULT_TEMPO if @tracks.nil? || @tracks.empty?
-
-      bpm_min = tempo_parts.min
-      bpm_max = tempo_parts.max
-      tempo_events ? Tempo.mpq_to_bpm(event.tempo) : DEFAULT_TEMPO
-      # parts_lenght(tempo_parts.keys, self.get_measures.last.end)
-    end
-
-    def beats_per_minute_now
-
-    end
-
-    # def avg_beats_per_minute
-    #   return DEFAULT_TEMPO if @tracks.nil? || @tracks.empty?
-    #   tempo_parts = {}
-    #   Array(@tracks).each do |track|
-    #     track.events.map do |e|
-    #       tempo_parts[e.time_from_start] = Tempo.mpq_to_bpm(e.tempo) if e.is_a?(MIDI::Tempo)
-    #     end
-    #   end
-    #   # tempo_events ? Tempo.mpq_to_bpm(event.tempo) : DEFAULT_TEMPO
-    #   # parts_lenght(tempo_parts.keys, self.get_measures.last.end)
-    # end
-
-    # def parts_lenght(start_points, track_ends)
-    #   parts_lenght = []
-    #   start_points.each_with_index do |start_point, i|
-    #     start_points[i+1].nil? ? part_end = track_ends : part_end = start_points[i+1]
-    #     parts_lenght << part_end - start_point
-    #   end
-    #   parts_lenght
-    # end
-
     alias bpm beats_per_minute
     alias tempo beats_per_minute
 
@@ -122,6 +79,12 @@ module MIDI
     # float value that is a time in seconds.
     def pulses_to_seconds(pulses)
       (pulses.to_f / @ppqn.to_f / beats_per_minute) * 60.0
+    end
+
+    def pulses_to_seconds_current(pulses, offset)
+      unless beats_per_minute_current(offset).nil?
+        (pulses.to_f / @ppqn.to_f / beats_per_minute_current(offset)) * 60.0
+      end
     end
 
     # Given a note length name like "whole", "dotted quarter", or "8th
@@ -245,5 +208,52 @@ module MIDI
       end
       measures
     end
+    
+    # Returns array of minimum and maximum bpm within sequence
+    def beats_per_minute_min_max
+      return [DEFAULT_TEMPO] if @tracks.nil? || @tracks.empty?
+      tempo_parts = get_tempo_parts
+      return tempo_parts.values if tempo_parts.length == 1
+      [tempo_parts.values.min.round(BPM_ROUND), tempo_parts.values.max.round(BPM_ROUND)]
+    end
+
+    # Returns array with all tempos parts within sequence
+    def beats_per_minute_all
+      return [DEFAULT_TEMPO] if @tracks.nil? || @tracks.empty?
+      tempo_parts = get_tempo_parts
+      tempo_parts.values.map { |bpm| bpm.round(BPM_ROUND) }
+    end
+
+    # Returns bpm value for offset, nil if offset is out of range
+    def beats_per_minute_current(offset)
+      return DEFAULT_TEMPO if @tracks.nil? || @tracks.empty?
+      return nil if offset > self.get_measures.last.end || offset < 0
+      current_bpm = 0
+      tempo_parts = get_tempo_parts
+      tempo_parts.each_with_index do |part, i|
+        if !tempo_parts[i+1].nil?
+          current_bpm = part[1] if part[0] <= offset &&  tempo_parts[i+1][0] > offset
+        else
+          current_bpm = part[1] if part[0] <= offset
+        end
+      end
+      current_bpm.round(BPM_ROUND)
+    end
+
+    private
+
+    # Private method to split sequence into parts, if more then one bpm present in sequence
+    # Returns hash { start_time => bpm }
+    def get_tempo_parts
+      tempo_parts = {}
+      return tempo_parts[0] = DEFAULT_TEMPO if @tracks.nil? || @tracks.empty?
+      Array(@tracks).each do |track|
+        track.events.map do |e|
+          e.is_a?(MIDI::Tempo) ? tempo_parts[e.time_from_start] = Tempo.mpq_to_bpm(e.tempo) : tempo_parts[0] = DEFAULT_TEMPO
+        end
+      end
+      tempo_parts
+    end
+
   end
 end

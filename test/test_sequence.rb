@@ -13,6 +13,7 @@ class SequenceTester < Test::Unit::TestCase
     @seq.tracks << @track
     3.times { @track.events << MIDI::NoteOn.new(0, 64, 64, 100) }
     @track.recalc_times
+    @seq_bpm_diff = MIDI::Sequence.new
   end
 
   def test_basics
@@ -31,6 +32,12 @@ class SequenceTester < Test::Unit::TestCase
 
     # An eight note should take 0.25 seconds
     assert_in_delta 0.25, @seq.pulses_to_seconds(480 / 2), 0.00001
+
+    # At a tempo of 120 BPM 480 pulses (one quarter note) should take 0.5 seconds
+    assert_in_delta 0.5, @seq.pulses_to_seconds_current(480, 1000), 0.00001
+
+    # Should retun nil if offset is out of range
+    assert_equal(nil, @seq.pulses_to_seconds_current(480, 1920))
   end
 
   def test_length_to_delta
@@ -76,5 +83,24 @@ class SequenceTester < Test::Unit::TestCase
     assert_equal(480 / 16, @seq.note_to_delta('sixty fourth'))
     assert_equal(480 / 16, @seq.note_to_delta('sixtyfourth'))
     assert_equal(480 / 16, @seq.note_to_delta('64th'))
+  end
+
+  def test_beats_per_minute
+    # Using file with 2 different tempos whithin sequence (bpm change at 15600)
+    File.open('examples/ex2.mid', 'rb') do | file |
+      @seq_bpm_diff.read(file)
+      assert_equal(nil, @seq_bpm_diff.beats_per_minute_current(-1000))
+      assert_equal(120.0, @seq_bpm_diff.beats_per_minute_current(15599))
+      assert_equal(131.34, @seq_bpm_diff.beats_per_minute_current(15600))
+      assert_equal(131.34, @seq_bpm_diff.beats_per_minute_current(15601))
+      assert_equal([120.0, 131.34], @seq_bpm_diff.beats_per_minute_min_max)
+      assert_equal([120.0, 131.34], @seq_bpm_diff.beats_per_minute_all)
+    end
+
+    # Using regular testing sequence
+    assert_equal(120.0, @seq.beats_per_minute_current(1918))
+    assert_equal(nil, @seq.beats_per_minute_current(1920))
+    assert_equal([120.0], @seq.beats_per_minute_min_max)
+    assert_equal([120.0], @seq.beats_per_minute_all)
   end
 end
