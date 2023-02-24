@@ -38,7 +38,7 @@ class SequenceTester < Test::Unit::TestCase
 
     # Should use offset = 0 if offset is not present
     assert_in_delta 0.5, @seq.pulses_to_seconds_current(480), 0.00001
-    
+
     # Should retun nil if offset is out of range
     assert_equal(nil, @seq.pulses_to_seconds_current(480, 1920))
   end
@@ -97,6 +97,7 @@ class SequenceTester < Test::Unit::TestCase
       assert_equal(120.0, @seq_bpm_diff.beats_per_minute_current(15599))
       assert_equal(131.34, @seq_bpm_diff.beats_per_minute_current(15600))
       assert_equal(131.34, @seq_bpm_diff.beats_per_minute_current(15601))
+      assert_equal(nil, @seq_bpm_diff.beats_per_minute_current(5000000))
       assert_equal([120.0, 131.34], @seq_bpm_diff.beats_per_minute_min_max)
       assert_equal([120.0, 131.34], @seq_bpm_diff.beats_per_minute_all)
     end
@@ -104,7 +105,7 @@ class SequenceTester < Test::Unit::TestCase
     # Using regular testing sequence
     assert_equal(120.0, @seq.beats_per_minute_current(1918))
     assert_equal(nil, @seq.beats_per_minute_current(1920))
-    assert_equal([120.0], @seq.beats_per_minute_min_max)
+    assert_equal([120], @seq.beats_per_minute_min_max)
     assert_equal([120.0], @seq.beats_per_minute_all)
   end
 end
