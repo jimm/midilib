@@ -6,12 +6,7 @@
 # in a "sequencer-style" manner:
 #    Measure:Beat:Tick   Channel: Note-name
 
-# Start looking for MIDI module classes in the directory above this one.
-# This forces us to use the local copy, even if there is a previously
-# installed version out there somewhere.
-$LOAD_PATH[0, 0] = File.join(File.dirname(__FILE__), '..', 'lib')
-
-require 'midilib/sequence'
+require_relative '../lib/midilib/sequence'
 
 seq = MIDI::Sequence.new
 File.open(ARGV[0], 'rb') { |file| seq.read(file) }

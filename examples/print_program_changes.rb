@@ -2,9 +2,7 @@
 #
 # Shows use of print_decimal_numbers and print_channel_numbers_from_one.
 
-$LOAD_PATH[0, 0] = File.join(File.dirname(__FILE__), '..', 'lib')
-
-require 'midilib/sequence'
+require_relative '../lib/midilib/sequence'
 
 DEFAULT_MIDI_TEST_FILE = 'NoFences.mid'
 

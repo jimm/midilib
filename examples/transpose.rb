@@ -7,15 +7,10 @@
 #   -t half_steps   default = 12 (one octave up)
 #
 
-# Start looking for MIDI module classes in the directory above this one.
-# This forces us to use the local copy, even if there is a previously
-# installed version out there somewhere.
-$LOAD_PATH[0, 0] = File.join(File.dirname(__FILE__), '..', 'lib')
-
 require 'getoptlong'
-require 'midilib/sequence'
-require 'midilib/io/seqreader'
-require 'midilib/io/seqwriter'
+require_relative '../lib/midilib/sequence'
+require_relative '../lib/midilib/io/seqreader'
+require_relative '../lib/midilib/io/seqwriter'
 
 def usage
   $stderr.print <<~EOF

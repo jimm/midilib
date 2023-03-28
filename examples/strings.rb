@@ -5,13 +5,8 @@
 # Prints all strings (track names, etc.) found in the MIDI file.
 #
 
-# Start looking for MIDI module classes in the directory above this one.
-# This forces us to use the local copy, even if there is a previously
-# installed version out there somewhere.
-$LOAD_PATH[0, 0] = File.join(File.dirname(__FILE__), '..', 'lib')
-
-require 'midilib/sequence'
-require 'midilib/consts'
+require_relative '../lib/midilib/sequence'
+require_relative '../lib/midilib/consts'
 
 DEFAULT_MIDI_TEST_FILE = 'NoFences.mid'
 

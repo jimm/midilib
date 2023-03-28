@@ -1,10 +1,5 @@
-# Start looking for MIDI classes in the directory above this one.
-# This forces us to use the local copy of MIDI, even if there is
-# a previously installed version out there somewhere.
-$LOAD_PATH[0, 0] = File.join(File.dirname(__FILE__), '..', 'lib')
-
 require 'test/unit'
-require 'midilib'
+require_relative '../lib/midilib'
 
 class EventTester < Test::Unit::TestCase
   def test_note_on

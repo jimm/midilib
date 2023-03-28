@@ -9,13 +9,8 @@
 # For a simpler way to do the same thing, see seq2text.rb.
 #
 
-# Start looking for MIDI module classes in the directory above this one.
-# This forces us to use the local copy, even if there is a previously
-# installed version out there somewhere.
-$LOAD_PATH[0, 0] = File.join(File.dirname(__FILE__), '..', 'lib')
-
-require 'midilib/sequence'
-require 'midilib/io/midifile'
+require_relative '../lib/midilib/sequence'
+require_relative '../lib/midilib/io/midifile'
 
 DEFAULT_MIDI_TEST_FILE = 'NoFences.mid'
 

@@ -9,12 +9,7 @@
 # If -x is specified, the 0th temp track is not included in each file.
 # Instead, it is output in a separate file named 'tempo_track.mid'.
 
-# Start looking for MIDI module classes in the directory above this one.
-# This forces us to use the local copy, even if there is a previously
-# installed version out there somewhere.
-$LOAD_PATH[0, 0] = File.join(File.dirname(__FILE__), '..', 'lib')
-
-require 'midilib/sequence'
+require_relative '../lib/midilib/sequence'
 
 DEFAULT_MIDI_TEST_FILE = 'NoFences.mid'
 
