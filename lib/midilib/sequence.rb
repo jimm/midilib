@@ -79,20 +79,6 @@ module MIDI
       current_bpm
     end
 
-    # Returns array of minimum and maximum bpm within sequence
-    def beats_per_minute_min_max
-      return [DEFAULT_TEMPO] if @tracks.nil? || @tracks.empty?
-      tempo_parts = get_tempo_parts
-      return tempo_parts.values if tempo_parts.length == 1
-      [tempo_parts.values.min, tempo_parts.values.max]
-    end
-
-    # Returns array with all tempos parts within sequence
-    def beats_per_minute_all
-      return [DEFAULT_TEMPO] if @tracks.nil? || @tracks.empty?
-      get_tempo_parts.values
-    end
-
     alias bpm beats_per_minute
     alias tempo beats_per_minute
 

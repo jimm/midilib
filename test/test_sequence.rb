@@ -98,14 +98,10 @@ class SequenceTester < Test::Unit::TestCase
       assert_equal(131.34, @seq_bpm_diff.beats_per_minute(15600))
       assert_equal(131.34, @seq_bpm_diff.beats_per_minute(15601))
       assert_equal(nil, @seq_bpm_diff.beats_per_minute(5000000))
-      assert_equal([120.0, 131.34], @seq_bpm_diff.beats_per_minute_min_max)
-      assert_equal([120.0, 131.34], @seq_bpm_diff.beats_per_minute_all)
     end
 
     # Using regular testing sequence
     assert_equal(120.0, @seq.beats_per_minute(1918))
     assert_equal(nil, @seq.beats_per_minute(1920))
-    assert_equal([120], @seq.beats_per_minute_min_max)
-    assert_equal([120.0], @seq.beats_per_minute_all)
   end
 end
