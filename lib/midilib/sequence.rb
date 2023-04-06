@@ -63,12 +63,34 @@ module MIDI
       @qnotes = qnotes
     end
 
-    # Returns the song tempo in beats per minute.
-    def beats_per_minute
+    # Returns the song tempo in beats per minute, nil if time_from_start is out of range
+    def beats_per_minute(time_from_start = 0)
       return DEFAULT_TEMPO if @tracks.nil? || @tracks.empty?
+      return nil if time_from_start > self.get_measures.last.end || time_from_start < 0
+      current_bpm = DEFAULT_TEMPO
+      tempo_parts = get_tempo_parts
+      tempo_parts.each_with_index do |part, i|
+        if !tempo_parts[i+1].nil?
+          current_bpm = part[1] if part[0] <= time_from_start &&  tempo_parts[i+1][0] > time_from_start
+        else
+          current_bpm = part[1] if part[0] <= time_from_start
+        end
+      end
+      current_bpm
+    end
 
-      event = @tracks.first.events.detect { |e| e.is_a?(MIDI::Tempo) }
-      event ? Tempo.mpq_to_bpm(event.tempo) : DEFAULT_TEMPO
+    # Returns array of minimum and maximum bpm within sequence
+    def beats_per_minute_min_max
+      return [DEFAULT_TEMPO] if @tracks.nil? || @tracks.empty?
+      tempo_parts = get_tempo_parts
+      return tempo_parts.values if tempo_parts.length == 1
+      [tempo_parts.values.min, tempo_parts.values.max]
+    end
+
+    # Returns array with all tempos parts within sequence
+    def beats_per_minute_all
+      return [DEFAULT_TEMPO] if @tracks.nil? || @tracks.empty?
+      get_tempo_parts.values
     end
 
     alias bpm beats_per_minute
@@ -76,15 +98,10 @@ module MIDI
 
     # Pulses (also called ticks) are the units of delta times and event
     # time_from_start values. This method converts a number of pulses to a
-    # float value that is a time in seconds.
-    def pulses_to_seconds(pulses)
-      (pulses.to_f / @ppqn.to_f / beats_per_minute) * 60.0
-    end
-
-    # The same with offset. Returns nil if out of range
-    def pulses_to_seconds_current(pulses, offset = 0)
-      unless beats_per_minute_current(offset).nil?
-        (pulses.to_f / @ppqn.to_f / beats_per_minute_current(offset)) * 60.0
+    # float value that is a time in seconds. Returns nil if time_from_start out of range
+    def pulses_to_seconds(pulses, time_from_start = 0)
+      unless beats_per_minute(time_from_start).nil?
+        (pulses.to_f / @ppqn.to_f / beats_per_minute(time_from_start)) * 60.0
       end
     end
 
@@ -208,36 +225,6 @@ module MIDI
         measure_length = te.measure_duration(@ppqn)
       end
       measures
-    end
-    
-    # Returns array of minimum and maximum bpm within sequence
-    def beats_per_minute_min_max
-      return [DEFAULT_TEMPO] if @tracks.nil? || @tracks.empty?
-      tempo_parts = get_tempo_parts
-      return tempo_parts.values if tempo_parts.length == 1
-      [tempo_parts.values.min, tempo_parts.values.max]
-    end
-
-    # Returns array with all tempos parts within sequence
-    def beats_per_minute_all
-      return [DEFAULT_TEMPO] if @tracks.nil? || @tracks.empty?
-      get_tempo_parts.values
-    end
-
-    # Returns bpm value for offset, nil if offset is out of range
-    def beats_per_minute_current(offset = 0)
-      return DEFAULT_TEMPO if @tracks.nil? || @tracks.empty?
-      return nil if offset > self.get_measures.last.end || offset < 0
-      current_bpm = DEFAULT_TEMPO
-      tempo_parts = get_tempo_parts
-      tempo_parts.each_with_index do |part, i|
-        if !tempo_parts[i+1].nil?
-          current_bpm = part[1] if part[0] <= offset &&  tempo_parts[i+1][0] > offset
-        else
-          current_bpm = part[1] if part[0] <= offset
-        end
-      end
-      current_bpm
     end
 
     private

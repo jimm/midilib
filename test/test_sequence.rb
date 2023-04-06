@@ -34,13 +34,13 @@ class SequenceTester < Test::Unit::TestCase
     assert_in_delta 0.25, @seq.pulses_to_seconds(480 / 2), 0.00001
 
     # At a tempo of 120 BPM 480 pulses (one quarter note) should take 0.5 seconds
-    assert_in_delta 0.5, @seq.pulses_to_seconds_current(480, 1000), 0.00001
+    assert_in_delta 0.5, @seq.pulses_to_seconds(480, 1000), 0.00001
 
     # Should use offset = 0 if offset is not present
-    assert_in_delta 0.5, @seq.pulses_to_seconds_current(480), 0.00001
+    assert_in_delta 0.5, @seq.pulses_to_seconds(480), 0.00001
 
     # Should retun nil if offset is out of range
-    assert_equal(nil, @seq.pulses_to_seconds_current(480, 1920))
+    assert_equal(nil, @seq.pulses_to_seconds(480, 1920))
   end
 
   def test_length_to_delta
@@ -92,19 +92,19 @@ class SequenceTester < Test::Unit::TestCase
     # Using file with 2 different tempos whithin sequence (bpm change at 15600)
     File.open('examples/ex2.mid', 'rb') do | file |
       @seq_bpm_diff.read(file)
-      assert_equal(nil, @seq_bpm_diff.beats_per_minute_current(-1000))
-      assert_equal(120.0, @seq_bpm_diff.beats_per_minute_current)
-      assert_equal(120.0, @seq_bpm_diff.beats_per_minute_current(15599))
-      assert_equal(131.34, @seq_bpm_diff.beats_per_minute_current(15600))
-      assert_equal(131.34, @seq_bpm_diff.beats_per_minute_current(15601))
-      assert_equal(nil, @seq_bpm_diff.beats_per_minute_current(5000000))
+      assert_equal(nil, @seq_bpm_diff.beats_per_minute(-1000))
+      assert_equal(120.0, @seq_bpm_diff.beats_per_minute)
+      assert_equal(120.0, @seq_bpm_diff.beats_per_minute(15599))
+      assert_equal(131.34, @seq_bpm_diff.beats_per_minute(15600))
+      assert_equal(131.34, @seq_bpm_diff.beats_per_minute(15601))
+      assert_equal(nil, @seq_bpm_diff.beats_per_minute(5000000))
       assert_equal([120.0, 131.34], @seq_bpm_diff.beats_per_minute_min_max)
       assert_equal([120.0, 131.34], @seq_bpm_diff.beats_per_minute_all)
     end
 
     # Using regular testing sequence
-    assert_equal(120.0, @seq.beats_per_minute_current(1918))
-    assert_equal(nil, @seq.beats_per_minute_current(1920))
+    assert_equal(120.0, @seq.beats_per_minute(1918))
+    assert_equal(nil, @seq.beats_per_minute(1920))
     assert_equal([120], @seq.beats_per_minute_min_max)
     assert_equal([120.0], @seq.beats_per_minute_all)
   end
