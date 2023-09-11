@@ -77,6 +77,7 @@ module MIDI
   # = 0 - 31 = continuous, MSB
   # = 32 - 63 = continuous, LSB
   # = 64 - 97 = switches
+  CC_BANK_MSB = 0
   CC_MOD_WHEEL = 1
   CC_BREATH_CONTROLLER = 2
   CC_FOOT_CONTROLLER = 4
@@ -92,6 +93,7 @@ module MIDI
   CC_GEN_PURPOSE_4 = 19
 
   # [32 - 63] are LSB for [0 - 31]
+  CC_BANK_LSB = 32
   CC_DATA_ENTRY_LSB = 38
 
   #--
