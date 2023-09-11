@@ -42,20 +42,11 @@ spec = Gem::Specification.new do |s|
   EOF
 end
 
-if RUBY_VERSION >= '1.9'
-  # Creates a :package task (also named :gem). Also useful are
-  # :clobber_package and :repackage.
-  Gem::PackageTask.new(spec) do |pkg|
-    pkg.need_zip = true
-    pkg.need_tar = true
-  end
-else
-  # Creates a :package task (also named :gem). Also useful are
-  # :clobber_package and :repackage.
-  Rake::GemPackageTask.new(spec) do |pkg|
-    pkg.need_zip = true
-    pkg.need_tar = true
-  end
+# Creates a :package task (also named :gem). Also useful are
+# :clobber_package and :repackage.
+Gem::PackageTask.new(spec) do |pkg|
+  pkg.need_zip = true
+  pkg.need_tar = true
 end
 
 # creates an "rdoc" task

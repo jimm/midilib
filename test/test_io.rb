@@ -139,7 +139,7 @@ class IOTester < Test::Unit::TestCase
       out_track.events << MIDI::NoteOff.new(0, 65, 127, 230)
     end
 
-    File.open('/tmp/midilib_test.mid', 'wb') { |file| out_seq.write(file) }
+    File.open(TEMPFILE, 'wb') { |file| out_seq.write(file) }
 
     # Although start times are not written out to the MIDI file, we
     # calculate them because we are about to compare the out events with the
@@ -152,6 +152,118 @@ class IOTester < Test::Unit::TestCase
     assert_equal(out_track.events.length + 1, in_track.events.length) # read added end of track meta event
     out_track.events.each_with_index do |event, i|
       assert_equal(event, in_track.events[i])
+    end
+
+    # Last event is a end of track meta event
+    e = in_track.events.last
+    assert(e.is_a?(MIDI::MetaEvent))
+    assert(e.meta_type == MIDI::META_TRACK_END)
+  end
+
+  def test_preserve_deltas_multiple_note_offs
+    out_seq = MIDI::Sequence.new
+    out_track = MIDI::Track.new(out_seq)
+    out_seq.tracks << out_track
+    out_track.events << MIDI::Tempo.new(MIDI::Tempo.bpm_to_mpq(120))
+
+    out_track = MIDI::Track.new(out_seq)
+    out_seq.tracks << out_track
+    out_track.events << MIDI::NoteOn.new(0, 65, 127, 100)
+    out_track.events << MIDI::NoteOff.new(0, 65, 127, 100)
+    out_track.events << MIDI::NoteOff.new(0, 65, 127, 100)
+
+    File.open(TEMPFILE, 'wb') { |file| out_seq.write(file) }
+
+    in_seq = MIDI::Sequence.new
+    File.open(TEMPFILE, 'rb') { |file| in_seq.read(file) }
+    in_track = in_seq.tracks[1]
+
+    out_track.recalc_times # so that start times are correct
+
+    assert_equal(out_track.events.length + 1, in_track.events.length)
+    out_track.events.each_with_index do |event, i|
+      assert_equal(event.data_as_bytes, in_track.events[i].data_as_bytes)
+      assert_equal(event.delta_time, in_track.events[i].delta_time)
+      assert_equal(event.time_from_start, in_track.events[i].time_from_start)
+    end
+
+    # Last event is a end of track meta event
+    e = in_track.events.last
+    assert(e.is_a?(MIDI::MetaEvent))
+    assert(e.meta_type == MIDI::META_TRACK_END)
+  end
+
+  def test_preserve_deltas_multiple_note_on_zero_velocity
+    out_seq = MIDI::Sequence.new
+    out_track = MIDI::Track.new(out_seq)
+    out_seq.tracks << out_track
+    out_track.events << MIDI::Tempo.new(MIDI::Tempo.bpm_to_mpq(120))
+
+    out_track = MIDI::Track.new(out_seq)
+    out_seq.tracks << out_track
+    out_track.events << MIDI::NoteOn.new(0, 65, 127, 100)
+    out_track.events << MIDI::NoteOn.new(0, 65, 0, 100)
+    out_track.events << MIDI::NoteOn.new(0, 65, 0, 100)
+
+    File.open(TEMPFILE, 'wb') { |file| out_seq.write(file) }
+
+    in_seq = MIDI::Sequence.new
+    File.open(TEMPFILE, 'rb') { |file| in_seq.read(file) }
+    in_track = in_seq.tracks[1]
+
+    # Turn the note ons with zero velocity into note offs, and recalc start
+    # times so that time_from_start is correct.
+    [1, 2].each do |i|
+      out_track.events[i] = MIDI::NoteOff.new(0, 65, 64, 100)
+    end
+    out_track.recalc_times # so that start times are correct
+
+    assert_equal(out_track.events.length + 1, in_track.events.length)
+    out_track.events.zip(in_track.events).each do |out_event, in_event|
+      assert_equal(out_event.data_as_bytes, in_event.data_as_bytes)
+      assert_equal(out_event.delta_time, in_event.delta_time)
+      assert_equal(out_event.time_from_start, in_event.time_from_start)
+    end
+
+    # Last event is a end of track meta event
+    e = in_track.events.last
+    assert(e.is_a?(MIDI::MetaEvent))
+    assert(e.meta_type == MIDI::META_TRACK_END)
+  end
+
+  # Regression test. Running status output when writing a track's events was
+  # broken.
+  def test_running_status_output
+    out_seq = MIDI::Sequence.new
+    out_track = MIDI::Track.new(out_seq)
+    out_seq.tracks << out_track
+    out_track.events << MIDI::Tempo.new(MIDI::Tempo.bpm_to_mpq(120))
+
+    out_track = MIDI::Track.new(out_seq)
+    out_seq.tracks << out_track
+    out_track.events << MIDI::NoteOn.new(0, 65, 127, 100)
+    out_track.events << MIDI::NoteOn.new(0, 65, 0, 100)
+    out_track.events << MIDI::NoteOn.new(0, 65, 0, 100)
+
+    File.open(TEMPFILE, 'wb') { |file| out_seq.write(file) }
+
+    in_seq = MIDI::Sequence.new
+    File.open(TEMPFILE, 'rb') { |file| in_seq.read(file) }
+    in_track = in_seq.tracks[1]
+
+    # Turn the note ons with zero velocity into note offs, and recalc start
+    # times so that time_from_start is correct.
+    [1, 2].each do |i|
+      out_track.events[i] = MIDI::NoteOff.new(0, 65, 64, 100)
+    end
+    out_track.recalc_times # so that start times are correct
+
+    assert_equal(out_track.events.length + 1, in_track.events.length)
+    out_track.events.each_with_index do |event, i|
+      in_event = in_track.events[i]
+      assert_equal(event.data_as_bytes, in_track.events[i].data_as_bytes)
+      assert_equal(event.delta_time, in_track.events[i].delta_time)
+      assert_equal(event.time_from_start, in_track.events[i].time_from_start)
     end
 
     # Last event is a end of track meta event
