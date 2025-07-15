@@ -96,12 +96,12 @@ module MIDI
     # "dotted_quarter_triplet" returns the length of a dotted quarter-note
     # triplet and "32nd" returns 1/32.
     def note_to_length(name)
-      name.strip!
+      name = name.strip
       name =~ /^(dotted)?(.*?)(triplet)?$/
       dotted = Regexp.last_match(1)
       note_name = Regexp.last_match(2)
       triplet = Regexp.last_match(3)
-      note_name.strip!
+      note_name = note_name.strip
       mult = 1.0
       mult = 1.5 if dotted
       mult /= 3.0 if triplet
