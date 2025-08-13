@@ -9,6 +9,7 @@ module MIDI
 
     UNNAMED = 'Unnamed Sequence'
     DEFAULT_TEMPO = 120
+    BPM_ROUND = 3
 
     NOTE_TO_LENGTH = {
       'whole' => 4.0,
@@ -62,21 +63,32 @@ module MIDI
       @qnotes = qnotes
     end
 
-    # Returns the song tempo in beats per minute.
-    def beats_per_minute
+    # Returns the song tempo in beats per minute, nil if time_from_start is out of range
+    def beats_per_minute(time_from_start = 0)
       return DEFAULT_TEMPO if @tracks.nil? || @tracks.empty?
-
-      event = @tracks.first.events.detect { |e| e.is_a?(MIDI::Tempo) }
-      event ? Tempo.mpq_to_bpm(event.tempo) : DEFAULT_TEMPO
+      return nil if time_from_start > self.get_measures.last.end || time_from_start < 0
+      current_bpm = DEFAULT_TEMPO
+      tempo_parts = get_tempo_parts
+      tempo_parts.each_with_index do |part, i|
+        if !tempo_parts[i+1].nil?
+          current_bpm = part[1] if part[0] <= time_from_start &&  tempo_parts[i+1][0] > time_from_start
+        else
+          current_bpm = part[1] if part[0] <= time_from_start
+        end
+      end
+      current_bpm
     end
+
     alias bpm beats_per_minute
     alias tempo beats_per_minute
 
     # Pulses (also called ticks) are the units of delta times and event
     # time_from_start values. This method converts a number of pulses to a
-    # float value that is a time in seconds.
-    def pulses_to_seconds(pulses)
-      (pulses.to_f / @ppqn.to_f / beats_per_minute) * 60.0
+    # float value that is a time in seconds. Returns nil if time_from_start out of range
+    def pulses_to_seconds(pulses, time_from_start = 0)
+      unless beats_per_minute(time_from_start).nil?
+        (pulses.to_f / @ppqn.to_f / beats_per_minute(time_from_start)) * 60.0
+      end
     end
 
     # Given a note length name like "whole", "dotted quarter", or "8th
@@ -200,5 +212,21 @@ module MIDI
       end
       measures
     end
+
+    private
+
+    # Private method to split sequence into parts, if more then one bpm present in sequence
+    # Returns hash { start_time => bpm }
+    def get_tempo_parts
+      tempo_parts = {}
+      return tempo_parts[0] = DEFAULT_TEMPO if @tracks.nil? || @tracks.empty?
+      Array(@tracks).each do |track|
+        track.events.map do |e|
+          e.is_a?(MIDI::Tempo) ? tempo_parts[e.time_from_start] = Tempo.mpq_to_bpm(e.tempo) : tempo_parts[0] = DEFAULT_TEMPO
+        end
+      end
+      tempo_parts.transform_values! { |bpm| bpm.round(BPM_ROUND) }
+    end
+
   end
 end
