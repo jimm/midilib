@@ -261,9 +261,9 @@ class IOTester < Test::Unit::TestCase
     assert_equal(out_track.events.length + 1, in_track.events.length)
     out_track.events.each_with_index do |event, i|
       in_event = in_track.events[i]
-      assert_equal(event.data_as_bytes, in_track.events[i].data_as_bytes)
-      assert_equal(event.delta_time, in_track.events[i].delta_time)
-      assert_equal(event.time_from_start, in_track.events[i].time_from_start)
+      assert_equal(event.data_as_bytes, in_event.data_as_bytes)
+      assert_equal(event.delta_time, in_event.delta_time)
+      assert_equal(event.time_from_start, in_event.time_from_start)
     end
 
     # Last event is a end of track meta event
