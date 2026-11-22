@@ -134,6 +134,15 @@ module MIDI
 
       # End of NOPs.
 
+      # Read through the next 'MTrk' header string, skipping any chunk of
+      # another type before it (its type, length and data). The MIDI file spec says that readers should "expect alien chunks and
+      # treat them as if they weren't there".
+      def skip_alien_chunks
+        while get_bytes(4) != MTrk_BYTE_ARRAY
+          get_bytes(read32)
+        end
+      end
+
       # Read through 'MThd' or 'MTrk' header string. If skip is true, attempt
       # to skip initial trash. If there is an error, #error is called.
       def read_mt_header_string(bytes, skip)
@@ -191,7 +200,7 @@ module MIDI
         status = 0              # (Possibly running) status byte
 
         @bytes_to_be_read = 0
-        read_mt_header_string(MTrk_BYTE_ARRAY, false)
+        skip_alien_chunks
 
         @bytes_to_be_read = read32
         @curr_ticks = @ticks_so_far = 0
