@@ -330,12 +330,12 @@ License:: Distributed under the same license as Ruby.
 
 midilib is copyrighted free software by Jim Menard and is released under the
 same license as Ruby. See the Ruby license at
-http://www.ruby-lang.org/en/LICENSE.txt.
+https://www.ruby-lang.org/en/about/license.txt.
 
 midilib may be freely copied in its entirety providing this notice, all
 source code, all documentation, and all other files are included.
 
-midilib is Copyright (c) 2003-2023 by Jim Menard.
+midilib is Copyright (c) 2003-2026 by Jim Menard.
 
 The song "No Fences" contained in the MIDI file examples/NoFences.mid is
 Copyright (c) 1992 by Jim Menard (jim@jimmenard.com). It may be freely used

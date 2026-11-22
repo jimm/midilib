@@ -483,13 +483,16 @@ module MIDI
              when META_SMPTE
                'smpte'
              when META_TIME_SIG
-               'time signature'
+               'time signature' # subclass adds more info
              when META_KEY_SIG
-               'key signature'
+               'key signature'  # subclass adds more info
              when META_SEQ_SPECIF
                'sequence specific'
+             when META_SET_TEMPO
+               'tempo'          # subclass adds more info
              else
-               # Some other possible @meta_type values are handled by subclasses.
+               # Other possible @meta_type values can be handled by
+               # subclasses.
                '(other)'
              end
       str
@@ -538,7 +541,7 @@ module MIDI
     end
 
     def to_s
-      "tempo #{@data} msecs per qnote (#{Tempo.mpq_to_bpm(@data)} bpm)"
+      super << " #{@data} msecs per qnote (#{Tempo.mpq_to_bpm(@data)} bpm)"
     end
   end
 
@@ -584,9 +587,9 @@ module MIDI
     end
 
     # Returns the time signature for the event as a string.
-    # Example: "time sig 3/4"
+    # Example: "0: time signature 3/4 (clocks=24, qnotes = 8)"
     def to_s
-      "time sig #{@data[0]}/#{2**@data[1]}"
+      super << " #{@data[0]}/#{2**@data[1]} (clocks=#{@data[2]}, qnotes=#{@data[3]})"
     end
   end
 
