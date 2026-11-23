@@ -135,12 +135,17 @@ module MIDI
       # End of NOPs.
 
       # Read through the next 'MTrk' header string, skipping any chunk of
-      # another type before it (its type, length and data). The MIDI file spec says that readers should "expect alien chunks and
-      # treat them as if they weren't there".
+      # another type before it (its type, length and data). The MIDI file spec
+      # says that readers should "expect alien chunks and treat them as if
+      # they weren't there".
       def skip_alien_chunks
-        while get_bytes(4) != MTrk_BYTE_ARRAY
-          get_bytes(read32)
+        while (type = get_bytes(4)) != MTrk_BYTE_ARRAY
+          len = read32
+          error("invalid chunk length #{len} for #{type.pack('C*').inspect}") if len.negative?
+          get_bytes(len)
         end
+      rescue EOFError
+        error('unexpected EOF while trying to skip alien chunk')
       end
 
       # Read through 'MThd' or 'MTrk' header string. If skip is true, attempt

@@ -76,6 +76,27 @@ class IOTester < Test::Unit::TestCase
     compare_sequences(seq0, seq1)
   end
 
+  def test_read_alien_chunk_with_negative_length
+    data = File.binread(SEQ_TEST_FILE)
+    alien = 'XFIH' + [0x80000004].pack('N') + "\x01\x02\x03\x04".b
+    io = StringIO.new(data[0, 14] + alien + data[14..])
+
+    e = assert_raise(RuntimeError) { MIDI::Sequence.new.read(io) }
+    assert_match(/invalid chunk length -4 for "XFIH"/, e.message)
+  end
+
+  def test_read_eof_in_alien_chunk
+    data = File.binread(SEQ_TEST_FILE)
+    alien = 'XFIH' + [4].pack('N') + "\x01\x02\x03\x04".b
+
+    # EOF in the type, the length and the data of the chunk
+    [2, 6, 10].each do |len|
+      io = StringIO.new(data[0, 14] + alien[0, len])
+      e = assert_raise(RuntimeError) { MIDI::Sequence.new.read(io) }
+      assert_match(/unexpected EOF while trying to skip alien chunk/, e.message)
+    end
+  end
+
   def test_read_callback
     seq = MIDI::Sequence.new
     names = []
