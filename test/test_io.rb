@@ -1,4 +1,5 @@
 require 'test/unit'
+require 'stringio'
 require_relative '../lib/midilib'
 require_relative '../lib/midilib/consts'
 require_relative 'event_equality'
@@ -56,6 +57,44 @@ class IOTester < Test::Unit::TestCase
     compare_sequences_format_0(seq0, seq1)
   ensure
     File.delete(OUTPUT_FILE) if File.exist?(OUTPUT_FILE)
+  end
+
+  # The MIDI file spec says that readers should "expect alien chunks and
+  # treat them as if they weren't there".
+  def test_read_skips_alien_chunks
+    data = File.binread(SEQ_TEST_FILE)
+    alien = "XFIH" + [4].pack('N') + "\x01\x02\x03\x04".b
+    first_track_len = data[18, 4].unpack1('N')
+    second_track_start = 14 + 8 + first_track_len
+    with_aliens = data[0, 14] + alien + data[14...second_track_start] +
+                  alien + data[second_track_start..]
+
+    seq0 = MIDI::Sequence.new
+    seq0.read(StringIO.new(data))
+    seq1 = MIDI::Sequence.new
+    seq1.read(StringIO.new(with_aliens))
+    compare_sequences(seq0, seq1)
+  end
+
+  def test_read_alien_chunk_with_negative_length
+    data = File.binread(SEQ_TEST_FILE)
+    alien = 'XFIH' + [0x80000004].pack('N') + "\x01\x02\x03\x04".b
+    io = StringIO.new(data[0, 14] + alien + data[14..])
+
+    e = assert_raise(RuntimeError) { MIDI::Sequence.new.read(io) }
+    assert_match(/invalid chunk length -4 for "XFIH"/, e.message)
+  end
+
+  def test_read_eof_in_alien_chunk
+    data = File.binread(SEQ_TEST_FILE)
+    alien = 'XFIH' + [4].pack('N') + "\x01\x02\x03\x04".b
+
+    # EOF in the type, the length and the data of the chunk
+    [2, 6, 10].each do |len|
+      io = StringIO.new(data[0, 14] + alien[0, len])
+      e = assert_raise(RuntimeError) { MIDI::Sequence.new.read(io) }
+      assert_match(/unexpected EOF while trying to skip alien chunk/, e.message)
+    end
   end
 
   def test_read_callback
