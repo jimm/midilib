@@ -103,3 +103,9 @@ Miika Alonen (@amiika on Github)
     the addition of end of track meta events when reading and writing MIDI
     files.
     Found and fixed a bug in SongPointer#data_as_bytes.
+
+@bardrop on Github
+
+    Noticed that midilib doesn't skip alien chunks as required by the spec,
+    and fixed that shortcoming. AI assistance was used for code changes
+    under the supervision of @bardrop.
